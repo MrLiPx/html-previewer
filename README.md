@@ -1,18 +1,38 @@
-# ⟨/⟩ HTML Online Viewer
+# ⟨/⟩ HTML Previewer
 
 <div align="center">
 
-![HTML Viewer Banner](https://img.shields.io/badge/HTML-Online%20Viewer-00e5ff?style=for-the-badge&logo=html5&logoColor=white)
-![Version](https://img.shields.io/badge/version-1.0.0-ff4d6d?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-00ffa3?style=for-the-badge)
-![No Dependencies](https://img.shields.io/badge/dependencies-none-ffd166?style=for-the-badge)
+<img src="https://avatars.githubusercontent.com/u/163276171?v=4" width="64" height="64" style="border-radius:50%" alt="Mr Li Px" />
 
-**A zero-dependency, browser-based HTML editor & live previewer.**  
-Paste, format, highlight, and preview HTML — entirely in your browser.
+**Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
-[🚀 Live Demo](https://mrlipx.github.io/html-viewer) · [📦 Download](https://github.com/MrLiPx/html-viewer/releases) · [🐛 Report Bug](https://github.com/MrLiPx/html-viewer/issues)
+[![HTML Previewer](https://img.shields.io/badge/HTML-Previewer-4f9eff?style=for-the-badge&logo=html5&logoColor=white)](https://mrlipx.github.io/html-previewer)
+[![Version](https://img.shields.io/badge/version-1.0.0-ff5f57?style=for-the-badge)](#)
+[![License](https://img.shields.io/badge/license-MIT-28c840?style=for-the-badge)](LICENSE)
+[![No Dependencies](https://img.shields.io/badge/dependencies-none-febc2e?style=for-the-badge)](#)
+
+**A zero-dependency, browser-based HTML editor and live previewer.**
+
+[🚀 Live Demo](https://mrlipx.github.io/html-previewer) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
 
 </div>
+
+---
+
+## 🖥️ Screenshot
+
+> **Placeholder** — take a screenshot of `html-previewer.html`, save it to `media/images/screenshot/app.png`, then replace this block.
+
+```
+┌───────────────────────────────────────────┐
+│  [ Replace with screenshot ]              │
+│  Path: media/images/screenshot/app.png   │
+└───────────────────────────────────────────┘
+```
+
+<!-- Once you have a screenshot, replace the block above with:
+![HTML Previewer](media/images/screenshot/app.png)
+-->
 
 ---
 
@@ -20,105 +40,75 @@ Paste, format, highlight, and preview HTML — entirely in your browser.
 
 | Feature | Description |
 |---|---|
-| 👁 **Preview** | Live full-page render of your HTML inside an iframe |
-| ✦ **Syntax Highlight** | Color-coded HTML with tag, attribute, and value highlighting |
-| ⊞ **Format** | Auto-indent and beautify messy HTML code |
-| ＋ **Expand All** | Expand all collapsed nodes |
-| － **Collapse All** | Collapse nodes for a cleaner overview |
-| 📄 **Sample** | Load a working example HTML template |
-| ✕ **Clear** | Wipe the editor with one click |
-| ⬆ **Import** | Load a local `.html` or `.htm` file |
-| ⬇ **Export** | Download your HTML as `index.html` |
-| 🌙 **Dark / Light Mode** | Toggle between dark and light themes |
+| ▶ **Preview** | Live render in a sandboxed iframe |
+| ✦ **Syntax Highlight** | Colour-coded tags, attributes, values, comments |
+| ⊞ **Format** | Auto-indent and beautify HTML |
+| ＋ **Expand all** | Remove excess blank lines |
+| － **Collapse all** | Compact the code |
+| 📄 **Sample** | Load a working example template |
+| ✕ **Clear** | Clear the editor |
+| ⬆ **Import** | Load a local `.html` file |
+| ⬇ **Export** | Download as `index.html` |
+| 🌙 **Dark / Light** | Toggle theme |
 
 ---
 
 ## 🚀 Quick Start
 
-### Option 1 — Use directly (no install)
-
-Just open `html-viewer.html` in your browser. That's it — no server, no build step.
-
 ```bash
-# Clone the repo
-git clone https://github.com/MrLiPx/html-viewer.git
-cd html-viewer
+# Clone
+git clone https://github.com/MrLiPx/html-previewer.git
+cd html-previewer
 
-# Open directly
-open html-viewer.html        # macOS
-start html-viewer.html       # Windows
-xdg-open html-viewer.html    # Linux
+# Open directly — no server needed
+open html-previewer.html        # macOS
+start html-previewer.html       # Windows
+xdg-open html-previewer.html   # Linux
 ```
 
-### Option 2 — GitHub Pages
-
-Fork this repo, enable **Settings → Pages → Deploy from `/` branch**, and your viewer will be live at:
-
-```
-https://mrlipx.github.io/html-viewer
-```
-
----
-
-## 🖥️ Screenshot
-
-```
-┌─────────────────────────────────────────────────────┐
-│  ⟨/⟩ HTML Viewer                      @MrLiPx v1.0  │
-├─────────────┬───────────────────────────────────────┤
-│  View       │  ✏ Editor  │ 👁 Preview │ ✦ Highlight │
-│  ─────────  ├─────────────────────────────────────── │
-│  👁 Preview  │  1  <!DOCTYPE html>                   │
-│  ✦ Highlight│  2  <html lang="en">                  │
-│             │  3    <head>                           │
-│  Edit       │  4      <title>Sample</title>          │
-│  ─────────  │  5    </head>                          │
-│  ⊞ Format   │  6    <body>                           │
-│  ＋ Expand  │  7      <h1>Hello!</h1>               │
-│  － Collapse│  8    </body>                          │
-│             │  9  </html>                            │
-│  File       ├─────────────────────────────────────── │
-│  ─────────  │  ● Ready  │  UTF-8  │  HTML           │
-│  📄 Sample  └─────────────────────────────────────── │
-│  ✕ Clear    │
-│  ⬆ Import   │
-│  ⬇ Export   │
-│             │
-│  🌙 Dark    │
-└─────────────┘
-```
-
----
-
-## 🛠️ Tech Stack
-
-- **Pure HTML / CSS / JS** — zero dependencies, zero build tools
-- **Google Fonts** — JetBrains Mono + Syne
-- **CSS Variables** — for seamless dark/light theming
-- **Blob URLs** — secure sandboxed preview & file export
-- **FileReader API** — client-side file import
+**GitHub Pages:** enable Settings → Pages → Deploy from `/` branch.  
+Your site will be live at `https://mrlipx.github.io/html-previewer`.
 
 ---
 
 ## 📁 File Structure
 
 ```
-html-viewer/
-├── html-viewer.html    ← The entire app (single file)
-├── index.html          ← GitHub Pages landing page
-└── README.md           ← This file
+html-previewer/
+├── html-previewer.html           ← The app (self-contained)
+├── index.html                    ← GitHub Pages landing page
+├── README.md
+│
+├── static/
+│   ├── css/style.css             ← Landing page styles
+│   └── js/main.js                ← Landing page scripts
+│
+└── media/
+    └── images/
+        ├── screenshot/app.png    ← ⬅ Add your screenshot here
+        ├── banner/og-banner.png  ← ⬅ Social/OG banner
+        └── icons/favicon.png     ← ⬅ Favicon
 ```
+
+---
+
+## 🛠️ Tech
+
+- Pure HTML / CSS / JS — zero dependencies
+- Google Fonts (Inter + JetBrains Mono)
+- GitHub REST API for live profile data on the landing page
+- Blob URLs for new-tab preview and file export
+- FileReader API for local file import
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests are welcome! For major changes, please open an issue first.
+PRs welcome. For big changes, open an issue first.
 
 ```bash
-# Fork → Clone → Branch → PR
 git checkout -b feature/my-feature
-git commit -m "feat: add my feature"
+git commit -m "feat: my feature"
 git push origin feature/my-feature
 ```
 
@@ -126,10 +116,10 @@ git push origin feature/my-feature
 
 ## 📄 License
 
-MIT © [MrLiPx](https://github.com/MrLiPx)
+MIT © [Mr Li Px (@MrLiPx)](https://github.com/MrLiPx)
 
 ---
 
 <div align="center">
-Made with ❤️ by <a href="https://github.com/MrLiPx">@MrLiPx</a>
+Made with ❤️ by <a href="https://github.com/MrLiPx">Mr Li Px</a> · <a href="https://mrlipx.com">mrlipx.com</a>
 </div>
