@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Previewer — MrLiPx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #13151a;
+      --panel:    #1c1f26;
+      --hover:    #252930;
+      --border:   #2e323c;
+      --accent:   #4f9eff;
+      --red:      #ff5f57;
+      --yellow:   #febc2e;
+      --green:    #28c840;
+      --text:     #e2e8f0;
+      --muted:    #6b7280;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
+    }
+    [data-light] {
+      --bg:     #f4f5f7;
+      --panel:  #ffffff;
+      --hover:  #f0f1f3;
+      --border: #e2e4e8;
+      --text:   #1a1d23;
+      --muted:  #9ca3af;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      transition: background .2s, color .2s;
+    }
+
+    /* ── HEADER ── */
+    header {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .logo-box {
+      width: 26px; height: 26px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 9px; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+
+    /* URL bar */
+    .url-bar {
+      flex: 1;
+      max-width: 420px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0 10px;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      transition: border-color .15s;
+    }
+    .url-bar:focus-within { border-color: var(--accent); }
+    .url-bar .lock { color: var(--green); font-size: 10px; }
+    .url-bar .scheme { color: var(--accent); }
+    .url-bar .path { color: var(--text); opacity: .7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Header right links */
+    .h-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .h-link {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 9px;
+      font-size: 11px; font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      background: none;
+      cursor: pointer;
+      font-family: var(--sans);
+      transition: all .12s;
+      white-space: nowrap;
+    }
+    .h-link:hover { background: var(--hover); border-color: var(--border); color: var(--text); }
+    .h-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .h-link img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .h-sep { width: 1px; height: 18px; background: var(--border); margin: 0 3px; }
+    .run-btn {
+      padding: 5px 12px;
+      background: var(--accent);
+      color: #fff; border-color: transparent;
+    }
+    .run-btn:hover { background: #3b8ef0; color: #fff; }
+
+    /* ── BODY ── */
+    .app { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 190px;
+      flex-shrink: 0;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 10px 8px;
+      gap: 2px;
+      overflow-y: auto;
+    }
+    .sb-group {
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 6px 3px;
+    }
+    .sb-group:first-child { padding-top: 2px; }
+    .sb-sep { height: 1px; background: var(--border); margin: 5px 0; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 7px 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+      transition: all .1s;
+    }
+    .btn:hover { background: var(--hover); border-color: var(--border); color: var(--text); }
+    .btn:active { opacity: .75; }
+    .btn .ic { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+
+    .btn-blue  { color: var(--accent); }
+    .btn-blue:hover { background: rgba(79,158,255,.1); border-color: rgba(79,158,255,.3); color: var(--accent); }
+    .btn-green { color: var(--green); }
+    .btn-green:hover { background: rgba(40,200,64,.1); border-color: rgba(40,200,64,.3); color: var(--green); }
+    .btn-red   { color: var(--red); }
+    .btn-red:hover   { background: rgba(255,95,87,.1);  border-color: rgba(255,95,87,.3);  color: var(--red); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+    /* Tab bar */
+    .tabs {
+      display: flex;
+      height: 36px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tab {
+      display: flex; align-items: center; gap: 5px;
+      padding: 0 16px;
+      font-size: 11px; font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .12s;
+      user-select: none;
+    }
+    .tab:hover { color: var(--text); background: var(--hover); }
+    .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Panels */
+    .panels { flex: 1; display: flex; overflow: hidden; }
+    .panel  { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+    .panel.on { display: flex; }
+
+    /* ── EDITOR PANEL ── */
+    .ed-bar {
+      height: 28px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 12px;
+      background: var(--hover);
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; color: var(--muted);
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+    .ed-bar .right { margin-left: auto; display: flex; gap: 8px; }
+    .ed-bar kbd {
+      padding: 1px 4px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 9px;
+    }
+
+    .ed-wrap { flex: 1; display: flex; overflow: hidden; }
+
+    .gutter {
+      width: 44px;
+      padding: 12px 8px;
+      background: var(--hover);
+      border-right: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+      text-align: right;
+      user-select: none;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #code {
+      flex: 1;
+      padding: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      border: none; outline: none; resize: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      caret-color: var(--accent);
+    }
+    #code::selection { background: rgba(79,158,255,.2); }
+
+    /* ── PREVIEW PANEL ── */
+    .preview-chrome {
+      height: 34px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 12px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .traffic {
+      display: flex; gap: 5px; align-items: center; flex-shrink: 0;
+    }
+    .traffic span {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: opacity .12s;
+    }
+    .traffic span:hover { opacity: .75; }
+    .tr  { background: var(--red);    }
+    .ty  { background: var(--yellow); }
+    .tg  { background: var(--green);  }
+
+    .preview-addr {
+      flex: 1;
+      height: 22px;
+      display: flex; align-items: center; gap: 4px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .pa-lock   { color: var(--green);  flex-shrink: 0; }
+    .pa-scheme { color: var(--accent); flex-shrink: 0; }
+    .pa-host   { color: var(--text);   flex-shrink: 0; font-weight: 600; }
+    .pa-path   { color: var(--muted);  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .pv-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .pv-btn {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--hover);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer; color: var(--muted);
+      transition: all .12s;
+    }
+    .pv-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .pv-btn svg { width: 12px; height: 12px; }
+
+    #preview-iframe {
+      flex: 1;
+      border: none;
+      background: #fff;
+    }
+
+    /* ── HIGHLIGHT PANEL ── */
+    .hl-bar {
+      height: 28px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 12px;
+      background: var(--hover);
+      border-bottom: 1px solid var(--border);
+      font-size: 10px; color: var(--muted);
+      font-family: var(--mono);
+      flex-shrink: 0;
+    }
+    .hl-legend { display: flex; gap: 8px; margin-left: auto; }
+    .hl-tag-c   { color: #ff6b8a; }
+    .hl-attr-c  { color: #ffc56d; }
+    .hl-val-c   { color: #7ee8a2; }
+    .hl-cmnt-c  { color: #4a5568; font-style: italic; }
+
+    .hl-scroll { flex: 1; overflow: auto; padding: 12px 14px; }
+    #hl-out {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .ht  { color: #ff6b8a; }
+    .ha  { color: #ffc56d; }
+    .hv  { color: #7ee8a2; }
+    .hc  { color: #4a5568; font-style: italic; }
+    .hd  { color: #718096; font-style: italic; }
+    .hbr { color: #5a8aaf; }
+    .htx { color: #a0aec0; }
+
+    /* ── STATUS BAR ── */
+    .status {
+      height: 22px;
+      display: flex; align-items: center;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .st { padding: 0 10px; border-right: 1px solid var(--border); height: 100%; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .st:last-child { border-right: none; }
+    .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      padding: 8px 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 12px; font-weight: 600;
+      font-family: var(--sans);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .18s, transform .18s;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.ok   { color: var(--green); border-color: rgba(40,200,64,.3); }
+    #toast.info { color: var(--accent); border-color: rgba(79,158,255,.3); }
+    #toast.warn { color: var(--yellow); border-color: rgba(254,188,46,.3); }
+
+    #file-input { display: none; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    @media (max-width: 640px) {
+      .sidebar { width: 42px; }
+      .btn span:not(.ic) { display: none; }
+      .sb-group, .sb-sep { display: none; }
+      .btn { padding: 7px; justify-content: center; }
+      .url-bar, .h-link span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-box">⟨/⟩</div>
+    HTML Previewer
+  </div>
+
+  <div class="url-bar">
+    <span class="lock">🔒</span>
+    <span class="scheme">file://</span>
+    <span class="path" id="url-path">html-previewer.html</span>
+  </div>
+
+  <nav class="h-links">
+    <a class="h-link" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3A12 12 0 0 0 0 12.3c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.3 12 12 0 0 0 12 .3z"/></svg>
+      <span>GitHub</span>
+    </a>
+    <a class="h-link" href="https://github.com/MrLiPx/html-previewer/blob/main/README.md" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>README</span>
+    </a>
+    <a class="h-link" href="https://github.com/MrLiPx/html-previewer/issues" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Issues</span>
+    </a>
+    <div class="h-sep"></div>
+    <a class="h-link" href="https://github.com/MrLiPx" target="_blank" rel="noopener">
+      <img src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="MrLiPx" />
+      <span>@MrLiPx</span>
+    </a>
+    <div class="h-sep"></div>
+    <button class="h-link run-btn" onclick="runPreview()">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span>Run</span>
+    </button>
+  </nav>
+</header>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <span class="sb-group">View</span>
+    <button class="btn btn-blue" onclick="runPreview()">
+      <span class="ic">▶</span><span>Preview</span>
+    </button>
+    <button class="btn" onclick="runHighlight()">
+      <span class="ic">✦</span><span>Highlight</span>
+    </button>
+
+    <div class="sb-sep"></div>
+    <span class="sb-group">Edit</span>
+    <button class="btn" onclick="fmtCode()">
+      <span class="ic">⊞</span><span>Format</span>
+    </button>
+    <button class="btn" onclick="expandAll()">
+      <span class="ic">＋</span><span>Expand all</span>
+    </button>
+    <button class="btn" onclick="collapseAll()">
+      <span class="ic">－</span><span>Collapse all</span>
+    </button>
+
+    <div class="sb-sep"></div>
+    <span class="sb-group">File</span>
+    <button class="btn" onclick="loadSample()">
+      <span class="ic">📄</span><span>Sample</span>
+    </button>
+    <button class="btn btn-red" onclick="clearCode()">
+      <span class="ic">✕</span><span>Clear</span>
+    </button>
+    <button class="btn" onclick="doImport()">
+      <span class="ic">⬆</span><span>Import from file</span>
+    </button>
+    <button class="btn btn-green" onclick="doExport()">
+      <span class="ic">⬇</span><span>Export to file</span>
+    </button>
+
+    <div class="sb-sep"></div>
+    <span class="sb-group">Links</span>
+    <a class="btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
+      <span class="ic">⭐</span><span>Star on GitHub</span>
+    </a>
+    <a class="btn" href="https://mrlipx.com" target="_blank" rel="noopener">
+      <span class="ic">🌐</span><span>MrLiPx.com</span>
+    </a>
+
+    <div class="sb-sep"></div>
+    <button class="btn" id="theme-btn" onclick="toggleTheme()">
+      <span class="ic" id="theme-ic">🌙</span><span id="theme-txt">Dark mode</span>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab on" id="tab-editor"    onclick="goTab('editor')">✏ Editor</div>
+      <div class="tab"    id="tab-preview"   onclick="goTab('preview')">▶ Preview</div>
+      <div class="tab"    id="tab-highlight" onclick="goTab('highlight')">✦ Highlight</div>
+    </div>
+
+    <div class="panels">
+
+      <!-- Editor -->
+      <div class="panel on" id="panel-editor">
+        <div class="ed-bar">
+          <span>HTML</span>
+          <span>·</span>
+          <span id="cursor">Ln 1, Col 1</span>
+          <div class="right">
+            <span id="counts">0 chars · 0 lines</span>
+            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> run &nbsp;·&nbsp; <kbd>Tab</kbd> indent</span>
+          </div>
+        </div>
+        <div class="ed-wrap">
+          <div class="gutter" id="gutter">1</div>
+          <textarea id="code" spellcheck="false"
+            placeholder="<!-- Paste or write HTML here, then click Run or press Ctrl+Enter -->"></textarea>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="panel" id="panel-preview">
+        <div class="preview-chrome">
+          <div class="traffic">
+            <span class="tr" title="Back to editor" onclick="goTab('editor')"></span>
+            <span class="ty" title="Refresh"         onclick="doRefresh()"></span>
+            <span class="tg" title="Open in new tab" onclick="openTab()"></span>
+          </div>
+
+          <div class="preview-addr">
+            <span class="pa-lock">🔒</span>
+            <span class="pa-scheme">localhost/</span>
+            <span class="pa-path" id="pv-path">preview</span>
+          </div>
+
+          <div class="pv-btns">
+            <div class="pv-btn" onclick="doRefresh()" title="Refresh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </div>
+            <div class="pv-btn" onclick="openTab()" title="Open in new tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </div>
+            <div class="pv-btn" onclick="copyHTML()" title="Copy HTML">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </div>
+          </div>
+        </div>
+        <iframe id="preview-iframe"
+          sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
+          title="Preview"></iframe>
+      </div>
+
+      <!-- Highlight -->
+      <div class="panel" id="panel-highlight">
+        <div class="hl-bar">
+          <span>Syntax Highlight</span>
+          <div class="hl-legend">
+            <span class="hl-tag-c">● tag</span>
+            <span class="hl-attr-c">● attr</span>
+            <span class="hl-val-c">● value</span>
+            <span class="hl-cmnt-c">● comment</span>
+          </div>
+        </div>
+        <div class="hl-scroll">
+          <pre id="hl-out"><!-- Highlighted HTML will appear here. --></pre>
+        </div>
+      </div>
+
+    </div><!-- /panels -->
+
+    <!-- Status bar -->
+    <div class="status">
+      <div class="st"><div class="dot"></div><span id="st-msg">Ready</span></div>
+      <div class="st" id="st-file">html-previewer.html</div>
+      <div class="st st-right" id="st-theme">Dark</div>
+      <div class="st">UTF-8</div>
+      <div class="st">HTML</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+<input type="file" id="file-input" accept=".html,.htm,.txt" />
+
+<script>
+'use strict';
+
+/* refs */
+const code    = document.getElementById('code');
+const gutter  = document.getElementById('gutter');
+const counts  = document.getElementById('counts');
+const cursor  = document.getElementById('cursor');
+const stMsg   = document.getElementById('st-msg');
+const stFile  = document.getElementById('st-file');
+const urlPath = document.getElementById('url-path');
+const pvPath  = document.getElementById('pv-path');
+
+let dark = true;
+let blobUrl = null;
+
+/* ── TABS ────────────────────────────────── */
+function goTab(name) {
+  ['editor','preview','highlight'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('on', t === name);
+    document.getElementById('panel-' + t).classList.toggle('on', t === name);
+  });
+  if (name === 'preview')   doRefresh();
+  if (name === 'highlight') doHighlight();
+}
+
+/* ── EDITOR ──────────────────────────────── */
+function syncEditor() {
+  const lines = code.value.split('\n');
+  gutter.textContent = lines.map((_, i) => i + 1).join('\n');
+  gutter.scrollTop   = code.scrollTop;
+  counts.textContent = `${code.value.length} chars · ${lines.length} lines`;
+}
+
+function syncCursor() {
+  const pre = code.value.slice(0, code.selectionStart);
+  const ln  = pre.split('\n').length;
+  const col = pre.length - pre.lastIndexOf('\n');
+  cursor.textContent = `Ln ${ln}, Col ${col}`;
+}
+
+code.addEventListener('input',  syncEditor);
+code.addEventListener('click',  syncCursor);
+code.addEventListener('keyup',  syncCursor);
+code.addEventListener('scroll', () => { gutter.scrollTop = code.scrollTop; });
+code.addEventListener('keydown', e => {
+  /* Tab / Shift+Tab */
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = code.selectionStart, end = code.selectionEnd, v = code.value;
+    if (e.shiftKey) {
+      const ls = v.lastIndexOf('\n', s - 1) + 1;
+      const sp = v.slice(ls).match(/^ {1,2}/)?.[0] ?? '';
+      if (sp) { code.value = v.slice(0, ls) + v.slice(ls + sp.length); code.selectionStart = code.selectionEnd = s - sp.length; }
+    } else {
+      code.value = v.slice(0, s) + '  ' + v.slice(end);
+      code.selectionStart = code.selectionEnd = s + 2;
+    }
+    syncEditor(); syncCursor();
+  }
+  /* Ctrl/Cmd + Enter */
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault(); runPreview();
+  }
+});
+
+/* ── PREVIEW ─────────────────────────────── */
+function runPreview() { goTab('preview'); }
+
+function doRefresh() {
+  const html = code.value.trim();
+  if (!html) { toast('Editor is empty', 'warn'); return; }
+
+  const iframe = document.getElementById('preview-iframe');
+  const doc    = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+
+  /* Update address bar */
+  const titleM = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  const slug   = (titleM ? titleM[1].trim() : 'preview')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'').slice(0, 30) || 'preview';
+  pvPath.textContent = slug;
+
+  stMsg.textContent = 'Preview rendered';
+  toast('Preview rendered', 'ok');
+}
+
+function openTab() {
+  const html = code.value.trim();
+  if (!html) { toast('Editor is empty', 'warn'); return; }
+  if (blobUrl) URL.revokeObjectURL(blobUrl);
+  blobUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  const w = window.open(blobUrl, '_blank');
+  if (!w) { toast('Allow popups to open new tab', 'warn'); }
+  else    { toast('Opened in new tab ↗', 'ok'); }
+}
+
+/* ── HIGHLIGHT ───────────────────────────── */
+function runHighlight() { goTab('highlight'); }
+
+function doHighlight() {
+  const raw = code.value;
+  if (!raw.trim()) { document.getElementById('hl-out').textContent = '<!-- Nothing to highlight -->'; return; }
+  document.getElementById('hl-out').innerHTML = tokenise(raw);
+  stMsg.textContent = 'Highlight applied';
+}
+
+function e(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function tokenise(src) {
+  let out = '', i = 0;
+  while (i < src.length) {
+    if (/^<!DOCTYPE/i.test(src.slice(i))) {
+      const end = src.indexOf('>', i);
+      const f   = end < 0 ? src.slice(i) : src.slice(i, end + 1);
+      out += `<span class="hd">${e(f)}</span>`;
+      i += f.length; continue;
+    }
+    if (src.startsWith('<!--', i)) {
+      const end = src.indexOf('-->', i + 4);
+      const f   = end < 0 ? src.slice(i) : src.slice(i, end + 3);
+      out += `<span class="hc">${e(f)}</span>`;
+      i += f.length; continue;
+    }
+    if (src[i] === '<') {
+      const end = src.indexOf('>', i);
+      if (end < 0) { out += e(src.slice(i)); break; }
+      out += colorTag(src.slice(i, end + 1));
+      i = end + 1; continue;
+    }
+    const nx = src.indexOf('<', i);
+    const st = nx < 0 ? src.length : nx;
+    out += `<span class="htx">${e(src.slice(i, st))}</span>`;
+    i = st;
+  }
+  return out;
+}
+
+function colorTag(raw) {
+  let s = e(raw);
+  s = s.replace(/(&lt;\/?)([\w-]+)/, (_, b, n) =>
+    `<span class="hbr">${b}</span><span class="ht">${n}</span>`);
+  s = s.replace(/([\w:@-]+)(=)(&quot;)([^&]*)(&quot;)/g,
+    (_, a, eq, q1, v, q2) =>
+    `<span class="ha">${a}</span>=<span class="hv">${q1}${v}${q2}</span>`);
+  s = s.replace(/(&gt;|\/&gt;)$/, '<span class="hbr">$1</span>');
+  return s;
+}
+
+/* ── FORMAT ──────────────────────────────── */
+function fmtCode() {
+  const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+  const raw  = code.value;
+  if (!raw.trim()) { toast('Nothing to format', 'warn'); return; }
+
+  const lines  = raw.replace(/>\s*</g,'>\n<').replace(/>\s*([^\n<])/g,'>\n$1').split('\n');
+  let   indent = 0, res = [];
+  for (let ln of lines) {
+    ln = ln.trim(); if (!ln) continue;
+    if (/^<\/[\w-]/.test(ln)) indent = Math.max(0, indent - 1);
+    res.push('  '.repeat(indent) + ln);
+    const m = ln.match(/^<([\w-]+)/);
+    if (m && !VOID.has(m[1].toLowerCase()) && !/\/>$/.test(ln) && !/^<!/.test(ln) && !/^<\//.test(ln))
+      indent++;
+  }
+  code.value = res.join('\n');
+  syncEditor();
+  toast('Formatted ✓', 'ok');
+  stMsg.textContent = 'Code formatted';
+}
+
+/* ── EXPAND / COLLAPSE ───────────────────── */
+function expandAll()  { code.value = code.value.replace(/\n{3,}/g,'\n\n'); syncEditor(); toast('Expanded','info'); }
+function collapseAll(){ fmtCode(); code.value = code.value.replace(/\n{2,}/g,'\n'); syncEditor(); toast('Collapsed','info'); }
+
+/* ── SAMPLE ──────────────────────────────── */
+function loadSample() {
+  code.value = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sample — MrLiPx</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #13151a;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #1c1f26;
+      border: 1px solid #2e323c;
+      border-radius: 12px;
+      padding: 36px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 { font-size: 26px; color: #4f9eff; margin-bottom: 10px; }
+    p  { color: #6b7280; line-height: 1.6; margin-bottom: 22px; font-size: 14px; }
+    button {
+      padding: 10px 24px;
+      background: #4f9eff;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    button:hover { background: #3b8ef0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Hello from MrLiPx 👋</h1>
+    <p>This sample is rendered live inside the HTML Previewer. Edit the code and press <strong>Run</strong> to see changes.</p>
+    <button onclick="alert('Hello from @MrLiPx!')">Say Hello</button>
+  </div>
+</body>
+</html>`;
+  syncEditor();
+  goTab('editor');
+  toast('Sample loaded', 'info');
+  stMsg.textContent = 'Sample loaded';
+}
+
+/* ── CLEAR ───────────────────────────────── */
+function clearCode() {
+  if (code.value.trim() && !confirm('Clear all code?')) return;
+  code.value = '';
+  syncEditor();
+  toast('Cleared', 'ok');
+  stMsg.textContent = 'Editor cleared';
+}
+
+/* ── IMPORT / EXPORT / COPY ──────────────── */
+function doImport() { document.getElementById('file-input').click(); }
+
+document.getElementById('file-input').addEventListener('change', ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    code.value = e.target.result;
+    syncEditor();
+    urlPath.textContent = f.name;
+    stFile.textContent  = f.name;
+    toast(`Imported: ${f.name}`, 'ok');
+    stMsg.textContent = `Imported: ${f.name}`;
+  };
+  r.readAsText(f);
+  ev.target.value = '';
+});
+
+function doExport() {
+  if (!code.value.trim()) { toast('Nothing to export', 'warn'); return; }
+  const a = Object.assign(document.createElement('a'), {
+    href:     URL.createObjectURL(new Blob([code.value], { type: 'text/html' })),
+    download: 'index.html'
+  });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  toast('Exported as index.html', 'ok');
+}
+
+function copyHTML() {
+  if (!code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
+  navigator.clipboard.writeText(code.value)
+    .then(() => toast('Copied to clipboard ✓', 'ok'))
+    .catch(() => toast('Copy failed', 'warn'));
+}
+
+/* ── THEME ───────────────────────────────── */
+function toggleTheme() {
+  dark = !dark;
+  document.documentElement.toggleAttribute('data-light', !dark);
+  document.getElementById('theme-ic').textContent  = dark ? '🌙' : '☀';
+  document.getElementById('theme-txt').textContent = dark ? 'Dark mode' : 'Light mode';
+  document.getElementById('st-theme').textContent  = dark ? 'Dark' : 'Light';
+  toast(dark ? 'Dark mode' : 'Light mode', 'info');
+}
+
+/* ── TOAST ───────────────────────────────── */
+let _tt;
+function toast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'show ' + type;
+  clearTimeout(_tt);
+  _tt = setTimeout(() => { el.className = ''; }, 2200);
+}
+
+/* init */
+syncEditor();
+</script>
+</body>
+</html>
