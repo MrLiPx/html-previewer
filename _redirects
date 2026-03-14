@@ -1,0 +1,6 @@
+# Canonical URL redirects — 308 Permanent Redirect
+# Hash (#) is client-side only and is preserved automatically by the browser.
+# Query strings (:splat) are forwarded explicitly.
+
+/index.html   /    308
+/app.html     /app 308
