@@ -6,22 +6,16 @@
 
 **Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
-[![HTML Previewer](https://img.shields.io/badge/HTML-Previewer-e44d26?style=for-the-badge&logo=html5&logoColor=white)](https://mrlipx.github.io/html-previewer)
-[![Version](https://img.shields.io/badge/version-1.1.0-ff5f57?style=for-the-badge)](#)
-[![License](https://img.shields.io/badge/license-MIT-28c840?style=for-the-badge)](LICENSE)
-[![No Dependencies](https://img.shields.io/badge/dependencies-none-febc2e?style=for-the-badge)](#)
+[![HTML Previewer](https://img.shields.io/badge/HTML-Previewer-58a6ff?style=for-the-badge&logo=html5&logoColor=white)](https://mrlipx.github.io/html-previewer)
+[![Version](https://img.shields.io/badge/version-1.1.0-f85149?style=for-the-badge)](#)
+[![License](https://img.shields.io/badge/license-MIT-3fb950?style=for-the-badge)](LICENSE)
+[![No Dependencies](https://img.shields.io/badge/dependencies-none-d29922?style=for-the-badge)](#)
 
 **A zero-dependency, browser-based HTML editor and live previewer.**
 
 [🚀 Live Demo](https://mrlipx.github.io/html-previewer) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
 
 </div>
-
----
-
-## 🖥️ Screenshot
-
-![HTML Previewer](https://imagedelivery.net/HUDbG83RTqduFMklKurMDw/89808921-f8f7-4da7-3228-395275f4d800/public)
 
 ---
 
@@ -39,62 +33,73 @@
 | ⬆ **Import** | Load a local `.html` file |
 | ⬇ **Export** | Download as `index.html` |
 | 🌙 **Dark / Light** | Toggle theme |
+| 🔗 **Deep Links** | Every action has a shareable URL |
 
 ---
 
-## 🔗 Hash Navigation
+## 🔗 Hash Deep Links
 
-Every sidebar action and tab has a dedicated `#` URL so users can link directly to a specific view or bookmark it:
+Every action in the app is addressable via a URL hash.
+Tokens are separated by `&` — multiple can be combined.
 
-| URL | Opens |
+### Supported tokens
+
+| Token | Aliases | Effect |
+|---|---|---|
+| `editor` | — | Open editor tab |
+| `preview` | — | Open preview tab (renders HTML) |
+| `highlight` | — | Open syntax highlight tab |
+| `dark` | `theme=dark` | Apply dark theme |
+| `light` | `theme=light` | Apply light theme |
+| `sample` | — | Load the sample HTML |
+| `format` | — | Format / indent the code |
+| `expand` | — | Remove excess blank lines |
+| `collapse` | — | Compact to single lines |
+| `clear` | — | Clear the editor |
+| `export` | — | Trigger file download |
+| `import` | — | Open file picker |
+
+### Examples
+
+```
+/app                      → editor tab (default)
+/app#preview              → preview tab
+/app#dark                 → apply dark theme
+/app#light                → apply light theme
+/app#theme=dark           → same as #dark
+/app#theme=light          → same as #light
+/app#sample               → load sample, stay on editor
+/app#sample&preview       → load sample, switch to preview
+/app#sample&preview&dark  → load sample, preview, dark theme
+/app#preview&theme=light  → preview in light mode
+```
+
+### Embedding with iframe
+
+Because hash tokens are applied on load, you can embed a live preview directly:
+
+```html
+<!-- Landing page demo — shows app with sample loaded in preview mode -->
+<iframe src="app.html#sample&preview" width="100%" height="500"></iframe>
+
+<!-- Embed in dark mode with the editor visible -->
+<iframe src="app.html#sample&dark" width="100%" height="500"></iframe>
+```
+
+> **Note:** Browsers never send `#fragment` to the server, so fragments are always
+> preserved through 308 redirects automatically. Query strings (`?foo=bar`) are
+> forwarded by the redirect rules.
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
 |---|---|
-| `/app` | Editor tab (default) |
-| `/app#preview` | Preview tab |
-| `/app#highlight` | Highlight tab |
-| `/app#format` | Runs Format, stays on editor |
-| `/app#expand` | Runs Expand all |
-| `/app#collapse` | Runs Collapse all |
-| `/app#sample` | Loads sample HTML |
-| `/app#clear` | Clears the editor |
-| `/app#import` | Opens file-import dialog |
-| `/app#export` | Downloads the HTML file |
-| `/app#theme` | Toggles dark / light mode |
-
-The browser back / forward buttons work with all tab switches.
-
----
-
-## ↩️ Redirects (308 Permanent)
-
-`/index.html` and `/app.html` redirect permanently to their canonical URLs (`/` and `/app`). Hash fragments (`#...`) are client-side only and are preserved automatically by the browser. Query strings (`?...`) are forwarded by the redirect rules.
-
-### Netlify / Cloudflare Pages
-
-The included `_redirects` file handles this automatically:
-
-```
-/index.html   /    308
-/app.html     /app 308
-```
-
-No extra configuration needed — just deploy.
-
-### Vercel
-
-The included `vercel.json` handles this automatically:
-
-```json
-{
-  "redirects": [
-    { "source": "/index.html", "destination": "/",    "permanent": true, "statusCode": 308 },
-    { "source": "/app.html",   "destination": "/app", "permanent": true, "statusCode": 308 }
-  ]
-}
-```
-
-### GitHub Pages
-
-GitHub Pages does not support server-side redirects. The `.html` extension URLs will work but will not redirect. To enforce canonical URLs on GitHub Pages, use a custom domain with Cloudflare in front (proxy mode) and add page rules there, or migrate to Netlify/Cloudflare Pages for free static hosting with redirect support.
+| `Ctrl` / `Cmd` + `Enter` | Run / open preview |
+| `Ctrl` / `Cmd` + `S` | Export to file |
+| `Tab` | Indent 2 spaces |
+| `Shift` + `Tab` | Unindent |
 
 ---
 
@@ -111,45 +116,84 @@ start app.html       # Windows
 xdg-open app.html   # Linux
 ```
 
-**Netlify / Cloudflare Pages:** connect your repo — the `_redirects` file is picked up automatically.  
-**Vercel:** connect your repo — `vercel.json` is picked up automatically.  
-**GitHub Pages:** enable Settings → Pages → Deploy from `/` branch. Your site will be live at `https://mrlipx.github.io/html-previewer`.
-
----
-
-## ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action |
-|---|---|
-| `Ctrl` / `Cmd` + `Enter` | Run preview |
-| `Ctrl` / `Cmd` + `S` | Export to file |
-| `Tab` | Indent 2 spaces |
-| `Shift` + `Tab` | Unindent |
-
 ---
 
 ## 📁 File Structure
 
 ```
-html-previewer/
-├── app.html                      ← The app (self-contained)
-├── index.html                    ← Landing page
-├── 404.html                      ← 404 page (also landing page)
-├── _redirects                    ← Netlify / Cloudflare Pages redirects
-├── vercel.json                   ← Vercel redirects
+html-previewer/              ← repo root = web root
+│
+├── index.html               ← landing page (served at /)
+├── app.html                 ← the app    (served at /app or /app.html)
+├── 404.html                 ← 404 page
 ├── README.md
+├── LICENSE
+│
+├── _redirects               ← Netlify / Cloudflare Pages redirect rules
+├── vercel.json              ← Vercel redirect rules + cleanUrls
 │
 ├── static/
-│   ├── css/style.css             ← Landing page styles
-│   └── js/main.js                ← Landing page scripts
+│   ├── css/style.css        ← landing page styles
+│   └── js/main.js           ← landing page scripts (GitHub API, scroll reveal)
 │
 └── media/
     └── images/
-        ├── logos/html5.svg       ← App icon, favicon, nav logo
-        ├── screenshot/app.png    ← App screenshot
-        ├── banner/og-banner.png  ← Social / OG banner
-        └── icons/favicon.png     ← Fallback favicon
+        ├── logos/html5.svg  ← favicon, nav logo, app icon
+        ├── banner/og-banner.png
+        └── icons/favicon.png
 ```
+
+---
+
+## ↩️ Redirects (308 Permanent)
+
+`/index.html` → `/` and `/app.html` → `/app`, both 308.
+
+### Where do `_redirects` and `vercel.json` go?
+
+**Both files go in the repo root** — the same folder as `index.html` and `app.html`.
+
+```
+html-previewer/
+├── _redirects      ← HERE (repo root)
+├── vercel.json     ← HERE (repo root)
+├── index.html
+├── app.html
+└── ...
+```
+
+### Netlify / Cloudflare Pages
+
+The `_redirects` file is picked up automatically. No extra configuration needed.
+
+```
+# _redirects
+/index.html   /    308
+/app.html     /app 308
+```
+
+### Vercel
+
+`vercel.json` is picked up automatically. `"cleanUrls": true` also strips `.html`
+extensions sitewide so `/app.html` → `/app` even without an explicit rule.
+
+```json
+{
+  "redirects": [
+    { "source": "/index.html", "destination": "/",    "statusCode": 308 },
+    { "source": "/app.html",   "destination": "/app", "statusCode": 308 }
+  ],
+  "cleanUrls": true
+}
+```
+
+### GitHub Pages
+
+GitHub Pages does **not** support server-side redirects.
+- `/app.html` works as-is — GitHub Pages also serves it at `/app` via Jekyll.
+- `/index.html` redirects to `/` automatically (Jekyll default).
+- For strict 308 enforcement, put Cloudflare in front (proxy mode) and add
+  page rules, or migrate hosting to Netlify/Cloudflare Pages (both free).
 
 ---
 
@@ -157,10 +201,11 @@ html-previewer/
 
 - Pure HTML / CSS / JS — zero dependencies
 - Google Fonts (Inter + JetBrains Mono)
-- GitHub REST API for live profile data on the landing page
-- Hash-based routing in the app (`history.replaceState`)
+- GitHub REST API for live author card on the landing page
+- Hash-based routing with multi-token `&` syntax (`history.replaceState`)
 - Blob URLs for new-tab preview and file export
-- FileReader API for local file import
+- `FileReader` API for local file import
+- `IntersectionObserver` for scroll-reveal animations
 
 ---
 
@@ -170,7 +215,7 @@ PRs welcome. For big changes, open an issue first.
 
 ```bash
 git checkout -b feature/my-feature
-git commit -m "feat: my feature"
+git commit -m "feat: describe the change"
 git push origin feature/my-feature
 ```
 
