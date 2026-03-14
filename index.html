@@ -619,21 +619,6 @@
 
 var GH_ID = 163276171;
 
-/* ── IMAGE OPTIMISATION ──────────────────────────────────────
-   Vercel: /_vercel/image?url=ABSOLUTE_URL&w=W&q=Q
-   GitHub Pages / localhost: raw path unchanged
-──────────────────────────────────────────────────────────────*/
-function imgOpt(path, w, h, q) {
-  if (!w) return path;
-  q = q || 80;
-  var host = location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('github.io')) return path;
-  var abs = path.startsWith('http') ? path : location.origin + (path.startsWith('/') ? path : '/' + path);
-  var params = 'url=' + encodeURIComponent(abs) + '&w=' + w + '&q=' + q;
-  if (h) params += '&h=' + h;
-  return '/_vercel/image?' + params;
-}
-
 /* ── THEME ───────────────────────────────────────────────────*/
 var _pref = 'system';
 var THEME_ICONS  = { system: 'fi-rr-computer', dark: 'fi-rr-moon', light: 'fi-rr-sun' };
