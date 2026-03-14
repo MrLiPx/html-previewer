@@ -3,34 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HTML Previewer</title>
+  <title>HTML Previewer — Live Editor</title>
+  <meta name="description" content="A zero-dependency, browser-based HTML editor with live preview, syntax highlighting, and formatting tools." />
+  <meta name="robots" content="noindex" />
   <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* ── DESIGN TOKENS ── */
     :root {
-      --bg:       #0d1117;
-      --surface:  #161b22;
-      --overlay:  #1c2128;
-      --border:   #30363d;
-      --accent:   #58a6ff;
-      --green:    #3fb950;
-      --red:      #f85149;
-      --yellow:   #d29922;
-      --text:     #e6edf3;
-      --muted:    #8b949e;
-      --mono:     'JetBrains Mono', monospace;
-      --sans:     'Inter', sans-serif;
-      --radius:   6px;
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --overlay:   #1c2128;
+      --border:    #30363d;
+      --border-hi: #484f58;
+      --accent:    #58a6ff;
+      --accent-dim:rgba(88,166,255,.12);
+      --green:     #3fb950;
+      --red:       #f85149;
+      --yellow:    #d29922;
+      --orange:    #e3b341;
+      --text:      #e6edf3;
+      --text-dim:  #c9d1d9;
+      --muted:     #8b949e;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --radius:    6px;
+      --radius-lg: 10px;
+      --shadow:    0 8px 32px rgba(0,0,0,.4);
+      --trans:     .15s ease;
     }
     [data-theme="light"] {
-      --bg:      #f6f8fa;
-      --surface: #ffffff;
-      --overlay: #eaeef2;
-      --border:  #d0d7de;
-      --text:    #1f2328;
-      --muted:   #57606a;
+      --bg:        #f6f8fa;
+      --surface:   #ffffff;
+      --overlay:   #eaeef2;
+      --border:    #d0d7de;
+      --border-hi: #afb8c1;
+      --text:      #1f2328;
+      --text-dim:  #424a53;
+      --muted:     #57606a;
+      --shadow:    0 8px 32px rgba(0,0,0,.12);
     }
 
     /* ── RESET ── */
@@ -42,20 +55,22 @@
       color: var(--text);
       display: flex;
       flex-direction: column;
-      transition: background .15s, color .15s;
+      transition: background var(--trans), color var(--trans);
       -webkit-font-smoothing: antialiased;
     }
 
     /* ── HEADER ── */
     header {
-      height: 44px;
+      height: 46px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       padding: 0 10px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
     }
     .logo {
       display: flex;
@@ -65,41 +80,44 @@
       font-weight: 700;
       color: var(--text);
       text-decoration: none;
-      padding: 4px 6px;
+      padding: 4px 8px;
       border-radius: var(--radius);
       border: 1px solid transparent;
       white-space: nowrap;
       flex-shrink: 0;
-      transition: background .1s, border-color .1s;
+      transition: background var(--trans), border-color var(--trans);
     }
     .logo:hover { background: var(--overlay); border-color: var(--border); }
-    .logo img { width: 17px; height: 17px; }
+    .logo img { width: 18px; height: 18px; }
+    .logo span { color: var(--accent); }
 
     .url-bar {
       flex: 1;
-      max-width: 360px;
-      height: 26px;
+      max-width: 320px;
+      height: 28px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 0 8px;
+      gap: 5px;
+      padding: 0 9px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 20px;
       font-family: var(--mono);
       font-size: 11px;
       color: var(--muted);
       overflow: hidden;
+      transition: border-color var(--trans);
     }
-    .url-lock   { color: var(--green); flex-shrink: 0; }
+    .url-bar:hover { border-color: var(--border-hi); }
+    .url-lock   { color: var(--green); flex-shrink: 0; font-size: 10px; }
     .url-scheme { color: var(--accent); flex-shrink: 0; }
     .url-path   { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+    .hdr-spacer { flex: 1; }
     .hdr-nav {
       display: flex;
       align-items: center;
       gap: 2px;
-      margin-left: auto;
       flex-shrink: 0;
     }
     .hdr-btn {
@@ -108,56 +126,59 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 4px 8px;
+      padding: 4px 9px;
       height: 28px;
       font-family: var(--sans);
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       color: var(--muted);
       cursor: pointer;
       border-radius: var(--radius);
       border: 1px solid transparent;
       white-space: nowrap;
       text-decoration: none;
-      transition: background .1s, border-color .1s, color .1s;
+      transition: background var(--trans), border-color var(--trans), color var(--trans);
     }
     .hdr-btn:hover { background: var(--overlay); border-color: var(--border); color: var(--text); }
-    .hdr-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
-    .hdr-btn img { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
-    .hdr-sep { width: 1px; height: 16px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+    .hdr-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .hdr-btn img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .hdr-sep { width: 1px; height: 18px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
     .hdr-run {
       background: var(--accent);
-      color: #fff;
-      border-color: transparent;
-      padding: 4px 12px;
+      color: #fff !important;
+      border-color: transparent !important;
+      padding: 4px 14px;
+      font-weight: 600;
     }
-    .hdr-run:hover { filter: brightness(1.15); color: #fff; }
+    .hdr-run:hover { filter: brightness(1.15); background: var(--accent) !important; }
 
     /* ── WORKSPACE ── */
     .workspace { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 176px;
+      width: 178px;
       flex-shrink: 0;
       background: var(--surface);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      padding: 6px 5px;
+      padding: 5px 4px;
       gap: 1px;
       overflow-y: auto;
+      overflow-x: hidden;
     }
     .sb-section {
       font-size: 9px;
       font-weight: 700;
-      letter-spacing: .9px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--muted);
-      padding: 10px 7px 2px;
+      padding: 10px 8px 3px;
+      user-select: none;
     }
-    .sb-section:first-child { padding-top: 4px; }
-    .sb-sep { height: 1px; background: var(--border); margin: 4px 2px; }
+    .sb-section:first-child { padding-top: 5px; }
+    .sb-sep { height: 1px; background: var(--border); margin: 4px 4px; }
 
     .sb-btn {
       all: unset;
@@ -175,35 +196,46 @@
       border-radius: var(--radius);
       border: 1px solid transparent;
       text-decoration: none;
-      transition: background .1s, border-color .1s, color .1s;
+      transition: background var(--trans), border-color var(--trans), color var(--trans);
       white-space: nowrap;
     }
     .sb-btn:hover  { background: var(--overlay); border-color: var(--border); color: var(--text); }
     .sb-btn.active { background: var(--overlay); border-color: var(--border); color: var(--text); }
-    .sb-btn .ic    { font-size: 12px; width: 14px; text-align: center; flex-shrink: 0; line-height: 1; }
+    .sb-btn .ic    { font-size: 12px; width: 16px; text-align: center; flex-shrink: 0; line-height: 1; }
 
-    /* colour variants */
+    /* sidebar colour variants */
     .sb-accent { color: var(--accent); }
     .sb-accent:hover, .sb-accent.active {
-      background: rgba(88,166,255,.1);
-      border-color: rgba(88,166,255,.22);
+      background: var(--accent-dim);
+      border-color: rgba(88,166,255,.25);
       color: var(--accent);
     }
     .sb-green { color: var(--green); }
-    .sb-green:hover { background: rgba(63,185,80,.1); border-color: rgba(63,185,80,.22); color: var(--green); }
-    .sb-red   { color: var(--red); }
-    .sb-red:hover   { background: rgba(248,81,73,.1);  border-color: rgba(248,81,73,.22);  color: var(--red); }
+    .sb-green:hover, .sb-green.active {
+      background: rgba(63,185,80,.1);
+      border-color: rgba(63,185,80,.25);
+      color: var(--green);
+    }
+    .sb-red { color: var(--red); }
+    .sb-red:hover {
+      background: rgba(248,81,73,.1);
+      border-color: rgba(248,81,73,.25);
+      color: var(--red);
+    }
 
-    /* ── MAIN ── */
+    /* ── MAIN AREA ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
     /* Tab bar */
     .tabbar {
       flex-shrink: 0;
       display: flex;
-      height: 35px;
+      height: 36px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
+      padding: 0 4px;
+      gap: 2px;
+      align-items: flex-end;
     }
     .tab {
       all: unset;
@@ -211,20 +243,30 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 0 15px;
-      height: 100%;
+      padding: 0 13px;
+      height: 32px;
       font-family: var(--sans);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--muted);
       cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: color .1s, background .1s, border-color .1s;
+      border-radius: var(--radius) var(--radius) 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition: color var(--trans), background var(--trans), border-color var(--trans);
       user-select: none;
       white-space: nowrap;
+      position: relative;
+      top: 1px;
     }
     .tab:hover { color: var(--text); background: var(--overlay); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab.active {
+      color: var(--text);
+      background: var(--bg);
+      border-color: var(--border);
+      border-bottom-color: var(--bg);
+    }
+    .tab-ic { font-size: 11px; }
 
     /* Panels */
     .panels { flex: 1; display: flex; overflow: hidden; }
@@ -234,7 +276,7 @@
     /* ── EDITOR ── */
     .ed-meta {
       flex-shrink: 0;
-      height: 26px;
+      height: 27px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -245,25 +287,36 @@
       font-size: 10px;
       color: var(--muted);
     }
-    .ed-meta-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+    .ed-meta-tag {
+      background: var(--accent-dim);
+      border: 1px solid rgba(88,166,255,.2);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+    .ed-meta-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
     .ed-meta kbd {
-      padding: 1px 4px;
+      padding: 1px 5px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 3px;
       font-family: var(--mono);
       font-size: 9px;
+      color: var(--muted);
     }
     .ed-body { flex: 1; display: flex; overflow: hidden; }
     .gutter {
-      width: 44px;
+      width: 46px;
       flex-shrink: 0;
       padding: 10px 8px;
       background: var(--overlay);
       border-right: 1px solid var(--border);
       font-family: var(--mono);
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--muted);
       text-align: right;
       user-select: none;
@@ -271,12 +324,12 @@
     }
     #code {
       flex: 1;
-      padding: 10px 12px;
+      padding: 10px 14px;
       background: var(--bg);
       color: var(--text);
       font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.6;
+      font-size: 12.5px;
+      line-height: 1.65;
       border: none;
       outline: none;
       resize: none;
@@ -284,17 +337,22 @@
       white-space: pre;
       overflow: auto;
       caret-color: var(--accent);
+      transition: background var(--trans), color var(--trans);
     }
-    #code::placeholder { color: var(--muted); opacity: .4; font-style: italic; }
-    #code::selection   { background: rgba(88,166,255,.2); }
+    #code::placeholder {
+      color: var(--muted);
+      opacity: .35;
+      font-style: italic;
+    }
+    #code::selection { background: rgba(88,166,255,.22); }
 
     /* ── PREVIEW ── */
     .pv-chrome {
       flex-shrink: 0;
-      height: 33px;
+      height: 35px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       padding: 0 10px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -303,54 +361,56 @@
     .traffic button {
       all: unset;
       box-sizing: border-box;
-      width: 11px; height: 11px;
+      width: 12px; height: 12px;
       border-radius: 50%;
       cursor: pointer;
-      transition: filter .1s;
+      transition: filter var(--trans), transform var(--trans);
     }
-    .traffic button:hover { filter: brightness(.75); }
+    .traffic button:hover { filter: brightness(.75); transform: scale(1.1); }
     .tc-r { background: var(--red); }
     .tc-y { background: var(--yellow); }
     .tc-g { background: var(--green); }
     .pv-addr {
       flex: 1;
-      height: 21px;
+      height: 22px;
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 0 7px;
+      padding: 0 8px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 100px;
       font-family: var(--mono);
       font-size: 10px;
       min-width: 0;
       overflow: hidden;
+      transition: border-color var(--trans);
     }
-    .pv-addr-lock   { color: var(--green); flex-shrink: 0; }
+    .pv-addr:hover { border-color: var(--border-hi); }
+    .pv-addr-lock   { color: var(--green); flex-shrink: 0; font-size: 10px; }
     .pv-addr-scheme { color: var(--accent); flex-shrink: 0; }
     .pv-addr-slug   { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .pv-tools { display: flex; gap: 3px; flex-shrink: 0; }
     .pv-tool {
       all: unset;
       box-sizing: border-box;
-      width: 22px; height: 22px;
+      width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
       background: var(--overlay);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: var(--radius);
       cursor: pointer;
       color: var(--muted);
-      transition: border-color .1s, color .1s;
+      transition: border-color var(--trans), color var(--trans), background var(--trans);
     }
-    .pv-tool:hover { border-color: var(--accent); color: var(--accent); }
+    .pv-tool:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
     .pv-tool svg { width: 11px; height: 11px; }
-    #preview-frame { flex: 1; border: none; background: #fff; }
+    #preview-frame { flex: 1; border: none; background: #fff; display: block; }
 
     /* ── HIGHLIGHT ── */
     .hl-meta {
       flex-shrink: 0;
-      height: 26px;
+      height: 27px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -361,11 +421,12 @@
       font-size: 10px;
       color: var(--muted);
     }
-    .hl-legend { display: flex; gap: 10px; margin-left: auto; }
-    .hl-scroll { flex: 1; overflow: auto; padding: 10px 12px; }
+    .hl-legend { display: flex; gap: 12px; margin-left: auto; }
+    .hl-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; }
+    .hl-scroll { flex: 1; overflow: auto; padding: 10px 14px; }
     #hl-out {
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 12.5px;
       line-height: 1.65;
       white-space: pre-wrap;
       word-break: break-all;
@@ -376,8 +437,8 @@
     .s-val  { color: #96d0ff; }
     .s-cmt  { color: var(--muted); font-style: italic; }
     .s-doc  { color: var(--muted); font-style: italic; }
-    .s-br   { color: var(--muted); opacity: .7; }
-    .s-txt  { color: var(--text); opacity: .75; }
+    .s-br   { color: var(--muted); opacity: .6; }
+    .s-txt  { color: var(--text); opacity: .7; }
 
     /* ── STATUS BAR ── */
     .statusbar {
@@ -393,66 +454,103 @@
       overflow: hidden;
     }
     .st-cell {
-      padding: 0 9px;
+      padding: 0 10px;
       height: 100%;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       border-right: 1px solid var(--border);
       white-space: nowrap;
     }
     .st-cell:last-child { border-right: none; }
     .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
-    .st-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .st-dot.busy { background: var(--yellow); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
     /* ── TOAST ── */
     #toast {
       position: fixed;
-      bottom: 20px;
+      bottom: 28px;
       left: 50%;
-      transform: translateX(-50%) translateY(8px);
-      padding: 7px 14px;
+      transform: translateX(-50%) translateY(12px);
+      padding: 7px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 20px;
       font-family: var(--sans);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       pointer-events: none;
       opacity: 0;
-      transition: opacity .15s, transform .15s;
+      transition: opacity .18s ease, transform .18s ease;
       z-index: 9999;
-      box-shadow: 0 4px 20px rgba(0,0,0,.35);
+      box-shadow: var(--shadow);
       white-space: nowrap;
       color: var(--text);
     }
     #toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.ok    { color: var(--green);  border-color: rgba(63,185,80,.35); }
-    #toast.info  { color: var(--accent); border-color: rgba(88,166,255,.35); }
-    #toast.warn  { color: var(--yellow); border-color: rgba(210,153,34,.35); }
-    #toast.error { color: var(--red);    border-color: rgba(248,81,73,.35); }
+    #toast.ok    { color: var(--green);  border-color: rgba(63,185,80,.3); }
+    #toast.info  { color: var(--accent); border-color: rgba(88,166,255,.3); }
+    #toast.warn  { color: var(--orange); border-color: rgba(227,179,65,.3); }
+    #toast.error { color: var(--red);    border-color: rgba(248,81,73,.3); }
+
+    /* ── FILE INPUT — always hidden, triggered programmatically ── */
+    #file-in {
+      position: absolute;
+      width: 0; height: 0;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
 
     /* ── EMBED MODES ── */
-    body.embed header, body.embed .statusbar { display: none; }
-    body.embed-demo header, body.embed-demo .statusbar,
-    body.embed-demo .sidebar, body.embed-demo .tabbar { display: none; }
-    body.embed-demo * { pointer-events: none !important; user-select: none !important; cursor: default !important; }
-    body.embed-demo #code { caret-color: transparent; }
+
+    /* ?embed=1  →  compact: hide header & statusbar */
+    body.embed header,
+    body.embed .statusbar { display: none; }
+
+    /* ?embed=demo  →  interactive demo: hide header & statusbar,
+       show sidebar+tabs, hide file import/export operations */
+    body.embed-demo header,
+    body.embed-demo .statusbar { display: none; }
+
+    /* hide import & export sidebar buttons in demo mode */
+    body.embed-demo .sb-import,
+    body.embed-demo .sb-export,
+    body.embed .sb-import,
+    body.embed .sb-export { display: none; }
+
+    /* ?embed=readonly  →  decorative showcase (landing page) */
+    body.embed-readonly header,
+    body.embed-readonly .statusbar { display: none; }
+    body.embed-readonly .sidebar,
+    body.embed-readonly .tabbar { display: none; }
+    body.embed-readonly * {
+      pointer-events: none !important;
+      user-select: none !important;
+      cursor: default !important;
+    }
+    body.embed-readonly #code { caret-color: transparent; }
 
     /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .sidebar { width: 40px; }
-      .sb-btn span:not(.ic) { display: none; }
+    @media (max-width: 580px) {
+      .sidebar { width: 42px; }
+      .sb-btn > span:not(.ic) { display: none; }
       .sb-section, .sb-sep { display: none; }
-      .sb-btn { justify-content: center; padding: 7px; }
+      .sb-btn { justify-content: center; padding: 8px; gap: 0; }
       .url-bar { display: none; }
-      .hdr-btn span { display: none; }
+      .hdr-btn > span:not(svg):not(img) { display: none; }
+      .ed-meta kbd, .ed-meta .ed-meta-right > :last-child { display: none; }
+    }
+    @media (max-width: 380px) {
+      .hdr-sep:not(:last-of-type) { display: none; }
     }
   </style>
 </head>
@@ -460,66 +558,68 @@
 
 <!-- ── HEADER ── -->
 <header>
-  <a class="logo" href=".">
-    <img src="media/images/logos/html5.svg" alt="" />
-    HTML Previewer
+  <a class="logo" href="." aria-label="HTML Previewer home">
+    <img src="media/images/logos/html5.svg" alt="" width="18" height="18" />
+    HTML<span>Previewer</span>
   </a>
 
-  <div class="url-bar">
-    <span class="url-lock">🔒</span>
+  <div class="url-bar" role="presentation">
+    <span class="url-lock" aria-hidden="true">🔒</span>
     <span class="url-scheme">file://</span>
     <span class="url-path" id="j-urlpath">app</span>
   </div>
 
-  <nav class="hdr-nav">
-    <a class="hdr-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener" title="View on GitHub">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3A12 12 0 0 0 0 12.3c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.3 12 12 0 0 0 12 .3z"/></svg>
+  <div class="hdr-spacer"></div>
+
+  <nav class="hdr-nav" aria-label="App actions">
+    <a class="hdr-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" title="View on GitHub" aria-label="View on GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3A12 12 0 0 0 0 12.3c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.3 12 12 0 0 0 12 .3z"/></svg>
       <span>GitHub</span>
     </a>
-    <div class="hdr-sep"></div>
-    <a class="hdr-btn" id="hdr-author" href="https://github.com/MrLiPx" target="_blank" rel="noopener">
-      <img id="hdr-avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="@MrLiPx" />
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <a class="hdr-btn" id="hdr-author" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" aria-label="Author profile">
+      <img id="hdr-avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="@MrLiPx" width="18" height="18" />
       <span id="hdr-login">@MrLiPx</span>
     </a>
-    <div class="hdr-sep"></div>
-    <button class="hdr-btn hdr-run" onclick="cmd('preview')">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <button class="hdr-btn hdr-run" onclick="cmd('preview')" aria-label="Run preview (Ctrl+Enter)">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       <span>Run</span>
     </button>
   </nav>
 </header>
 
 <!-- ── WORKSPACE ── -->
-<div class="workspace">
+<div class="workspace" role="main">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Sidebar">
     <span class="sb-section">View</span>
-    <button id="sb-editor"    class="sb-btn active"    onclick="cmd('editor')">   <span class="ic">✏</span><span>Editor</span></button>
-    <button id="sb-preview"   class="sb-btn sb-accent" onclick="cmd('preview')">  <span class="ic">▶</span><span>Preview</span></button>
-    <button id="sb-highlight" class="sb-btn"           onclick="cmd('highlight')"><span class="ic">✦</span><span>Highlight</span></button>
+    <button id="sb-editor"    class="sb-btn active"    onclick="cmd('editor')"    aria-label="Editor tab">   <span class="ic" aria-hidden="true">✏</span><span>Editor</span></button>
+    <button id="sb-preview"   class="sb-btn sb-accent" onclick="cmd('preview')"   aria-label="Preview tab">  <span class="ic" aria-hidden="true">▶</span><span>Preview</span></button>
+    <button id="sb-highlight" class="sb-btn"           onclick="cmd('highlight')" aria-label="Highlight tab"><span class="ic" aria-hidden="true">✦</span><span>Highlight</span></button>
 
-    <div class="sb-sep"></div>
+    <div class="sb-sep" role="separator"></div>
     <span class="sb-section">Edit</span>
-    <button class="sb-btn" onclick="cmd('format')">  <span class="ic">⊞</span><span>Format</span></button>
-    <button class="sb-btn" onclick="cmd('expand')">  <span class="ic">＋</span><span>Expand all</span></button>
-    <button class="sb-btn" onclick="cmd('collapse')"><span class="ic">－</span><span>Collapse all</span></button>
+    <button class="sb-btn" onclick="cmd('format')"   aria-label="Format HTML">  <span class="ic" aria-hidden="true">⊞</span><span>Format</span></button>
+    <button class="sb-btn" onclick="cmd('expand')"   aria-label="Expand lines">  <span class="ic" aria-hidden="true">＋</span><span>Expand all</span></button>
+    <button class="sb-btn" onclick="cmd('collapse')" aria-label="Collapse lines"><span class="ic" aria-hidden="true">－</span><span>Collapse all</span></button>
 
-    <div class="sb-sep"></div>
+    <div class="sb-sep" role="separator"></div>
     <span class="sb-section">File</span>
-    <button class="sb-btn"          onclick="cmd('sample')"><span class="ic">📄</span><span>Sample</span></button>
-    <button class="sb-btn sb-red"   onclick="cmd('clear')"> <span class="ic">✕</span><span>Clear</span></button>
-    <button class="sb-btn"          onclick="cmd('import')"><span class="ic">⬆</span><span>Import</span></button>
-    <button class="sb-btn sb-green" onclick="cmd('export')"><span class="ic">⬇</span><span>Export</span></button>
+    <button class="sb-btn"                    onclick="cmd('sample')" aria-label="Load sample HTML"><span class="ic" aria-hidden="true">📄</span><span>Sample</span></button>
+    <button class="sb-btn sb-red"             onclick="cmd('clear')"  aria-label="Clear editor">    <span class="ic" aria-hidden="true">✕</span><span>Clear</span></button>
+    <button class="sb-btn sb-import"          onclick="cmd('import')" aria-label="Import HTML file"><span class="ic" aria-hidden="true">⬆</span><span>Import</span></button>
+    <button class="sb-btn sb-green sb-export" onclick="cmd('export')" aria-label="Export HTML file"><span class="ic" aria-hidden="true">⬇</span><span>Export</span></button>
 
-    <div class="sb-sep"></div>
+    <div class="sb-sep" role="separator"></div>
     <span class="sb-section">Links</span>
-    <a class="sb-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener"><span class="ic">⭐</span><span>Star on GitHub</span></a>
-    <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener"><span class="ic">🌐</span><span>MrLiPx.com</span></a>
+    <a class="sb-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" aria-label="Star on GitHub"><span class="ic" aria-hidden="true">⭐</span><span>Star on GitHub</span></a>
+    <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener noreferrer" aria-label="MrLiPx website"><span class="ic" aria-hidden="true">🌐</span><span>MrLiPx.com</span></a>
 
-    <div class="sb-sep"></div>
-    <button id="sb-theme" class="sb-btn" onclick="cmd('theme')">
-      <span class="ic" id="j-themeic">🌙</span>
+    <div class="sb-sep" role="separator"></div>
+    <button id="sb-theme" class="sb-btn" onclick="cmd('theme')" aria-label="Toggle theme">
+      <span class="ic" id="j-themeic" aria-hidden="true">🌙</span>
       <span id="j-themetxt">Dark mode</span>
     </button>
   </aside>
@@ -527,39 +627,46 @@
   <!-- MAIN -->
   <div class="main">
 
-    <div class="tabbar">
-      <button class="tab active" id="tab-editor"    onclick="cmd('editor')">   ✏ Editor</button>
-      <button class="tab"        id="tab-preview"   onclick="cmd('preview')">  ▶ Preview</button>
-      <button class="tab"        id="tab-highlight" onclick="cmd('highlight')">✦ Highlight</button>
+    <div class="tabbar" role="tablist" aria-label="Editor panels">
+      <button class="tab active" id="tab-editor"    onclick="cmd('editor')"    role="tab" aria-selected="true"  aria-controls="panel-editor">    <span class="tab-ic" aria-hidden="true">✏</span> Editor</button>
+      <button class="tab"        id="tab-preview"   onclick="cmd('preview')"   role="tab" aria-selected="false" aria-controls="panel-preview">   <span class="tab-ic" aria-hidden="true">▶</span> Preview</button>
+      <button class="tab"        id="tab-highlight" onclick="cmd('highlight')" role="tab" aria-selected="false" aria-controls="panel-highlight"> <span class="tab-ic" aria-hidden="true">✦</span> Highlight</button>
     </div>
 
     <div class="panels">
 
-      <!-- EDITOR -->
-      <div class="panel active" id="panel-editor">
-        <div class="ed-meta">
-          <span>HTML</span>
-          <span>·</span>
+      <!-- EDITOR PANEL -->
+      <div class="panel active" id="panel-editor" role="tabpanel" aria-labelledby="tab-editor">
+        <div class="ed-meta" aria-hidden="true">
+          <span class="ed-meta-tag">HTML</span>
           <span id="j-cursor">Ln 1, Col 1</span>
           <div class="ed-meta-right">
             <span id="j-counts">0 chars · 0 lines</span>
-            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> run · <kbd>Tab</kbd> indent · <kbd>Ctrl</kbd>+<kbd>S</kbd> export</span>
+            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> preview · <kbd>Tab</kbd> indent · <kbd>Ctrl</kbd>+<kbd>S</kbd> export</span>
           </div>
         </div>
         <div class="ed-body">
-          <div class="gutter" id="j-gutter">1</div>
-          <textarea id="code" spellcheck="false"
-            placeholder="<!-- paste or write HTML here · Ctrl+Enter to run preview -->"></textarea>
+          <div class="gutter" id="j-gutter" aria-hidden="true">1</div>
+          <textarea
+            id="code"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            aria-label="HTML editor"
+            aria-multiline="true"
+            placeholder="<!-- paste or write HTML here · Ctrl+Enter to run preview -->"
+          ></textarea>
         </div>
       </div>
 
-      <!-- PREVIEW -->
-      <div class="panel" id="panel-preview">
-        <div class="pv-chrome">
+      <!-- PREVIEW PANEL -->
+      <div class="panel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
+        <div class="pv-chrome" aria-hidden="true">
           <div class="traffic">
-            <button class="tc-r" title="Back to editor" onclick="cmd('editor')"></button>
-            <button class="tc-y" title="Refresh"         onclick="refreshPreview()"></button>
-            <button class="tc-g" title="Open in new tab" onclick="openTab()"></button>
+            <button class="tc-r" title="Back to editor"  onclick="cmd('editor')"   aria-label="Back to editor"></button>
+            <button class="tc-y" title="Refresh preview" onclick="refreshPreview()" aria-label="Refresh preview"></button>
+            <button class="tc-g" title="Open in new tab" onclick="openTab()"        aria-label="Open in new tab"></button>
           </div>
           <div class="pv-addr">
             <span class="pv-addr-lock">🔒</span>
@@ -567,41 +674,45 @@
             <span class="pv-addr-slug" id="j-pvslug">untitled</span>
           </div>
           <div class="pv-tools">
-            <button class="pv-tool" onclick="refreshPreview()" title="Refresh">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <button class="pv-tool" onclick="refreshPreview()" title="Refresh" aria-label="Refresh preview">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </button>
-            <button class="pv-tool" onclick="openTab()" title="Open in new tab">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <button class="pv-tool" onclick="openTab()" title="Open in new tab" aria-label="Open in new tab">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </button>
-            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML" aria-label="Copy HTML to clipboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
           </div>
         </div>
-        <iframe id="preview-frame"
+        <iframe
+          id="preview-frame"
           sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
-          title="Preview"></iframe>
+          title="HTML preview"
+          aria-label="HTML preview"
+        ></iframe>
       </div>
 
-      <!-- HIGHLIGHT -->
-      <div class="panel" id="panel-highlight">
-        <div class="hl-meta">
-          Syntax Highlight
+      <!-- HIGHLIGHT PANEL -->
+      <div class="panel" id="panel-highlight" role="tabpanel" aria-labelledby="tab-highlight">
+        <div class="hl-meta" aria-hidden="true">
+          <span>Syntax Highlight</span>
           <div class="hl-legend">
-            <span style="color:#57ab5a">● tag</span>
-            <span style="color:#6cb6ff">● attr</span>
-            <span style="color:#96d0ff">● value</span>
-            <span style="color:var(--muted)">● comment</span>
+            <span><span class="hl-dot" style="background:#57ab5a"></span>tag</span>
+            <span><span class="hl-dot" style="background:#6cb6ff"></span>attr</span>
+            <span><span class="hl-dot" style="background:#96d0ff"></span>value</span>
+            <span><span class="hl-dot" style="background:var(--muted)"></span>comment</span>
           </div>
         </div>
-        <div class="hl-scroll"><pre id="hl-out"></pre></div>
+        <div class="hl-scroll"><pre id="hl-out" aria-live="polite" aria-label="Syntax highlighted HTML"></pre></div>
       </div>
 
     </div><!-- /panels -->
 
-    <div class="statusbar">
-      <div class="st-cell"><div class="st-dot"></div><span id="j-status">Ready</span></div>
-      <div class="st-cell" id="j-fname">app.html</div>
+    <!-- STATUS BAR -->
+    <div class="statusbar" role="status" aria-live="polite" aria-label="Status bar">
+      <div class="st-cell"><div class="st-dot" id="j-statusdot" aria-hidden="true"></div><span id="j-status">Ready</span></div>
+      <div class="st-cell" id="j-fname">app</div>
       <div class="st-cell st-right" id="j-themelabel">Dark</div>
       <div class="st-cell">UTF-8</div>
       <div class="st-cell">HTML</div>
@@ -610,27 +721,79 @@
   </div><!-- /main -->
 </div><!-- /workspace -->
 
-<div id="toast" role="status" aria-live="polite"></div>
-<input type="file" id="file-in" accept=".html,.htm,.txt" aria-hidden="true" />
+<!-- Toast notification -->
+<div id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<!-- Hidden file input — triggered programmatically only, never visible -->
+<input type="file" id="file-in" accept=".html,.htm,.txt" aria-hidden="true" tabindex="-1" />
 
 <script>
 'use strict';
 
-/* ── CONSTANTS ── */
-const TABS = ['editor', 'preview', 'highlight'];
-const GH_ID = 163276171;
+/* ────────────────────────────────────────────────────────────────
+   CONSTANTS
+──────────────────────────────────────────────────────────────── */
+const TABS   = ['editor', 'preview', 'highlight'];
+const GH_ID  = 163276171;
 
-/* ── HASH ROUTING ──────────────────────────────────────────────────
- * Tokens separated by & (no leading #). Supports:
- *   Tabs:    editor | preview | highlight
- *   Theme:   theme=dark | theme=light  (also: dark | light)
- *   Actions: sample | format | expand | collapse | clear | export | import
- *
- * Examples:
- *   #preview
- *   #theme=dark
- *   #sample&preview&theme=light
- * ────────────────────────────────────────────────────────────────── */
+/* ────────────────────────────────────────────────────────────────
+   THEME  (runs immediately — before anything else)
+──────────────────────────────────────────────────────────────── */
+let _isDark = true;
+
+function setTheme(mode) {
+  _isDark = (mode !== 'light');
+  document.documentElement.setAttribute('data-theme', _isDark ? 'dark' : 'light');
+
+  const ic    = document.getElementById('j-themeic');
+  const txt   = document.getElementById('j-themetxt');
+  const label = document.getElementById('j-themelabel');
+  if (ic)    ic.textContent    = _isDark ? '🌙' : '☀️';
+  if (txt)   txt.textContent   = _isDark ? 'Dark mode' : 'Light mode';
+  if (label) label.textContent = _isDark ? 'Dark' : 'Light';
+  try { localStorage.setItem('theme', _isDark ? 'dark' : 'light'); } catch (_) {}
+}
+
+function toggleTheme() {
+  setTheme(_isDark ? 'light' : 'dark');
+  toast(_isDark ? 'Dark mode' : 'Light mode', 'info');
+}
+
+// Theme priority: hash token → localStorage → OS preference → dark default
+// Hash tokens are checked here (synchronously) so there's no flash.
+(function initTheme() {
+  const hash = location.hash.replace(/^#/, '');
+  const tokens = hash.split('&').map(t => t.toLowerCase());
+  for (const t of tokens) {
+    if (t === 'dark' || t === 'theme=dark') { setTheme('dark'); return; }
+    if (t === 'light' || t === 'theme=light') { setTheme('light'); return; }
+  }
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') { setTheme(saved); return; }
+  } catch (_) {}
+  if (window.matchMedia?.('(prefers-color-scheme: light)').matches) {
+    setTheme('light'); return;
+  }
+  setTheme('dark'); // default
+}());
+
+/* ────────────────────────────────────────────────────────────────
+   EMBED MODE DETECTION  (runs immediately)
+──────────────────────────────────────────────────────────────── */
+(function initEmbedMode() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const em = p.get('embed');
+    if (em === 'demo')     document.body.classList.add('embed-demo');
+    else if (em === 'readonly') document.body.classList.add('embed-readonly');
+    else if (em !== null)  document.body.classList.add('embed');
+  } catch (_) {}
+}());
+
+/* ────────────────────────────────────────────────────────────────
+   HASH ROUTING
+──────────────────────────────────────────────────────────────── */
 function parseHash(raw) {
   return raw.replace(/^#/, '').split('&').filter(Boolean).map(t => {
     const eq = t.indexOf('=');
@@ -643,28 +806,30 @@ function parseHash(raw) {
 function applyHash(raw) {
   const tokens = parseHash(raw);
   if (!tokens.length) return;
-  let tab = null;
+  let tabTarget = null;
   for (const { key, val } of tokens) {
     switch (key) {
-      case 'editor': case 'preview': case 'highlight': tab = key; break;
-      case 'dark':  setTheme('dark');  break;
-      case 'light': setTheme('light'); break;
-      case 'theme': if (val === 'dark' || val === 'light') setTheme(val); break;
-      case 'sample':   loadSample(true);   break;
-      case 'format':   fmtCode(true);      break;
-      case 'expand':   expandAll(true);    break;
-      case 'collapse': collapseAll(true);  break;
-      case 'clear':    clearCode(true);    break;
-      case 'export':   doExport();         break;
-      case 'import':   doImport();         break;
+      case 'editor': case 'preview': case 'highlight': tabTarget = key; break;
+      case 'dark':   setTheme('dark');  break;
+      case 'light':  setTheme('light'); break;
+      case 'theme':  if (val === 'dark' || val === 'light') setTheme(val); break;
+      case 'sample':   loadSample(true);  break;
+      case 'format':   fmtCode(true);     break;
+      case 'expand':   expandAll(true);   break;
+      case 'collapse': collapseAll(true); break;
+      case 'clear':    clearCode(true);   break;
+      case 'export':   doExport();        break;
+      case 'import':   doImport();        break;
     }
   }
-  if (tab) switchTab(tab);
+  if (tabTarget) switchTab(tabTarget);
 }
 
 window.addEventListener('hashchange', () => applyHash(location.hash));
 
-/* ── COMMAND DISPATCH ── */
+/* ────────────────────────────────────────────────────────────────
+   COMMAND DISPATCH
+──────────────────────────────────────────────────────────────── */
 function cmd(action) {
   if (TABS.includes(action)) switchTab(action);
   else switch (action) {
@@ -679,33 +844,43 @@ function cmd(action) {
   }
 }
 
-/* ── TABS ── */
+/* ────────────────────────────────────────────────────────────────
+   TAB SWITCHING
+──────────────────────────────────────────────────────────────── */
 function switchTab(name) {
   if (!TABS.includes(name)) return;
   TABS.forEach(t => {
-    document.getElementById('tab-'   + t)?.classList.toggle('active', t === name);
-    document.getElementById('panel-' + t)?.classList.toggle('active', t === name);
+    const tab = document.getElementById('tab-' + t);
+    const panel = document.getElementById('panel-' + t);
     const sb = document.getElementById('sb-' + t);
-    if (sb) sb.classList.toggle('active', t === name);
+    const isActive = (t === name);
+    tab?.classList.toggle('active', isActive);
+    tab?.setAttribute('aria-selected', String(isActive));
+    panel?.classList.toggle('active', isActive);
+    if (sb) sb.classList.toggle('active', isActive);
   });
   if (name === 'preview')   refreshPreview();
   if (name === 'highlight') renderHighlight();
 }
 
-/* ── EDITOR REFS ── */
-const $code    = document.getElementById('code');
-const $gutter  = document.getElementById('j-gutter');
-const $counts  = document.getElementById('j-counts');
-const $cursor  = document.getElementById('j-cursor');
-const $status  = document.getElementById('j-status');
-const $fname   = document.getElementById('j-fname');
+/* ────────────────────────────────────────────────────────────────
+   EDITOR ELEMENTS & SYNC
+──────────────────────────────────────────────────────────────── */
+const $code   = document.getElementById('code');
+const $gutter = document.getElementById('j-gutter');
+const $counts = document.getElementById('j-counts');
+const $cursor = document.getElementById('j-cursor');
+const $status = document.getElementById('j-status');
+const $fname  = document.getElementById('j-fname');
 const $urlpath = document.getElementById('j-urlpath');
+const $dot    = document.getElementById('j-statusdot');
 
 function syncEditor() {
   const lines = $code.value.split('\n');
   $gutter.textContent = lines.map((_, i) => i + 1).join('\n');
   $gutter.scrollTop   = $code.scrollTop;
-  $counts.textContent = `${$code.value.length} chars · ${lines.length} lines`;
+  const chars = $code.value.length;
+  $counts.textContent = `${chars.toLocaleString()} chars · ${lines.length.toLocaleString()} lines`;
 }
 
 function syncCursor() {
@@ -713,6 +888,11 @@ function syncCursor() {
   const ln  = pre.split('\n').length;
   const col = pre.length - pre.lastIndexOf('\n');
   $cursor.textContent = `Ln ${ln}, Col ${col}`;
+}
+
+function setStatus(msg, busy = false) {
+  $status.textContent = msg;
+  $dot?.classList.toggle('busy', busy);
 }
 
 $code.addEventListener('input',  syncEditor);
@@ -729,22 +909,26 @@ $code.addEventListener('keydown', e => {
       const sp = v.slice(ls).match(/^ {1,2}/)?.[0] ?? '';
       if (sp) {
         $code.value = v.slice(0, ls) + v.slice(ls + sp.length);
-        $code.selectionStart = $code.selectionEnd = s - sp.length;
+        $code.selectionStart = $code.selectionEnd = Math.max(ls, s - sp.length);
       }
     } else {
       $code.value = v.slice(0, s) + '  ' + v.slice(end);
       $code.selectionStart = $code.selectionEnd = s + 2;
     }
     syncEditor(); syncCursor();
-  } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+  }
+  else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault(); switchTab('preview');
-  } else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+  }
+  else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault(); doExport();
   }
 });
 
-/* ── PREVIEW ── */
-let blobUrl = null;
+/* ────────────────────────────────────────────────────────────────
+   PREVIEW
+──────────────────────────────────────────────────────────────── */
+let _blobUrl = null;
 
 function refreshPreview() {
   const html = $code.value.trim();
@@ -754,14 +938,14 @@ function refreshPreview() {
     const doc   = frame.contentDocument || frame.contentWindow.document;
     doc.open(); doc.write(html); doc.close();
     const m    = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    const slug = (m ? m[1].trim() : 'untitled')
-      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'untitled';
+    const raw  = (m ? m[1].trim() : 'untitled');
+    const slug = raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'untitled';
     document.getElementById('j-pvslug').textContent = slug;
-    $status.textContent = 'Preview rendered';
+    setStatus('Preview rendered');
     toast('Preview rendered', 'ok');
   } catch (err) {
     toast('Preview error', 'error');
-    console.error('Preview error:', err);
+    console.error('[HTMLPreviewer] Preview error:', err);
   }
 }
 
@@ -769,31 +953,35 @@ function openTab() {
   const html = $code.value.trim();
   if (!html) { toast('Editor is empty', 'warn'); return; }
   try {
-    if (blobUrl) URL.revokeObjectURL(blobUrl);
-    blobUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    if (!window.open(blobUrl, '_blank')) {
+    if (_blobUrl) URL.revokeObjectURL(_blobUrl);
+    _blobUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    if (!window.open(_blobUrl, '_blank')) {
       toast('Allow popups to open in new tab', 'warn');
     } else {
       toast('Opened in new tab ↗', 'ok');
     }
   } catch (err) {
     toast('Could not open new tab', 'error');
+    console.error('[HTMLPreviewer] openTab error:', err);
   }
 }
 
-/* ── HIGHLIGHT ── */
+/* ────────────────────────────────────────────────────────────────
+   SYNTAX HIGHLIGHT
+──────────────────────────────────────────────────────────────── */
 function renderHighlight() {
   const raw = $code.value;
+  const out = document.getElementById('hl-out');
   if (!raw.trim()) {
-    document.getElementById('hl-out').textContent = '<!-- nothing to highlight -->';
+    out.textContent = '<!-- nothing to highlight yet —>';
     return;
   }
   try {
-    document.getElementById('hl-out').innerHTML = tokenise(raw);
-    $status.textContent = 'Highlight applied';
+    out.innerHTML = tokenise(raw);
+    setStatus('Highlight applied');
   } catch (err) {
-    document.getElementById('hl-out').textContent = '<!-- highlight error -->';
-    console.error('Highlight error:', err);
+    out.textContent = raw; // fallback: show plain text
+    console.error('[HTMLPreviewer] Highlight error:', err);
   }
 }
 
@@ -828,7 +1016,7 @@ function tokenise(src) {
     }
     const nx = src.indexOf('<', i);
     const st = nx < 0 ? src.length : nx;
-    out += `<span class="s-txt">${esc(src.slice(i, st))}</span>`;
+    if (st > i) out += `<span class="s-txt">${esc(src.slice(i, st))}</span>`;
     i = st;
   }
   return out;
@@ -836,16 +1024,24 @@ function tokenise(src) {
 
 function colorTag(raw) {
   let s = esc(raw);
+  // tag name
   s = s.replace(/(&lt;\/?)([\w-]+)/,
     (_, b, n) => `<span class="s-br">${b}</span><span class="s-tag">${n}</span>`);
-  s = s.replace(/([\w:@-]+)(=)(&quot;)([^&]*)(&quot;)/g,
+  // attributes with quoted values
+  s = s.replace(/([\w:@.-]+)(=)(&quot;)([^&]*)(&quot;)/g,
     (_, a, eq, q1, v, q2) =>
-      `<span class="s-attr">${a}</span>=<span class="s-val">${q1}${v}${q2}</span>`);
+      `<span class="s-attr">${a}</span>=<span class="s-val">${q1}${esc(v)}${q2}</span>`);
+  // bare attributes (no value)
+  s = s.replace(/\s([\w:@.-]+)(?=\s|&gt;|\/&gt;)/g,
+    (_, a) => ` <span class="s-attr">${a}</span>`);
+  // closing bracket
   s = s.replace(/(&gt;|\/&gt;)$/, '<span class="s-br">$1</span>');
   return s;
 }
 
-/* ── FORMAT ── */
+/* ────────────────────────────────────────────────────────────────
+   FORMAT
+──────────────────────────────────────────────────────────────── */
 const VOID_TAGS = new Set([
   'area','base','br','col','embed','hr','img','input',
   'link','meta','param','source','track','wbr'
@@ -859,7 +1055,7 @@ function fmtCode(silent) {
   }
   try {
     const lines = raw
-      .replace(/>\s*</g, '>\n<')
+      .replace(/>\s+</g, '>\n<')
       .replace(/>\s*([^\n<])/g, '>\n$1')
       .split('\n');
     let indent = 0, res = [];
@@ -869,18 +1065,20 @@ function fmtCode(silent) {
       if (/^<\/[\w-]/.test(ln)) indent = Math.max(0, indent - 1);
       res.push('  '.repeat(indent) + ln);
       const m = ln.match(/^<([\w-]+)/);
-      if (m && !VOID_TAGS.has(m[1].toLowerCase())
-            && !/\/>$/.test(ln)
-            && !/^<!/.test(ln)
-            && !/^<\//.test(ln)) indent++;
+      if (m
+        && !VOID_TAGS.has(m[1].toLowerCase())
+        && !/\/>$/.test(ln)
+        && !/^<!/.test(ln)
+        && !/^<\//.test(ln)
+      ) indent++;
     }
     $code.value = res.join('\n');
     syncEditor();
     if (!silent) toast('Formatted ✓', 'ok');
-    $status.textContent = 'Formatted';
+    setStatus('Formatted');
   } catch (err) {
     toast('Format error', 'error');
-    console.error('Format error:', err);
+    console.error('[HTMLPreviewer] Format error:', err);
   }
 }
 
@@ -897,7 +1095,9 @@ function collapseAll(silent) {
   if (!silent) toast('Collapsed', 'info');
 }
 
-/* ── SAMPLE ── */
+/* ────────────────────────────────────────────────────────────────
+   SAMPLE HTML
+──────────────────────────────────────────────────────────────── */
 const SAMPLE = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -954,20 +1154,27 @@ function loadSample(silent) {
   $code.value = SAMPLE;
   syncEditor();
   if (!silent) { switchTab('editor'); toast('Sample loaded', 'info'); }
-  $status.textContent = 'Sample loaded';
+  setStatus('Sample loaded');
 }
 
-/* ── CLEAR ── */
+/* ────────────────────────────────────────────────────────────────
+   CLEAR
+──────────────────────────────────────────────────────────────── */
 function clearCode(silent) {
-  if (!silent && $code.value.trim() && !confirm('Clear all code?')) return;
+  if (!silent && $code.value.trim() && !confirm('Clear all code? This cannot be undone.')) return;
   $code.value = '';
   syncEditor();
   if (!silent) toast('Cleared', 'ok');
-  $status.textContent = 'Editor cleared';
+  setStatus('Editor cleared');
 }
 
-/* ── IMPORT / EXPORT ── */
+/* ────────────────────────────────────────────────────────────────
+   IMPORT / EXPORT
+──────────────────────────────────────────────────────────────── */
 function doImport() {
+  // Respect embed mode — no file operations in demo/readonly
+  if (document.body.classList.contains('embed-demo') ||
+      document.body.classList.contains('embed-readonly')) return;
   document.getElementById('file-in').click();
 }
 
@@ -978,117 +1185,96 @@ document.getElementById('file-in').addEventListener('change', ev => {
   r.onload = e => {
     $code.value = e.target.result;
     syncEditor();
-    $urlpath.textContent = $fname.textContent = f.name;
+    const name = f.name.replace(/\.html?$/i, '');
+    if ($urlpath) $urlpath.textContent = name;
+    if ($fname) $fname.textContent = f.name;
     toast(`Imported: ${f.name}`, 'ok');
-    $status.textContent = `Imported: ${f.name}`;
+    setStatus(`Imported: ${f.name}`);
   };
-  r.onerror = () => toast('Import failed', 'error');
-  r.readAsText(f);
+  r.onerror = () => toast('Import failed — check file and try again', 'error');
+  r.readAsText(f, 'UTF-8');
   ev.target.value = '';
 });
 
 function doExport() {
+  if (document.body.classList.contains('embed-readonly')) return;
   if (!$code.value.trim()) { toast('Nothing to export', 'warn'); return; }
   try {
-    const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(new Blob([$code.value], { type: 'text/html' })),
+    const blob = new Blob([$code.value], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), {
+      href: url,
       download: 'index.html'
     });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
-    toast('Exported as index.html', 'ok');
+    setTimeout(() => URL.revokeObjectURL(url), 15_000);
+    toast('Exported as index.html ⬇', 'ok');
   } catch (err) {
     toast('Export failed', 'error');
-    console.error('Export error:', err);
+    console.error('[HTMLPreviewer] Export error:', err);
   }
 }
 
 function copyHTML() {
   if (!$code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
-  navigator.clipboard.writeText($code.value)
+  navigator.clipboard?.writeText($code.value)
     .then(() => toast('Copied to clipboard ✓', 'ok'))
     .catch(() => toast('Copy failed — try Ctrl+A, Ctrl+C', 'warn'));
 }
 
-/* ── THEME ── */
-let isDark = true;
-
-function setTheme(mode) {
-  isDark = (mode === 'dark');
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('j-themeic').textContent    = isDark ? '🌙' : '☀️';
-  document.getElementById('j-themetxt').textContent   = isDark ? 'Dark mode' : 'Light mode';
-  document.getElementById('j-themelabel').textContent = isDark ? 'Dark' : 'Light';
-  try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (_) {}
-}
-
-function toggleTheme() {
-  setTheme(isDark ? 'light' : 'dark');
-  toast(isDark ? 'Dark mode' : 'Light mode', 'info');
-}
-
-/* ── TOAST ── */
+/* ────────────────────────────────────────────────────────────────
+   TOAST
+──────────────────────────────────────────────────────────────── */
 let _toastTimer;
 function toast(msg, type = 'info') {
   const el = document.getElementById('toast');
+  if (!el) return;
   el.textContent = msg;
   el.className   = `show ${type}`;
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { el.className = ''; }, 2400);
+  _toastTimer = setTimeout(() => { el.className = ''; }, 2600);
 }
 
-/* ── GITHUB PROFILE ── */
+/* ────────────────────────────────────────────────────────────────
+   GITHUB PROFILE  (non-critical, fails silently)
+──────────────────────────────────────────────────────────────── */
 async function loadProfile() {
   try {
-    const res = await fetch(`https://api.github.com/user/${GH_ID}`);
-    if (!res.ok) return; // silently fall back to hardcoded values
+    const res = await fetch(`https://api.github.com/user/${GH_ID}`, {
+      headers: { Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) return;
     const u = await res.json();
-    const a = document.getElementById('hdr-author');
+    const a  = document.getElementById('hdr-author');
     const av = document.getElementById('hdr-avatar');
     const lg = document.getElementById('hdr-login');
-    if (a)  a.href          = u.html_url;
-    if (av) av.src          = u.avatar_url;
-    if (lg) lg.textContent  = '@' + u.login;
-  } catch (_) {
-    // network unavailable — silently keep defaults
-  }
+    if (a  && u.html_url) a.href           = u.html_url;
+    if (av && u.avatar_url) av.src         = u.avatar_url;
+    if (lg && u.login)   lg.textContent    = '@' + u.login;
+  } catch (_) { /* network unavailable — keep hardcoded defaults */ }
 }
 
-/* ── INIT ── */
+/* ────────────────────────────────────────────────────────────────
+   OS THEME LISTENER  (responds to OS dark/light changes)
+──────────────────────────────────────────────────────────────── */
+try {
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+    try { if (localStorage.getItem('theme')) return; } catch (_) {}
+    setTheme(e.matches ? 'light' : 'dark');
+  });
+} catch (_) {}
 
-// Embed mode detection
-(function () {
-  const p = new URLSearchParams(location.search);
-  if (p.get('embed') === 'demo')   document.body.classList.add('embed-demo');
-  else if (p.has('embed'))         document.body.classList.add('embed');
-})();
-
-// Theme: hash → localStorage → OS preference → dark default
-(function () {
-  const hashTokens = location.hash.replace(/^#/, '').split('&').map(t => t.toLowerCase());
-  const hasHashTheme = hashTokens.some(t =>
-    t === 'dark' || t === 'light' || t.startsWith('theme='));
-  if (hasHashTheme) return; // applyHash() will handle it
-
-  try {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark' || saved === 'light') { setTheme(saved); return; }
-  } catch (_) {}
-
-  if (window.matchMedia?.('(prefers-color-scheme: light)').matches) {
-    setTheme('light');
-  }
-})();
-
+/* ────────────────────────────────────────────────────────────────
+   INIT
+──────────────────────────────────────────────────────────────── */
 syncEditor();
 loadProfile();
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (location.hash && location.hash.length > 1) {
-    applyHash(location.hash);
-  }
+  const hash = location.hash;
+  if (hash && hash.length > 1) applyHash(hash);
 });
 </script>
 </body>
