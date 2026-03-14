@@ -302,9 +302,17 @@
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    /* ── FRAMED (iframe embed) ──────────────── */
-    body.framed header    { display: none; }
-    body.framed .statusbar{ display: none; }
+    /* ── ?embed — hide chrome, still interactive ── */
+    body.embed header     { display: none; }
+    body.embed .statusbar { display: none; }
+
+    /* ── ?embed=demo — fully non-interactive screenshot mode ── */
+    body.embed-demo header     { display: none; }
+    body.embed-demo .statusbar { display: none; }
+    body.embed-demo .sidebar   { display: none; }
+    body.embed-demo .tabbar    { display: none; }
+    body.embed-demo * { pointer-events: none !important; cursor: default !important; user-select: none !important; }
+    body.embed-demo #code { caret-color: transparent; }
 
     /* ── RESPONSIVE ─────────────────────────── */
     @media (max-width: 600px) {
@@ -817,6 +825,7 @@ function setTheme(mode) {
   document.getElementById('j-themeic').textContent    = dark ? '🌙' : '☀️';
   document.getElementById('j-themetxt').textContent   = dark ? 'Dark mode' : 'Light mode';
   document.getElementById('j-themelabel').textContent = dark ? 'Dark' : 'Light';
+  try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (_) {}
 }
 
 function toggleTheme() { setTheme(dark ? 'light' : 'dark'); toast(dark ? 'Dark mode' : 'Light mode', 'info'); }
@@ -832,12 +841,34 @@ function toast(msg, type = 'info') {
 
 /* ── INIT ─────────────────────────────────────────────────────────── */
 
-// Detect iframe embed — hide chrome for clean embedding
-if (window.self !== window.top) document.body.classList.add('framed');
+// ?embed=demo  → fully non-interactive screenshot-style embed (no chrome, no interaction)
+// ?embed       → interactive embed with chrome hidden (sidebar + tabs visible)
+// (no param)   → full app
+(function () {
+  const p = new URLSearchParams(location.search);
+  if (p.get('embed') === 'demo') {
+    document.body.classList.add('embed-demo');
+  } else if (p.has('embed')) {
+    document.body.classList.add('embed');
+  }
+})();
+
+// Restore saved theme first, then let hash tokens override if present
+(function () {
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (_) {}
+  // Hash may contain a theme token — parse it without triggering side effects
+  const hashTokens = location.hash.replace(/^#/, '').split('&').map(t => t.toLowerCase());
+  const hasHashTheme = hashTokens.some(t => t === 'dark' || t === 'light' || t.startsWith('theme='));
+  // Apply saved theme only when the hash doesn't specify one
+  if (!hasHashTheme && (saved === 'light' || saved === 'dark')) {
+    setTheme(saved);
+  }
+})();
 
 syncEditor();
 
-// Apply URL hash on load (after DOM ready so loadSample can run first if needed)
+// Apply URL hash on load
 document.addEventListener('DOMContentLoaded', () => {
   if (location.hash && location.hash.length > 1) applyHash(location.hash, true);
 });
