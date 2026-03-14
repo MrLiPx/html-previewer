@@ -457,10 +457,6 @@ function applyTheme(mode, save) {
   if (lbl) lbl.textContent = _dark ? 'Dark' : 'Light';
   if (save) {
     try { localStorage.setItem('theme', _dark ? 'dark' : 'light'); } catch (_) {}
-    // Keep ?theme= param in URL in sync
-    const url = new URL(location.href);
-    url.searchParams.set('theme', _dark ? 'dark' : 'light');
-    history.replaceState(null, '', url);
   }
 }
 
