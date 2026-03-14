@@ -21,8 +21,6 @@
 
 ## 🖥️ Live Demo
 
-> GitHub strips `<iframe>` tags for security. Click the button below to open the live app, or copy the embed code into your own page.
-
 <div align="center">
 
 **[▶ Open Live Demo →](https://mrlipx.github.io/html-previewer/app#sample&preview)**
