@@ -878,32 +878,7 @@
 
 <script>
 'use strict';
-
-/* ═══════════════════════════════════════════════════════════════
-   IMAGE OPTIMISATION
-   Vercel: /_vercel/image?url=ABS_URL&w=W&q=Q  (avif/webp auto)
-   GitHub Pages / localhost: raw path unchanged
-
-   NOTE: Vercel's image endpoint requires an absolute URL in `url=`.
-   We build it from location.origin + path.
-═══════════════════════════════════════════════════════════════ */
-function imgOpt(path, w, h, q) {
-  if (!w) return path;
-  q = q || 80;
-  var host = location.hostname;
-  // Use raw path on GitHub Pages or localhost
-  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('github.io')) {
-    return path;
-  }
-  // Build absolute URL for Vercel's image endpoint
-  var abs = path.startsWith('http')
-    ? path
-    : location.origin + (path.startsWith('/') ? path : '/' + path);
-  var params = 'url=' + encodeURIComponent(abs) + '&w=' + w + '&q=' + q;
-  if (h) params += '&h=' + h;
-  return '/_vercel/image?' + params;
-}
-
+  
 /* ═══════════════════════════════════════════════════════════════
    THEME  (system | dark | light)
    localStorage key: 'htmlprev-theme'
