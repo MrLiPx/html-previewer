@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>404 — Page Not Found · HTML Previewer</title>
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -18,6 +20,7 @@
       --muted:   #8b949e;
       --sans:    'Inter', sans-serif;
       --mono:    'JetBrains Mono', monospace;
+      --trans:   .15s ease;
     }
     [data-theme="light"] {
       --bg:      #f6f8fa;
@@ -37,16 +40,16 @@
       flex-direction: column;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      transition: background .15s, color .15s;
+      transition: background var(--trans), color var(--trans);
     }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 28px;
-      height: 52px;
+      height: 54px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
     }
@@ -60,59 +63,57 @@
       color: var(--text);
     }
     .nav-logo img { width: 20px; height: 20px; }
+    .nav-logo span { color: var(--accent); }
     .nav-home {
-      padding: 5px 12px;
+      padding: 6px 14px;
       font-size: 13px;
       font-weight: 600;
       color: #fff;
       background: var(--accent);
       text-decoration: none;
       border-radius: 6px;
-      transition: filter .1s;
+      transition: filter var(--trans), transform var(--trans);
     }
-    .nav-home:hover { filter: brightness(1.12); }
+    .nav-home:hover { filter: brightness(1.12); transform: translateY(-1px); }
 
-    /* ── MAIN ── */
+    /* MAIN */
     main {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px;
+      padding: 48px 24px;
       text-align: center;
     }
-    .error-wrap { max-width: 480px; }
+    .error-wrap { max-width: 500px; }
 
     .error-code {
       font-family: var(--mono);
-      font-size: clamp(80px, 15vw, 120px);
+      font-size: clamp(80px, 15vw, 128px);
       font-weight: 600;
       line-height: 1;
       color: var(--red);
-      opacity: .18;
+      opacity: .15;
       letter-spacing: -4px;
       user-select: none;
       margin-bottom: -16px;
     }
-
     .error-icon {
-      font-size: 52px;
-      margin-bottom: 20px;
+      font-size: 56px;
+      margin-bottom: 22px;
       display: block;
     }
-
     h1 {
-      font-size: clamp(22px, 4vw, 28px);
+      font-size: clamp(22px, 4vw, 30px);
       font-weight: 700;
-      letter-spacing: -.4px;
-      margin-bottom: 10px;
+      letter-spacing: -.5px;
+      margin-bottom: 12px;
       color: var(--text);
     }
-
     .error-msg {
       font-size: 15px;
       color: var(--muted);
-      line-height: 1.65;
+      line-height: 1.7;
       margin-bottom: 32px;
     }
     .error-msg code {
@@ -120,16 +121,16 @@
       font-size: 13px;
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       color: var(--text);
     }
-
     .error-actions {
       display: flex;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
+      margin-bottom: 36px;
     }
     .btn-primary {
       display: inline-flex;
@@ -143,7 +144,7 @@
       color: #fff;
       border-radius: 7px;
       border: 1px solid transparent;
-      transition: filter .1s, transform .1s;
+      transition: filter var(--trans), transform var(--trans);
     }
     .btn-primary:hover { filter: brightness(1.12); transform: translateY(-1px); }
     .btn-ghost {
@@ -158,23 +159,22 @@
       color: var(--text);
       border-radius: 7px;
       border: 1px solid var(--border);
-      transition: border-color .1s, color .1s, transform .1s;
+      transition: border-color var(--trans), color var(--trans), transform var(--trans);
     }
     .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
 
-    /* ── SUGGESTED LINKS ── */
+    /* SUGGESTIONS */
     .suggestions {
-      margin-top: 40px;
       padding-top: 28px;
       border-top: 1px solid var(--border);
     }
     .suggestions p {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: .8px;
+      letter-spacing: .9px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .suggestion-links {
       display: flex;
@@ -183,20 +183,20 @@
       flex-wrap: wrap;
     }
     .suggestion-links a {
-      padding: 5px 12px;
+      padding: 5px 13px;
       font-size: 12px;
       color: var(--muted);
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 5px;
+      border-radius: 100px;
       text-decoration: none;
-      transition: color .1s, border-color .1s;
+      transition: color var(--trans), border-color var(--trans);
     }
     .suggestion-links a:hover { color: var(--accent); border-color: var(--accent); }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer {
-      padding: 16px 24px;
+      padding: 18px 24px;
       text-align: center;
       font-size: 11px;
       color: var(--muted);
@@ -209,9 +209,9 @@
 <body>
 
 <nav>
-  <a class="nav-logo" href=".">
-    <img src="media/images/logos/html5.svg" alt="" />
-    HTML Previewer
+  <a class="nav-logo" href="." aria-label="HTML Previewer home">
+    <img src="media/images/logos/html5.svg" alt="" width="20" height="20" />
+    HTML<span>Previewer</span>
   </a>
   <a class="nav-home" href=".">← Home</a>
 </nav>
@@ -219,7 +219,7 @@
 <main>
   <div class="error-wrap">
     <div class="error-code" aria-hidden="true">404</div>
-    <span class="error-icon">🔍</span>
+    <span class="error-icon" aria-hidden="true">🔍</span>
     <h1>Page not found</h1>
     <p class="error-msg">
       The page at <code id="err-path">/</code> doesn't exist.<br />
@@ -235,36 +235,37 @@
         <a href=".">Landing page</a>
         <a href="app">App</a>
         <a href="app#sample&preview">Sample preview</a>
-        <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/MrLiPx/html-previewer/issues" target="_blank" rel="noopener">Report issue</a>
+        <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/MrLiPx/html-previewer/issues" target="_blank" rel="noopener noreferrer">Report issue</a>
       </div>
     </div>
   </div>
 </main>
 
 <footer>
-  HTML Previewer · MIT License · Made by <a href="https://github.com/MrLiPx" target="_blank" rel="noopener">Mr Li Px</a>
+  HTML Previewer · MIT License · Made by <a href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer">Mr Li Px</a>
 </footer>
 
 <script>
   // Show the actual path that 404'd
-  const p = location.pathname;
-  const el = document.getElementById('err-path');
-  if (el && p) el.textContent = p;
+  (function() {
+    const el = document.getElementById('err-path');
+    if (el) el.textContent = location.pathname || '/';
+  }());
 
-  // Apply saved/OS theme
-  (function () {
+  // Theme: localStorage → OS preference → dark default (no flash)
+  (function initTheme() {
     try {
       const saved = localStorage.getItem('theme');
-      if (saved === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
+      if (saved === 'dark' || saved === 'light') {
+        document.documentElement.setAttribute('data-theme', saved);
         return;
       }
     } catch (_) {}
     if (window.matchMedia?.('(prefers-color-scheme: light)').matches) {
       document.documentElement.setAttribute('data-theme', 'light');
     }
-  })();
+  }());
 </script>
 </body>
 </html>
