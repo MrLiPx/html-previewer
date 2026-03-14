@@ -19,6 +19,57 @@
 
 ---
 
+## 🖥️ Live Demo
+
+> GitHub strips `<iframe>` tags for security. Click the button below to open the live app, or copy the embed code into your own page.
+
+<div align="center">
+
+**[▶ Open Live Demo →](https://mrlipx.github.io/html-previewer/app#sample&preview)**
+
+</div>
+
+### Embed in your own page
+
+The app supports iframe embedding out of the box. Hash tokens load on startup, so you can pre-configure exactly what the viewer sees:
+
+```html
+<!-- Default: sample loaded, preview tab open -->
+<iframe
+  src="https://mrlipx.github.io/html-previewer/app.html#sample&preview"
+  width="100%"
+  height="540"
+  style="border:none;border-radius:8px;"
+  title="HTML Previewer"
+></iframe>
+```
+
+```html
+<!-- Editor only, dark theme -->
+<iframe
+  src="https://mrlipx.github.io/html-previewer/app.html#theme=dark"
+  width="100%"
+  height="540"
+  style="border:none;"
+  title="HTML Previewer"
+></iframe>
+```
+
+```html
+<!-- Sample + highlight tab + light theme -->
+<iframe
+  src="https://mrlipx.github.io/html-previewer/app.html#sample&highlight&theme=light"
+  width="100%"
+  height="540"
+  style="border:none;"
+  title="HTML Previewer"
+></iframe>
+```
+
+When embedded, the app automatically hides its header and status bar (`body.framed` class) for a clean look.
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
@@ -62,16 +113,14 @@ Tokens are separated by `&` — multiple can be combined.
 ### Examples
 
 ```
-/app                      → editor tab (default)
-/app#preview              → preview tab
-/app#dark                 → apply dark theme
-/app#light                → apply light theme
-/app#theme=dark           → same as #dark
-/app#theme=light          → same as #light
-/app#sample               → load sample, stay on editor
-/app#sample&preview       → load sample, switch to preview
-/app#sample&preview&dark  → load sample, preview, dark theme
-/app#preview&theme=light  → preview in light mode
+/app                           → editor tab (default)
+/app#preview                   → preview tab
+/app#theme=dark                → apply dark theme
+/app#theme=light               → apply light theme
+/app#sample                    → load sample, stay on editor
+/app#sample&preview            → load sample, switch to preview
+/app#sample&preview&theme=dark → load sample, preview, dark theme
+/app#preview&theme=light       → preview in light mode
 ```
 
 ### Embedding with iframe
@@ -123,18 +172,14 @@ xdg-open app.html   # Linux
 ```
 html-previewer/              ← repo root = web root
 │
-├── index.html               ← landing page (served at /)
-├── app.html                 ← the app    (served at /app or /app.html)
+├── index.html               ← landing page — fully self-contained (CSS + JS inlined)
+├── app.html                 ← the app     — fully self-contained (CSS + JS inlined)
 ├── 404.html                 ← 404 page
 ├── README.md
 ├── LICENSE
 │
 ├── _redirects               ← Netlify / Cloudflare Pages redirect rules
 ├── vercel.json              ← Vercel redirect rules + cleanUrls
-│
-├── static/
-│   ├── css/style.css        ← landing page styles
-│   └── js/main.js           ← landing page scripts (GitHub API, scroll reveal)
 │
 └── media/
     └── images/
