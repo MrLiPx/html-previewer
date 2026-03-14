@@ -7,7 +7,7 @@
 **Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
 [![HTML Previewer](https://img.shields.io/badge/HTML-Previewer-58a6ff?style=for-the-badge&logo=html5&logoColor=white)](https://mrlipx.github.io/html-previewer)
-[![Version](https://img.shields.io/badge/version-1.1.0-f85149?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/version-1.2.0-f85149?style=for-the-badge)](#)
 [![License](https://img.shields.io/badge/license-MIT-3fb950?style=for-the-badge)](LICENSE)
 [![No Dependencies](https://img.shields.io/badge/dependencies-none-d29922?style=for-the-badge)](#)
 
@@ -29,12 +29,12 @@
 
 ### Embed in your own page
 
-The app supports iframe embedding out of the box. Hash tokens load on startup, so you can pre-configure exactly what the viewer sees:
+The app supports iframe embedding out of the box. Hash tokens load on startup, so you can pre-configure exactly what the viewer sees. Three embed modes are supported:
 
 ```html
-<!-- Default: sample loaded, preview tab open -->
+<!-- Interactive demo: sidebar visible, import/export hidden, full interaction -->
 <iframe
-  src="https://mrlipx.github.io/html-previewer/app.html#sample&preview"
+  src="https://mrlipx.github.io/html-previewer/app?embed=demo#sample&preview"
   width="100%"
   height="540"
   style="border:none;border-radius:8px;"
@@ -43,9 +43,9 @@ The app supports iframe embedding out of the box. Hash tokens load on startup, s
 ```
 
 ```html
-<!-- Editor only, dark theme -->
+<!-- Compact: header and status bar hidden, everything else visible -->
 <iframe
-  src="https://mrlipx.github.io/html-previewer/app.html#theme=dark"
+  src="https://mrlipx.github.io/html-previewer/app?embed=1#sample&preview"
   width="100%"
   height="540"
   style="border:none;"
@@ -54,9 +54,9 @@ The app supports iframe embedding out of the box. Hash tokens load on startup, s
 ```
 
 ```html
-<!-- Sample + highlight tab + light theme -->
+<!-- Read-only showcase: non-interactive, no sidebar/tabs (for decorative demos) -->
 <iframe
-  src="https://mrlipx.github.io/html-previewer/app.html#sample&highlight&theme=light"
+  src="https://mrlipx.github.io/html-previewer/app?embed=readonly#sample&preview"
   width="100%"
   height="540"
   style="border:none;"
@@ -64,7 +64,7 @@ The app supports iframe embedding out of the box. Hash tokens load on startup, s
 ></iframe>
 ```
 
-When embedded, the app automatically hides its header and status bar (`body.framed` class) for a clean look.
+When embedded, the app always respects the visitor's saved theme (via `localStorage`) and falls back to their OS preference.
 
 ---
 
@@ -81,7 +81,7 @@ When embedded, the app automatically hides its header and status bar (`body.fram
 | ✕ **Clear** | Clear the editor |
 | ⬆ **Import** | Load a local `.html` file |
 | ⬇ **Export** | Download as `index.html` |
-| 🌙 **Dark / Light** | Toggle theme |
+| 🌙 **Dark / Light** | Toggle theme (persists across all embed modes) |
 | 🔗 **Deep Links** | Every action has a shareable URL |
 
 ---
@@ -111,31 +111,25 @@ Tokens are separated by `&` — multiple can be combined.
 ### Examples
 
 ```
-/app                           → editor tab (default)
-/app#preview                   → preview tab
-/app#theme=dark                → apply dark theme
-/app#theme=light               → apply light theme
-/app#sample                    → load sample, stay on editor
-/app#sample&preview            → load sample, switch to preview
-/app#sample&preview&theme=dark → load sample, preview, dark theme
-/app#preview&theme=light       → preview in light mode
+/app                              → editor tab (default)
+/app#preview                      → preview tab
+/app#theme=dark                   → apply dark theme
+/app#theme=light                  → apply light theme
+/app#sample                       → load sample, stay on editor
+/app#sample&preview               → load sample, switch to preview
+/app#sample&preview&theme=dark    → load sample, preview, dark theme
+/app#preview&theme=light          → preview in light mode
 ```
 
-### Embedding with iframe
+### URL parameters
 
-Because hash tokens are applied on load, you can embed a live preview directly:
+| Parameter | Values | Effect |
+|---|---|---|
+| `?embed` | any value | Compact mode: hide header + status bar |
+| `?embed=demo` | `demo` | Demo mode: interactive, sidebar visible, no import/export |
+| `?embed=readonly` | `readonly` | Showcase mode: non-interactive, decorative |
 
-```html
-<!-- Landing page demo — shows app with sample loaded in preview mode -->
-<iframe src="app.html#sample&preview" width="100%" height="500"></iframe>
-
-<!-- Embed in dark mode with the editor visible -->
-<iframe src="app.html#sample&dark" width="100%" height="500"></iframe>
-```
-
-> **Note:** Browsers never send `#fragment` to the server, so fragments are always
-> preserved through 308 redirects automatically. Query strings (`?foo=bar`) are
-> forwarded by the redirect rules.
+> **Note:** All embed modes respect the visitor's saved theme from `localStorage` and OS preference.
 
 ---
 
@@ -186,6 +180,9 @@ html-previewer/              ← repo root = web root
         └── icons/favicon.png
 ```
 
+> All internal links use **clean URLs** (`/app`, `/404`) — no `.html` suffix.
+> The redirect rules and `cleanUrls: true` in `vercel.json` handle this transparently.
+
 ---
 
 ## ↩️ Redirects (308 Permanent)
@@ -196,15 +193,6 @@ html-previewer/              ← repo root = web root
 
 **Both files go in the repo root** — the same folder as `index.html` and `app.html`.
 
-```
-html-previewer/
-├── _redirects      ← HERE (repo root)
-├── vercel.json     ← HERE (repo root)
-├── index.html
-├── app.html
-└── ...
-```
-
 ### Netlify / Cloudflare Pages
 
 The `_redirects` file is picked up automatically. No extra configuration needed.
@@ -213,6 +201,7 @@ The `_redirects` file is picked up automatically. No extra configuration needed.
 # _redirects
 /index.html   /    308
 /app.html     /app 308
+/404.html     /404 308
 ```
 
 ### Vercel
@@ -224,7 +213,8 @@ extensions sitewide so `/app.html` → `/app` even without an explicit rule.
 {
   "redirects": [
     { "source": "/index.html", "destination": "/",    "statusCode": 308 },
-    { "source": "/app.html",   "destination": "/app", "statusCode": 308 }
+    { "source": "/app.html",   "destination": "/app", "statusCode": 308 },
+    { "source": "/404.html",   "destination": "/404", "statusCode": 308 }
   ],
   "cleanUrls": true
 }
@@ -249,6 +239,20 @@ GitHub Pages does **not** support server-side redirects.
 - Blob URLs for new-tab preview and file export
 - `FileReader` API for local file import
 - `IntersectionObserver` for scroll-reveal animations
+- Three embed modes via `?embed=` query param
+
+---
+
+## 🎨 Embed Modes
+
+| Mode | URL | Sidebar | Header | Status | Interactive | Import/Export |
+|---|---|---|---|---|---|---|
+| Full | `/app` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Compact | `/app?embed=1` | ✅ | ❌ | ❌ | ✅ | ✅ |
+| Demo | `/app?embed=demo` | ✅ | ❌ | ❌ | ✅ | ❌ |
+| Read-only | `/app?embed=readonly` | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+All modes inherit the visitor's theme from `localStorage` + OS preference.
 
 ---
 
