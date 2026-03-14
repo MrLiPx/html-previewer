@@ -1,17 +1,8 @@
 {
   "redirects": [
-    {
-      "source": "/index.html",
-      "destination": "/",
-      "permanent": true,
-      "statusCode": 308
-    },
-    {
-      "source": "/app.html",
-      "destination": "/app",
-      "permanent": true,
-      "statusCode": 308
-    }
+    { "source": "/index.html", "destination": "/",    "permanent": true, "statusCode": 308 },
+    { "source": "/app.html",   "destination": "/app", "permanent": true, "statusCode": 308 },
+    { "source": "/404.html",   "destination": "/404", "permanent": true, "statusCode": 308 }
   ],
   "cleanUrls": true
 }
