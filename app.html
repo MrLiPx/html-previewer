@@ -7,30 +7,29 @@
   <meta name="description" content="A zero-dependency, browser-based HTML editor with live preview, syntax highlighting, and formatting tools." />
   <meta name="robots" content="noindex" />
   <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
-  <!-- Flaticon UIcons Regular Rounded -->
   <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Sync theme init — must run before paint to prevent flash -->
+  <!-- Sync theme before paint to prevent flash -->
   <script>
-    (function(){
-      function os(){return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
-      var p='system';
-      var t=location.hash.replace(/^#/,'').split('&').map(function(x){return x.toLowerCase();});
-      for(var i=0;i<t.length;i++){
-        if(t[i]==='dark'||t[i]==='theme=dark'){p='dark';break;}
-        if(t[i]==='light'||t[i]==='theme=light'){p='light';break;}
-        if(t[i]==='system'||t[i]==='theme=system'){p='system';break;}
+    (function () {
+      function os() { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
+      var p = 'system';
+      var t = location.hash.replace(/^#/, '').split('&').map(function (x) { return x.toLowerCase(); });
+      for (var i = 0; i < t.length; i++) {
+        if (t[i] === 'dark'   || t[i] === 'theme=dark')   { p = 'dark';   break; }
+        if (t[i] === 'light'  || t[i] === 'theme=light')  { p = 'light';  break; }
+        if (t[i] === 'system' || t[i] === 'theme=system') { p = 'system'; break; }
       }
-      if(p==='system'){try{var s=localStorage.getItem('htmlprev-theme');if(s==='dark'||s==='light'||s==='system')p=s;}catch(e){}}
-      document.documentElement.setAttribute('data-theme',(p==='dark'||p==='light')?p:os());
-    })();
+      if (p === 'system') { try { var s = localStorage.getItem('htmlprev-theme'); if (s === 'dark' || s === 'light' || s === 'system') p = s; } catch (e) {} }
+      document.documentElement.setAttribute('data-theme', (p === 'dark' || p === 'light') ? p : os());
+    }());
   </script>
 
   <style>
-    /* ── TOKENS ── */
+    /* ── DESIGN TOKENS ─────────────────────────────────────── */
     :root {
       --bg:        #0d1117;
       --surface:   #161b22;
@@ -38,7 +37,7 @@
       --border:    #30363d;
       --border-hi: #484f58;
       --accent:    #58a6ff;
-      --adim:      rgba(88,166,255,.12);
+      --adim:      rgba(88, 166, 255, .12);
       --green:     #3fb950;
       --red:       #f85149;
       --yellow:    #d29922;
@@ -48,7 +47,7 @@
       --mono:      'JetBrains Mono', monospace;
       --sans:      'Inter', sans-serif;
       --r:         6px;
-      --shadow:    0 8px 32px rgba(0,0,0,.45);
+      --shadow:    0 8px 32px rgba(0, 0, 0, .45);
       --t:         .15s ease;
     }
     [data-theme="light"] {
@@ -59,11 +58,12 @@
       --border-hi: #afb8c1;
       --text:      #1f2328;
       --muted:     #57606a;
-      --shadow:    0 8px 32px rgba(0,0,0,.1);
+      --shadow:    0 8px 32px rgba(0, 0, 0, .1);
     }
 
-    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html,body { height: 100%; overflow: hidden; }
+    /* ── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
     body {
       font-family: var(--sans);
       background: var(--bg);
@@ -72,11 +72,9 @@
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
     }
-
-    /* Ensure UIcons render consistently */
     i.fi { display: inline-flex; align-items: center; justify-content: center; }
 
-    /* ── HEADER ── */
+    /* ── HEADER ─────────────────────────────────────────────── */
     header {
       height: 46px;
       flex-shrink: 0;
@@ -86,7 +84,6 @@
       padding: 0 10px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      position: relative;
       z-index: 20;
     }
     .logo {
@@ -126,12 +123,13 @@
       transition: border-color var(--t);
     }
     .url-bar:hover { border-color: var(--border-hi); }
-    .url-lock { color: var(--green); flex-shrink: 0; font-size: 11px; }
+    .url-lock   { color: var(--green); flex-shrink: 0; font-size: 11px; }
     .url-scheme { color: var(--accent); flex-shrink: 0; }
-    .url-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .url-path   { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .hdr-spacer { flex: 1; }
-    .hdr-nav { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+    .hdr-nav    { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+
     .hdr-btn {
       all: unset;
       box-sizing: border-box;
@@ -152,9 +150,9 @@
       transition: background var(--t), border-color var(--t), color var(--t);
     }
     .hdr-btn:hover { background: var(--overlay); border-color: var(--border); color: var(--text); }
-    .hdr-btn .fi { font-size: 13px; flex-shrink: 0; }
-    .hdr-btn img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
-    .hdr-sep { width: 1px; height: 18px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+    .hdr-btn .fi  { font-size: 13px; flex-shrink: 0; }
+    .hdr-btn img  { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .hdr-sep      { width: 1px; height: 18px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
     .hdr-run {
       background: var(--accent);
       color: #fff !important;
@@ -162,12 +160,12 @@
       padding: 4px 14px;
       font-weight: 600;
     }
-    .hdr-run:hover { filter: brightness(1.15); background: var(--accent) !important; }
+    .hdr-run:hover { filter: brightness(1.12); background: var(--accent) !important; }
 
-    /* ── WORKSPACE ── */
+    /* ── WORKSPACE ──────────────────────────────────────────── */
     .workspace { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-    /* ── SIDEBAR ── */
+    /* ── SIDEBAR ────────────────────────────────────────────── */
     .sidebar {
       width: 178px;
       flex-shrink: 0;
@@ -191,6 +189,7 @@
     }
     .sb-section:first-child { padding-top: 5px; }
     .sb-sep { height: 1px; background: var(--border); margin: 4px; flex-shrink: 0; }
+
     .sb-btn {
       all: unset;
       box-sizing: border-box;
@@ -216,30 +215,34 @@
       color: var(--text);
     }
     .sb-btn .fi { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+
     .sb-accent { color: var(--accent); }
     .sb-accent:hover, .sb-accent.active {
       background: var(--adim);
-      border-color: rgba(88,166,255,.25);
+      border-color: rgba(88, 166, 255, .25);
       color: var(--accent);
     }
     .sb-green { color: var(--green); }
     .sb-green:hover, .sb-green.active {
-      background: rgba(63,185,80,.1);
-      border-color: rgba(63,185,80,.25);
+      background: rgba(63, 185, 80, .1);
+      border-color: rgba(63, 185, 80, .25);
       color: var(--green);
     }
     .sb-red { color: var(--red); }
     .sb-red:hover {
-      background: rgba(248,81,73,.1);
-      border-color: rgba(248,81,73,.25);
+      background: rgba(248, 81, 73, .1);
+      border-color: rgba(248, 81, 73, .25);
       color: var(--red);
     }
-
-    /* ── THEME DROPDOWN ── */
-    .theme-dd {
-      position: relative;
-      width: 100%;
+    .sb-pink { color: #f778ba; }
+    .sb-pink:hover {
+      background: rgba(247, 120, 186, .1);
+      border-color: rgba(247, 120, 186, .25);
+      color: #f778ba;
     }
+
+    /* ── THEME DROPDOWN ─────────────────────────────────────── */
+    .theme-dd { position: relative; width: 100%; }
     .theme-trigger {
       all: unset;
       box-sizing: border-box;
@@ -262,15 +265,11 @@
       border-color: var(--border);
       color: var(--text);
     }
-    .theme-trigger .fi { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+    .theme-trigger .fi          { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
     .theme-trigger .theme-label { flex: 1; }
-    .theme-trigger .theme-caret {
-      font-size: 10px;
-      margin-left: auto;
-      flex-shrink: 0;
-      transition: transform var(--t);
-    }
+    .theme-trigger .theme-caret { font-size: 10px; margin-left: auto; flex-shrink: 0; transition: transform var(--t); }
     .theme-trigger.open .theme-caret { transform: rotate(180deg); }
+
     .theme-menu {
       position: absolute;
       bottom: calc(100% + 4px);
@@ -287,11 +286,7 @@
       pointer-events: none;
       transition: opacity .12s ease, transform .12s ease;
     }
-    .theme-menu.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
+    .theme-menu.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
     .theme-menu button {
       all: unset;
       box-sizing: border-box;
@@ -307,21 +302,15 @@
       cursor: pointer;
       transition: background var(--t), color var(--t);
     }
-    .theme-menu button:hover { background: var(--overlay); color: var(--text); }
-    .theme-menu button.active { color: var(--accent); }
+    .theme-menu button:hover        { background: var(--overlay); color: var(--text); }
+    .theme-menu button.active       { color: var(--accent); }
     .theme-menu button.active:hover { background: var(--adim); }
-    .theme-menu button .fi { font-size: 13px; width: 16px; text-align: center; }
-    .theme-menu .tm-label { flex: 1; }
-    .theme-menu .tm-check {
-      font-size: 11px;
-      color: var(--accent);
-      opacity: 0;
-      transition: opacity var(--t);
-      margin-left: auto;
-    }
+    .theme-menu button .fi          { font-size: 13px; width: 16px; text-align: center; }
+    .theme-menu .tm-label  { flex: 1; }
+    .theme-menu .tm-check  { font-size: 11px; color: var(--accent); opacity: 0; transition: opacity var(--t); margin-left: auto; }
     .theme-menu button.active .tm-check { opacity: 1; }
 
-    /* ── MAIN ── */
+    /* ── MAIN AREA ──────────────────────────────────────────── */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
     /* Tab bar */
@@ -371,7 +360,7 @@
     .panel  { flex: 1; display: none; flex-direction: column; overflow: hidden; }
     .panel.active { display: flex; }
 
-    /* ── EDITOR ── */
+    /* ── EDITOR PANEL ───────────────────────────────────────── */
     .ed-meta {
       flex-shrink: 0;
       height: 27px;
@@ -387,7 +376,7 @@
     }
     .ed-tag {
       background: var(--adim);
-      border: 1px solid rgba(88,166,255,.2);
+      border: 1px solid rgba(88, 166, 255, .2);
       color: var(--accent);
       padding: 1px 6px;
       border-radius: 3px;
@@ -405,6 +394,7 @@
       font-size: 9px;
       color: var(--muted);
     }
+
     .ed-body { flex: 1; display: flex; overflow: hidden; }
     .gutter {
       width: 46px;
@@ -438,9 +428,9 @@
       transition: background var(--t), color var(--t);
     }
     #code::placeholder { color: var(--muted); opacity: .35; font-style: italic; }
-    #code::selection { background: rgba(88,166,255,.22); }
+    #code::selection   { background: rgba(88, 166, 255, .22); }
 
-    /* ── PREVIEW ── */
+    /* ── PREVIEW PANEL ──────────────────────────────────────── */
     .pv-chrome {
       flex-shrink: 0;
       height: 35px;
@@ -465,6 +455,7 @@
     .tc-r { background: var(--red); }
     .tc-y { background: var(--yellow); }
     .tc-g { background: var(--green); }
+
     .pv-addr {
       flex: 1;
       height: 22px;
@@ -482,9 +473,10 @@
       transition: border-color var(--t);
     }
     .pv-addr:hover { border-color: var(--border-hi); }
-    .pv-lock { color: var(--green); flex-shrink: 0; font-size: 10px; }
+    .pv-lock   { color: var(--green); flex-shrink: 0; font-size: 10px; }
     .pv-scheme { color: var(--accent); flex-shrink: 0; }
-    .pv-slug { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-slug   { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
     .pv-tools { display: flex; gap: 3px; flex-shrink: 0; }
     .pv-tool {
       all: unset;
@@ -503,9 +495,10 @@
     }
     .pv-tool:hover { border-color: var(--accent); color: var(--accent); background: var(--adim); }
     .pv-tool .fi { font-size: 12px; }
+
     #preview-frame { flex: 1; border: none; background: #fff; display: block; }
 
-    /* ── HIGHLIGHT ── */
+    /* ── HIGHLIGHT PANEL ────────────────────────────────────── */
     .hl-meta {
       flex-shrink: 0;
       height: 27px;
@@ -519,9 +512,9 @@
       font-size: 10px;
       color: var(--muted);
     }
-    .hl-legend { display: flex; gap: 12px; margin-left: auto; }
-    .hl-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; }
-    .hl-scroll { flex: 1; overflow: auto; padding: 10px 14px; }
+    .hl-legend  { display: flex; gap: 12px; margin-left: auto; }
+    .hl-dot     { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; }
+    .hl-scroll  { flex: 1; overflow: auto; padding: 10px 14px; }
     #hl-out {
       font-family: var(--mono);
       font-size: 12.5px;
@@ -533,10 +526,10 @@
     .s-attr { color: #6cb6ff; }
     .s-val  { color: #96d0ff; }
     .s-cmt, .s-doc { color: var(--muted); font-style: italic; }
-    .s-br { color: var(--muted); opacity: .6; }
+    .s-br  { color: var(--muted); opacity: .6; }
     .s-txt { color: var(--text); opacity: .7; }
 
-    /* ── STATUS BAR ── */
+    /* ── STATUS BAR ─────────────────────────────────────────── */
     .statusbar {
       flex-shrink: 0;
       height: 22px;
@@ -560,11 +553,199 @@
     }
     .st-cell:last-child { border-right: none; }
     .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
-    .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .st-dot   { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
     .st-dot.busy { background: var(--yellow); animation: pulse 1s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 
-    /* ── TOAST ── */
+    /* ── MODAL ──────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
+    }
+    .modal-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow);
+      transform: translateY(10px);
+      transition: transform .18s ease;
+    }
+    .modal-overlay.visible .modal { transform: translateY(0); }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      all: unset;
+      box-sizing: border-box;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--r);
+      transition: background var(--t), color var(--t);
+    }
+    .modal-close:hover { background: var(--overlay); color: var(--text); }
+    .modal-close .fi  { font-size: 13px; }
+
+    .modal-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--overlay);
+    }
+    .modal-tab {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 9px 16px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color var(--t), border-color var(--t);
+    }
+    .modal-tab:hover { color: var(--text); }
+    .modal-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .modal-tab .fi { font-size: 12px; }
+
+    .modal-body   { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .modal-pane   { display: none; flex-direction: column; gap: 12px; }
+    .modal-pane.active { display: flex; }
+    .modal-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Form elements inside modals */
+    .inp-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .inp {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 0 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--t);
+    }
+    .inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--adim); }
+    .inp::placeholder { color: var(--muted); opacity: .5; }
+
+    .inp-row { display: flex; gap: 6px; align-items: flex-end; }
+    .inp-row .inp { flex: 1; }
+
+    .inp-hint {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .file-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 30px 20px;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color var(--t), background var(--t);
+    }
+    .file-zone:hover { border-color: var(--accent); background: var(--adim); }
+    .file-zone .fi   { font-size: 26px; color: var(--muted); transition: color var(--t); }
+    .file-zone:hover .fi    { color: var(--accent); }
+    .file-zone-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .file-zone-sub   { font-size: 11px; color: var(--muted); }
+
+    /* Modal buttons */
+    .btn-m-p {
+      all: unset;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border-radius: var(--r);
+      cursor: pointer;
+      transition: filter var(--t);
+      white-space: nowrap;
+    }
+    .btn-m-p:hover    { filter: brightness(1.12); }
+    .btn-m-p:disabled { opacity: .5; cursor: not-allowed; filter: none; }
+    .btn-m-p .fi      { font-size: 12px; }
+
+    .btn-m-g {
+      all: unset;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      transition: border-color var(--t), color var(--t);
+    }
+    .btn-m-g:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── TOAST ──────────────────────────────────────────────── */
     #toast {
       position: fixed;
       bottom: 28px;
@@ -585,59 +766,45 @@
       white-space: nowrap;
       color: var(--text);
     }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.ok    { color: var(--green);  border-color: rgba(63,185,80,.3); }
-    #toast.info  { color: var(--accent); border-color: rgba(88,166,255,.3); }
-    #toast.warn  { color: var(--orange); border-color: rgba(227,179,65,.3); }
-    #toast.error { color: var(--red);    border-color: rgba(248,81,73,.3); }
+    #toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.ok    { color: var(--green);  border-color: rgba(63, 185, 80, .3); }
+    #toast.info  { color: var(--accent); border-color: rgba(88, 166, 255, .3); }
+    #toast.warn  { color: var(--orange); border-color: rgba(227, 179, 65, .3); }
+    #toast.error { color: var(--red);    border-color: rgba(248, 81, 73, .3); }
 
-    /* ── FILE INPUT (always hidden) ── */
+    /* Hidden file input */
     #file-in {
       position: absolute;
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       opacity: 0;
       pointer-events: none;
-      overflow: hidden;
     }
 
-    /* ────────────────────────────────────────────────────────────
-       EMBED MODES
-    ──────────────────────────────────────────────────────────── */
+    /* ── EMBED MODES ────────────────────────────────────────── */
+    body.embed         header,
+    body.embed         .statusbar { display: none; }
+    body.embed         .sb-import,
+    body.embed         .sb-export { display: none; }
 
-    /* ?embed=1  →  compact: hide header + statusbar, interactive */
-    body.embed header,
-    body.embed .statusbar { display: none; }
-    body.embed .sb-import,
-    body.embed .sb-export  { display: none; }
+    body.embed-demo    header,
+    body.embed-demo    .statusbar { display: none; }
+    body.embed-demo    .workspace { pointer-events: none !important; user-select: none !important; }
+    body.embed-demo    #code { caret-color: transparent; }
 
-    /* ?embed=demo  →  decorative: shows sidebar+tabs, FULLY non-interactive */
-    body.embed-demo header,
-    body.embed-demo .statusbar { display: none; }
-    body.embed-demo .workspace {
-      pointer-events: none !important;
-      user-select:    none !important;
-    }
-    body.embed-demo #code { caret-color: transparent; }
-
-    /* ?embed=readonly  →  bare content panel only, non-interactive */
     body.embed-readonly header,
     body.embed-readonly .statusbar,
     body.embed-readonly .sidebar,
     body.embed-readonly .tabbar { display: none; }
-    body.embed-readonly .workspace {
-      pointer-events: none !important;
-      user-select:    none !important;
-    }
+    body.embed-readonly .workspace { pointer-events: none !important; user-select: none !important; }
     body.embed-readonly #code { caret-color: transparent; }
 
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    /* ── SCROLLBARS ─────────────────────────────────────────── */
+    ::-webkit-scrollbar       { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
 
-    /* ── RESPONSIVE ── */
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 580px) {
       .sidebar { width: 42px; }
       .sb-btn > span:not(.fi) { display: none; }
@@ -654,14 +821,14 @@
 </head>
 <body>
 
-<!-- ── HEADER ── -->
+<!-- ── HEADER ─────────────────────────────────────────────── -->
 <header>
   <a class="logo" href="." aria-label="HTML Previewer home">
     <img src="media/images/logos/html5.svg" alt="" width="18" height="18" />
     HTML<span class="logo-accent">Previewer</span>
   </a>
-  <div class="url-bar" role="presentation">
-    <i class="fi fi-rr-lock url-lock" aria-hidden="true"></i>
+  <div class="url-bar" role="presentation" aria-hidden="true">
+    <i class="fi fi-rr-lock url-lock"></i>
     <span class="url-scheme">file://</span>
     <span class="url-path" id="j-urlpath">app</span>
   </div>
@@ -675,12 +842,19 @@
       <i class="fi fi-rr-code-branch" aria-hidden="true"></i>
       <span>GitHub</span>
     </a>
-    <div class="hdr-sep"></div>
-    <a class="hdr-btn" id="hdr-author" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" aria-label="Author">
-      <img id="hdr-avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="@MrLiPx" width="18" height="18" />
+    <div class="hdr-sep" aria-hidden="true"></div>
+    <a class="hdr-btn" id="hdr-author"
+       href="https://github.com/MrLiPx"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Author">
+      <img id="hdr-avatar"
+           src="https://avatars.githubusercontent.com/u/163276171?v=4"
+           alt="@MrLiPx"
+           width="18" height="18" />
       <span id="hdr-login">@MrLiPx</span>
     </a>
-    <div class="hdr-sep"></div>
+    <div class="hdr-sep" aria-hidden="true"></div>
     <button class="hdr-btn hdr-run" onclick="cmd('preview')" aria-label="Run preview (Ctrl+Enter)">
       <i class="fi fi-rr-play" aria-hidden="true"></i>
       <span>Run</span>
@@ -688,11 +862,12 @@
   </nav>
 </header>
 
-<!-- ── WORKSPACE ── -->
+<!-- ── WORKSPACE ──────────────────────────────────────────── -->
 <div class="workspace" role="main">
 
   <!-- SIDEBAR -->
   <aside class="sidebar" aria-label="Sidebar">
+
     <span class="sb-section">View</span>
     <button id="sb-editor"    class="sb-btn active" onclick="cmd('editor')">
       <i class="fi fi-rr-pencil" aria-hidden="true"></i><span>Editor</span>
@@ -701,7 +876,7 @@
       <i class="fi fi-rr-eye" aria-hidden="true"></i><span>Preview</span>
     </button>
     <button id="sb-highlight" class="sb-btn" onclick="cmd('highlight')">
-      <i class="fi fi-rr-code" aria-hidden="true"></i><span>Highlight</span>
+      <i class="fi fi-rr-magic-wand" aria-hidden="true"></i><span>Highlight</span>
     </button>
 
     <div class="sb-sep" role="separator"></div>
@@ -713,21 +888,21 @@
       <i class="fi fi-rr-expand" aria-hidden="true"></i><span>Expand all</span>
     </button>
     <button class="sb-btn" onclick="cmd('collapse')">
-      <i class="fi fi-rr-compress-alt" aria-hidden="true"></i><span>Collapse all</span>
+      <i class="fi fi-rr-compress" aria-hidden="true"></i><span>Collapse all</span>
     </button>
 
     <div class="sb-sep" role="separator"></div>
     <span class="sb-section">File</span>
     <button class="sb-btn" onclick="cmd('sample')">
-      <i class="fi fi-rr-file-code" aria-hidden="true"></i><span>Sample</span>
+      <i class="fi fi-rr-file" aria-hidden="true"></i><span>Sample</span>
     </button>
     <button class="sb-btn sb-red" onclick="cmd('clear')">
       <i class="fi fi-rr-trash" aria-hidden="true"></i><span>Clear</span>
     </button>
-    <button class="sb-btn sb-import" onclick="cmd('import')">
+    <button class="sb-btn sb-import" onclick="openImportModal()">
       <i class="fi fi-rr-upload" aria-hidden="true"></i><span>Import</span>
     </button>
-    <button class="sb-btn sb-green sb-export" onclick="cmd('export')">
+    <button class="sb-btn sb-green sb-export" onclick="openExportModal()">
       <i class="fi fi-rr-download" aria-hidden="true"></i><span>Export</span>
     </button>
 
@@ -741,10 +916,18 @@
     </a>
 
     <div class="sb-sep" role="separator"></div>
+    <span class="sb-section">Support</span>
+    <a class="sb-btn sb-pink" href="https://r.aiodb.xyz/dono" target="_blank" rel="noopener noreferrer">
+      <i class="fi fi-rr-heart" aria-hidden="true"></i><span>Donate</span>
+    </a>
+
+    <div class="sb-sep" role="separator"></div>
     <span class="sb-section">Theme</span>
-    <!-- Custom theme dropdown -->
     <div class="theme-dd" id="theme-dd">
-      <button class="theme-trigger" id="theme-trigger" onclick="toggleThemeDD(event)" aria-haspopup="listbox" aria-expanded="false">
+      <button class="theme-trigger" id="theme-trigger"
+              onclick="toggleThemeDD(event)"
+              aria-haspopup="listbox"
+              aria-expanded="false">
         <i class="fi fi-rr-computer" id="theme-icon" aria-hidden="true"></i>
         <span class="theme-label" id="theme-label">System</span>
         <i class="fi fi-rr-angle-down theme-caret" aria-hidden="true"></i>
@@ -772,14 +955,20 @@
   <!-- MAIN -->
   <div class="main">
     <div class="tabbar" role="tablist" aria-label="Editor panels">
-      <button class="tab active" id="tab-editor"    onclick="cmd('editor')"    role="tab" aria-selected="true"  aria-controls="panel-editor">
+      <button class="tab active" id="tab-editor"
+              onclick="cmd('editor')"
+              role="tab" aria-selected="true" aria-controls="panel-editor">
         <i class="fi fi-rr-pencil" aria-hidden="true"></i> Editor
       </button>
-      <button class="tab"        id="tab-preview"   onclick="cmd('preview')"   role="tab" aria-selected="false" aria-controls="panel-preview">
+      <button class="tab" id="tab-preview"
+              onclick="cmd('preview')"
+              role="tab" aria-selected="false" aria-controls="panel-preview">
         <i class="fi fi-rr-eye" aria-hidden="true"></i> Preview
       </button>
-      <button class="tab"        id="tab-highlight" onclick="cmd('highlight')" role="tab" aria-selected="false" aria-controls="panel-highlight">
-        <i class="fi fi-rr-code" aria-hidden="true"></i> Highlight
+      <button class="tab" id="tab-highlight"
+              onclick="cmd('highlight')"
+              role="tab" aria-selected="false" aria-controls="panel-highlight">
+        <i class="fi fi-rr-magic-wand" aria-hidden="true"></i> Highlight
       </button>
     </div>
 
@@ -792,7 +981,11 @@
           <span id="j-cursor">Ln 1, Col 1</span>
           <div class="ed-meta-r">
             <span id="j-counts">0 chars · 0 lines</span>
-            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> preview · <kbd>Tab</kbd> indent · <kbd>Ctrl</kbd>+<kbd>S</kbd> export</span>
+            <span>
+              <kbd>Ctrl</kbd>+<kbd>Enter</kbd> preview ·
+              <kbd>Tab</kbd> indent ·
+              <kbd>Ctrl</kbd>+<kbd>S</kbd> export
+            </span>
           </div>
         </div>
         <div class="ed-body">
@@ -813,13 +1006,13 @@
       <!-- PREVIEW PANEL -->
       <div class="panel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
         <div class="pv-chrome">
-          <div class="traffic">
+          <div class="traffic" aria-hidden="true">
             <button class="tc-r" title="Back to editor"  onclick="cmd('editor')"    aria-label="Back to editor"></button>
             <button class="tc-y" title="Refresh preview" onclick="refreshPreview()" aria-label="Refresh preview"></button>
             <button class="tc-g" title="Open in new tab" onclick="openTab()"        aria-label="Open in new tab"></button>
           </div>
-          <div class="pv-addr">
-            <i class="fi fi-rr-lock pv-lock" aria-hidden="true"></i>
+          <div class="pv-addr" aria-hidden="true">
+            <i class="fi fi-rr-lock pv-lock"></i>
             <span class="pv-scheme">preview/</span>
             <span class="pv-slug" id="j-pvslug">untitled</span>
           </div>
@@ -828,10 +1021,10 @@
               <i class="fi fi-rr-refresh" aria-hidden="true"></i>
             </button>
             <button class="pv-tool" onclick="openTab()" title="Open in new tab" aria-label="Open in new tab">
-              <i class="fi fi-rr-share-square" aria-hidden="true"></i>
+              <i class="fi fi-rr-share" aria-hidden="true"></i>
             </button>
-            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML" aria-label="Copy HTML">
-              <i class="fi fi-rr-copy-alt" aria-hidden="true"></i>
+            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML" aria-label="Copy HTML to clipboard">
+              <i class="fi fi-rr-copy" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -853,7 +1046,9 @@
             <span><span class="hl-dot" style="background:var(--muted)"></span>comment</span>
           </div>
         </div>
-        <div class="hl-scroll"><pre id="hl-out" aria-live="polite"></pre></div>
+        <div class="hl-scroll">
+          <pre id="hl-out" aria-live="polite"></pre>
+        </div>
       </div>
 
     </div><!-- /panels -->
@@ -873,35 +1068,116 @@
 
 </div><!-- /workspace -->
 
+<!-- ── IMPORT MODAL ────────────────────────────────────────── -->
+<div class="modal-overlay" id="import-modal"
+     role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="import-modal-title">Import HTML</span>
+      <button class="modal-close" onclick="closeModal('import-modal')" aria-label="Close">
+        <i class="fi fi-rr-cross" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-tabs" role="tablist">
+      <button class="modal-tab active" id="itab-file"
+              onclick="setImportTab('file')" role="tab" aria-selected="true">
+        <i class="fi fi-rr-upload" aria-hidden="true"></i> File
+      </button>
+      <button class="modal-tab" id="itab-url"
+              onclick="setImportTab('url')" role="tab" aria-selected="false">
+        <i class="fi fi-rr-link" aria-hidden="true"></i> URL
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- File pane -->
+      <div class="modal-pane active" id="ipane-file">
+        <div class="file-zone" onclick="document.getElementById('file-in').click()" role="button" tabindex="0">
+          <i class="fi fi-rr-upload" aria-hidden="true"></i>
+          <span class="file-zone-title">Choose a file</span>
+          <span class="file-zone-sub">Accepts .html and .htm files</span>
+        </div>
+      </div>
+      <!-- URL pane -->
+      <div class="modal-pane" id="ipane-url">
+        <div>
+          <label class="inp-label" for="url-input">Page URL</label>
+          <div class="inp-row">
+            <input class="inp" id="url-input"
+                   type="url"
+                   placeholder="https://example.com/page.html"
+                   onkeydown="if(event.key==='Enter')importFromUrl()" />
+            <button class="btn-m-p" id="fetch-btn" onclick="importFromUrl()">
+              <i class="fi fi-rr-download" aria-hidden="true"></i> Fetch
+            </button>
+          </div>
+        </div>
+        <p class="inp-hint">
+          Enter any URL — a website, .html file, or .htm file.
+          A CORS proxy is used automatically if needed.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EXPORT MODAL ────────────────────────────────────────── -->
+<div class="modal-overlay" id="export-modal"
+     role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="export-modal-title">Export HTML</span>
+      <button class="modal-close" onclick="closeModal('export-modal')" aria-label="Close">
+        <i class="fi fi-rr-cross" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label class="inp-label" for="export-filename">Filename</label>
+        <input class="inp" id="export-filename"
+               type="text"
+               placeholder="index.html"
+               onkeydown="if(event.key==='Enter')doExportWithName()" />
+      </div>
+      <p class="inp-hint">The <code style="font-family:var(--mono);font-size:10px;background:var(--overlay);padding:1px 5px;border-radius:3px;border:1px solid var(--border)">.html</code> extension is added automatically if omitted.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-m-g" onclick="closeModal('export-modal')">Cancel</button>
+      <button class="btn-m-p" onclick="doExportWithName()">
+        <i class="fi fi-rr-download" aria-hidden="true"></i> Download
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
-<input type="file" id="file-in" accept=".html,.htm,.txt" aria-hidden="true" tabindex="-1" />
+<input type="file" id="file-in" accept=".html,.htm" aria-hidden="true" tabindex="-1" />
 
 <script>
 'use strict';
-  
-/* ═══════════════════════════════════════════════════════════════
-   THEME  (system | dark | light)
-   localStorage key: 'htmlprev-theme'
-   Default for new visitors: 'system' (follows OS, not persisted
-   until the user explicitly picks one)
-═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════════ */
+var TABS    = ['editor', 'preview', 'highlight'];
+var GH_ID   = 163276171;
+var CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+var THEME_ICONS  = { system: 'fi-rr-computer', dark: 'fi-rr-moon', light: 'fi-rr-sun' };
+var THEME_LABELS = { system: 'System', dark: 'Dark', light: 'Light' };
+
+/* ═══════════════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════════════ */
 var _pref = 'system';
 
-var THEME_ICONS   = { system: 'fi-rr-computer', dark: 'fi-rr-moon', light: 'fi-rr-sun' };
-var THEME_LABELS  = { system: 'System', dark: 'Dark', light: 'Light' };
-
-function _os() {
-  return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
-}
-function _effective(p) {
-  return (p === 'dark' || p === 'light') ? p : _os();
-}
+function _os()        { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
+function _effective(p){ return (p === 'dark' || p === 'light') ? p : _os(); }
 
 function applyThemePref(pref, persist) {
   if (pref !== 'dark' && pref !== 'light' && pref !== 'system') pref = 'system';
   _pref = pref;
   document.documentElement.setAttribute('data-theme', _effective(pref));
-  if (persist !== false) { // persist by default (explicit user action)
+  if (persist !== false) {
     try { localStorage.setItem('htmlprev-theme', pref); } catch (_) {}
   }
   _syncThemeUI();
@@ -910,16 +1186,12 @@ function applyThemePref(pref, persist) {
 }
 
 function _syncThemeUI() {
-  var eff = _effective(_pref);
-  // Status bar
-  var lbl = document.getElementById('j-themelabel');
-  if (lbl) lbl.textContent = THEME_LABELS[_pref];
-  // Dropdown trigger icon + label
-  var ic = document.getElementById('theme-icon');
-  var tl = document.getElementById('theme-label');
-  if (ic) { ic.className = 'fi ' + THEME_ICONS[_pref]; }
-  if (tl) tl.textContent = THEME_LABELS[_pref];
-  // Dropdown menu items
+  var ic  = document.getElementById('theme-icon');
+  var tl  = document.getElementById('theme-label');
+  var st  = document.getElementById('j-themelabel');
+  if (ic) ic.className     = 'fi ' + THEME_ICONS[_pref];
+  if (tl) tl.textContent   = THEME_LABELS[_pref];
+  if (st) st.textContent   = THEME_LABELS[_pref];
   ['system', 'dark', 'light'].forEach(function (p) {
     var btn = document.getElementById('tm-' + p);
     if (!btn) return;
@@ -928,18 +1200,16 @@ function _syncThemeUI() {
   });
 }
 
-// OS change → update live if pref is 'system'
+// React to OS theme change when pref is 'system'
 try {
   window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function () {
-    if (_pref === 'system') {
-      document.documentElement.setAttribute('data-theme', _os());
-    }
+    if (_pref === 'system') document.documentElement.setAttribute('data-theme', _os());
   });
 } catch (_) {}
 
-// Init: sync _pref from hash / localStorage (theme already applied by inline script)
+// Initialise from hash or localStorage
 (function () {
-  var tokens = location.hash.replace(/^#/, '').split('&').map(function (t) { return t.toLowerCase(); });
+  var tokens  = location.hash.replace(/^#/, '').split('&').map(function (t) { return t.toLowerCase(); });
   var fromHash = null;
   for (var i = 0; i < tokens.length; i++) {
     var t = tokens[i];
@@ -951,63 +1221,47 @@ try {
     _pref = fromHash;
     try { localStorage.setItem('htmlprev-theme', fromHash); } catch (_) {}
   } else {
-    try {
-      var s = localStorage.getItem('htmlprev-theme');
-      if (s === 'dark' || s === 'light' || s === 'system') _pref = s;
-    } catch (_) {}
+    try { var s = localStorage.getItem('htmlprev-theme'); if (s === 'dark' || s === 'light' || s === 'system') _pref = s; } catch (_) {}
   }
   document.documentElement.setAttribute('data-theme', _effective(_pref));
   _syncThemeUI();
 }());
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    THEME DROPDOWN
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 var _ddOpen = false;
 
-function toggleThemeDD(e) {
-  e && e.stopPropagation();
-  _ddOpen ? closeThemeDD() : openThemeDD();
-}
+function toggleThemeDD(e) { if (e) e.stopPropagation(); _ddOpen ? closeThemeDD() : openThemeDD(); }
 
 function openThemeDD() {
   _ddOpen = true;
-  var menu = document.getElementById('theme-menu');
+  var menu    = document.getElementById('theme-menu');
   var trigger = document.getElementById('theme-trigger');
-  if (menu) menu.classList.add('visible');
-  if (trigger) {
-    trigger.classList.add('open');
-    trigger.setAttribute('aria-expanded', 'true');
-  }
+  if (menu)    menu.classList.add('visible');
+  if (trigger) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
 }
-
 function closeThemeDD() {
   _ddOpen = false;
-  var menu = document.getElementById('theme-menu');
+  var menu    = document.getElementById('theme-menu');
   var trigger = document.getElementById('theme-trigger');
-  if (menu) menu.classList.remove('visible');
-  if (trigger) {
-    trigger.classList.remove('open');
-    trigger.setAttribute('aria-expanded', 'false');
-  }
+  if (menu)    menu.classList.remove('visible');
+  if (trigger) { trigger.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
 }
-
-// Close on outside click
 document.addEventListener('click', function (e) {
-  if (_ddOpen) {
-    var dd = document.getElementById('theme-dd');
-    if (dd && !dd.contains(e.target)) closeThemeDD();
+  if (_ddOpen) { var dd = document.getElementById('theme-dd'); if (dd && !dd.contains(e.target)) closeThemeDD(); }
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    closeThemeDD();
+    closeModal('import-modal');
+    closeModal('export-modal');
   }
 });
 
-// Close on Escape
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && _ddOpen) closeThemeDD();
-});
-
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    EMBED MODE DETECTION
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 (function () {
   try {
     var em = new URLSearchParams(location.search).get('embed');
@@ -1017,15 +1271,9 @@ document.addEventListener('keydown', function (e) {
   } catch (_) {}
 }());
 
-/* ═══════════════════════════════════════════════════════════════
-   CONSTANTS
-═══════════════════════════════════════════════════════════════ */
-var TABS  = ['editor', 'preview', 'highlight'];
-var GH_ID = 163276171;
-
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    HASH ROUTING
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 function parseHash(raw) {
   return raw.replace(/^#/, '').split('&').filter(Boolean).map(function (t) {
     var eq = t.indexOf('=');
@@ -1036,12 +1284,11 @@ function parseHash(raw) {
 }
 
 function applyHash(raw) {
-  var tokens = parseHash(raw);
-  if (!tokens.length) return;
+  var tokens    = parseHash(raw);
   var tabTarget = null;
   tokens.forEach(function (tk) {
     switch (tk.key) {
-      case 'editor':    case 'preview':   case 'highlight': tabTarget = tk.key; break;
+      case 'editor': case 'preview': case 'highlight': tabTarget = tk.key; break;
       case 'dark':   applyThemePref('dark',   false); break;
       case 'light':  applyThemePref('light',  false); break;
       case 'system': applyThemePref('system', false); break;
@@ -1054,8 +1301,8 @@ function applyHash(raw) {
       case 'expand':   expandAll(true);   break;
       case 'collapse': collapseAll(true); break;
       case 'clear':    clearCode(true);   break;
-      case 'export':   doExport();        break;
-      case 'import':   doImport();        break;
+      case 'export':   openExportModal(); break;
+      case 'import':   openImportModal(); break;
     }
   });
   if (tabTarget) switchTab(tabTarget);
@@ -1063,33 +1310,33 @@ function applyHash(raw) {
 
 window.addEventListener('hashchange', function () { applyHash(location.hash); });
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    COMMAND DISPATCH
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 function cmd(action) {
-  if (TABS.indexOf(action) >= 0) switchTab(action);
-  else switch (action) {
-    case 'sample':   loadSample();  break;
-    case 'format':   fmtCode();     break;
-    case 'expand':   expandAll();   break;
-    case 'collapse': collapseAll(); break;
-    case 'clear':    clearCode();   break;
-    case 'import':   doImport();    break;
-    case 'export':   doExport();    break;
+  if (TABS.indexOf(action) >= 0) { switchTab(action); return; }
+  switch (action) {
+    case 'sample':   loadSample();      break;
+    case 'format':   fmtCode();         break;
+    case 'expand':   expandAll();       break;
+    case 'collapse': collapseAll();     break;
+    case 'clear':    clearCode();       break;
+    case 'import':   openImportModal(); break;
+    case 'export':   openExportModal(); break;
     case 'preview':  switchTab('preview'); break;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    TABS
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 function switchTab(name) {
   if (TABS.indexOf(name) < 0) return;
   TABS.forEach(function (t) {
-    var tab   = document.getElementById('tab-'   + t);
-    var panel = document.getElementById('panel-' + t);
-    var sb    = document.getElementById('sb-'    + t);
     var active = (t === name);
+    var tab    = document.getElementById('tab-'   + t);
+    var panel  = document.getElementById('panel-' + t);
+    var sb     = document.getElementById('sb-'    + t);
     if (tab)   { tab.classList.toggle('active',   active); tab.setAttribute('aria-selected', String(active)); }
     if (panel) panel.classList.toggle('active', active);
     if (sb)    sb.classList.toggle('active',    active);
@@ -1098,15 +1345,13 @@ function switchTab(name) {
   if (name === 'highlight') renderHighlight();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   EDITOR ELEMENTS & SYNC
-   NOTE: All getElementById calls are in functions (not at top
-   level) so they run after DOM is ready. No $ shorthand used.
-═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   EDITOR HELPERS
+═══════════════════════════════════════════════════════════ */
 function syncEditor() {
-  var code    = document.getElementById('code');
-  var gutter  = document.getElementById('j-gutter');
-  var counts  = document.getElementById('j-counts');
+  var code   = document.getElementById('code');
+  var gutter = document.getElementById('j-gutter');
+  var counts = document.getElementById('j-counts');
   if (!code || !gutter) return;
   var lines = code.value.split('\n');
   gutter.textContent = lines.map(function (_, i) { return i + 1; }).join('\n');
@@ -1129,7 +1374,7 @@ function setStatus(msg, busy) {
   if (dot) dot.classList.toggle('busy', !!busy);
 }
 
-// Wire up editor events after DOM ready
+// Wire up editor events
 document.addEventListener('DOMContentLoaded', function () {
   var code   = document.getElementById('code');
   var gutter = document.getElementById('j-gutter');
@@ -1138,9 +1383,7 @@ document.addEventListener('DOMContentLoaded', function () {
   code.addEventListener('input',  syncEditor);
   code.addEventListener('click',  syncCursor);
   code.addEventListener('keyup',  syncCursor);
-  code.addEventListener('scroll', function () {
-    if (gutter) gutter.scrollTop = code.scrollTop;
-  });
+  code.addEventListener('scroll', function () { if (gutter) gutter.scrollTop = code.scrollTop; });
 
   code.addEventListener('keydown', function (e) {
     if (e.key === 'Tab') {
@@ -1161,14 +1404,14 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault(); switchTab('preview');
     } else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault(); doExport();
+      e.preventDefault(); openExportModal();
     }
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    PREVIEW
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 var _blobUrl = null;
 
 function refreshPreview() {
@@ -1183,8 +1426,8 @@ function refreshPreview() {
     var m    = html.match(/<title[^>]*>([^<]+)<\/title>/i);
     var slug = (m ? m[1].trim() : 'untitled')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'untitled';
-    var pvslug = document.getElementById('j-pvslug');
-    if (pvslug) pvslug.textContent = slug;
+    var el = document.getElementById('j-pvslug');
+    if (el) el.textContent = slug;
     setStatus('Preview rendered');
     toast('Preview rendered', 'ok');
   } catch (err) {
@@ -1202,22 +1445,24 @@ function openTab() {
     window.open(_blobUrl, '_blank')
       ? toast('Opened in new tab', 'ok')
       : toast('Allow popups to open in new tab', 'warn');
-  } catch (err) {
-    toast('Could not open new tab', 'error');
-  }
+  } catch (err) { toast('Could not open new tab', 'error'); }
 }
 
 function copyHTML() {
   var code = document.getElementById('code');
   if (!code || !code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
-  navigator.clipboard && navigator.clipboard.writeText(code.value)
-    .then(function () { toast('Copied to clipboard', 'ok'); })
-    .catch(function () { toast('Copy failed — try Ctrl+A, Ctrl+C', 'warn'); });
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code.value)
+      .then(function ()  { toast('Copied to clipboard', 'ok'); })
+      .catch(function () { toast('Copy failed — try Ctrl+A, Ctrl+C', 'warn'); });
+  } else {
+    toast('Clipboard not available', 'warn');
+  }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    SYNTAX HIGHLIGHT
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 function renderHighlight() {
   var code = document.getElementById('code');
   var out  = document.getElementById('hl-out');
@@ -1274,10 +1519,11 @@ function colorTag(raw) {
   return s;
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    FORMAT
-═══════════════════════════════════════════════════════════════ */
-var VOID_TAGS = { area:1,base:1,br:1,col:1,embed:1,hr:1,img:1,input:1,link:1,meta:1,param:1,source:1,track:1,wbr:1 };
+═══════════════════════════════════════════════════════════ */
+var VOID_TAGS = { area:1, base:1, br:1, col:1, embed:1, hr:1, img:1, input:1,
+                  link:1, meta:1, param:1, source:1, track:1, wbr:1 };
 
 function fmtCode(silent) {
   var code = document.getElementById('code');
@@ -1322,12 +1568,9 @@ function collapseAll(silent) {
   if (!silent) toast('Collapsed', 'info');
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    SAMPLE HTML
-   Written as a plain multi-line string (no array join, no escaped
-   unicode) — this is the cleanest approach and avoids all issues
-   with escaped surrogate pairs in button onclick handlers.
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 var SAMPLE = [
 '<!DOCTYPE html>',
 '<html lang="en">',
@@ -1391,16 +1634,14 @@ function loadSample(silent) {
   syncEditor();
   setStatus('Sample loaded');
   if (!silent) {
-    // Always switch to editor so user can see the loaded code,
-    // then auto-preview so they see the rendered result immediately
     switchTab('editor');
     toast('Sample loaded', 'info');
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    CLEAR
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 function clearCode(silent) {
   var code = document.getElementById('code');
   if (!code) return;
@@ -1411,61 +1652,192 @@ function clearCode(silent) {
   setStatus('Editor cleared');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   IMPORT / EXPORT
-═══════════════════════════════════════════════════════════════ */
-function doImport() {
-  if (document.body.classList.contains('embed-demo') ||
-      document.body.classList.contains('embed-readonly')) return;
-  document.getElementById('file-in').click();
+/* ═══════════════════════════════════════════════════════════
+   MODAL UTILITIES
+═══════════════════════════════════════════════════════════ */
+function openModal(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    el.classList.add('visible');
+    // Focus first focusable element
+    var first = el.querySelector('input, button:not(.modal-close)');
+    if (first) setTimeout(function () { first.focus(); }, 180);
+  }
+}
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('visible');
 }
 
-document.getElementById('file-in').addEventListener('change', function (ev) {
-  var f = ev.target.files[0];
-  if (!f) return;
-  var r = new FileReader();
-  r.onload = function (e) {
-    var code    = document.getElementById('code');
-    var urlpath = document.getElementById('j-urlpath');
-    var fname   = document.getElementById('j-fname');
-    if (!code) return;
-    code.value = e.target.result;
-    syncEditor();
-    var name = f.name.replace(/\.html?$/i, '');
-    if (urlpath) urlpath.textContent = name;
-    if (fname)   fname.textContent   = f.name;
-    toast('Imported: ' + f.name, 'ok');
-    setStatus('Imported: ' + f.name);
-  };
-  r.onerror = function () { toast('Import failed', 'error'); };
-  r.readAsText(f, 'UTF-8');
-  ev.target.value = '';
+// Close modal on overlay click (outside .modal)
+document.addEventListener('click', function (e) {
+  ['import-modal', 'export-modal'].forEach(function (id) {
+    var overlay = document.getElementById(id);
+    if (overlay && overlay.classList.contains('visible') && e.target === overlay) {
+      closeModal(id);
+    }
+  });
 });
 
-function doExport() {
+/* ═══════════════════════════════════════════════════════════
+   IMPORT — FILE
+═══════════════════════════════════════════════════════════ */
+function openImportModal() {
+  if (document.body.classList.contains('embed-demo') ||
+      document.body.classList.contains('embed-readonly')) return;
+  setImportTab('file');
+  document.getElementById('url-input').value = '';
+  openModal('import-modal');
+}
+
+function setImportTab(tab) {
+  var tabs  = ['file', 'url'];
+  tabs.forEach(function (t) {
+    var btn   = document.getElementById('itab-' + t);
+    var pane  = document.getElementById('ipane-' + t);
+    var active = (t === tab);
+    if (btn)  { btn.classList.toggle('active', active); btn.setAttribute('aria-selected', String(active)); }
+    if (pane) pane.classList.toggle('active', active);
+  });
+  if (tab === 'url') {
+    setTimeout(function () {
+      var inp = document.getElementById('url-input');
+      if (inp) inp.focus();
+    }, 50);
+  }
+}
+
+// File picker handler
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('file-in').addEventListener('change', function (ev) {
+    var f = ev.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      loadCodeString(e.target.result, f.name.replace(/\.html?$/i, ''), f.name);
+      closeModal('import-modal');
+      toast('Imported: ' + f.name, 'ok');
+    };
+    reader.onerror = function () { toast('File read failed', 'error'); };
+    reader.readAsText(f, 'UTF-8');
+    ev.target.value = '';
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   IMPORT — URL FETCH
+═══════════════════════════════════════════════════════════ */
+function importFromUrl() {
+  var input = document.getElementById('url-input');
+  var btn   = document.getElementById('fetch-btn');
+  var raw   = (input ? input.value : '').trim();
+  if (!raw) { toast('Enter a URL first', 'warn'); return; }
+
+  // Prepend https:// if missing
+  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+
+  var url;
+  try { url = new URL(raw); } catch (_) { toast('Invalid URL', 'error'); return; }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Fetching…'; }
+  setStatus('Fetching URL…', true);
+
+  fetchHtml(url.toString())
+    .then(function (html) {
+      var hostname  = url.hostname.replace(/^www\./, '');
+      var pathParts = url.pathname.split('/').filter(Boolean);
+      var slug      = pathParts[pathParts.length - 1] || hostname;
+      loadCodeString(html, slug.replace(/\.html?$/i, ''), slug);
+      closeModal('import-modal');
+      setStatus('Imported from ' + hostname);
+      toast('Imported from ' + hostname, 'ok');
+    })
+    .catch(function (err) {
+      setStatus('Fetch failed');
+      toast('Could not fetch URL — check the address and try again', 'error');
+      console.error('[HTMLPreviewer] Fetch:', err);
+    })
+    .finally(function () {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fi fi-rr-download" aria-hidden="true"></i> Fetch'; }
+    });
+}
+
+function fetchHtml(url) {
+  // Try direct first (works for CORS-enabled hosts)
+  return fetch(url, { mode: 'cors' })
+    .then(function (r) {
+      if (r.ok) return r.text();
+      throw new Error('HTTP ' + r.status);
+    })
+    .catch(function () {
+      // Fallback: CORS proxy
+      return fetch(CORS_PROXY + encodeURIComponent(url))
+        .then(function (r) {
+          if (r.ok) return r.text();
+          throw new Error('Proxy HTTP ' + r.status);
+        });
+    });
+}
+
+function loadCodeString(html, slug, filename) {
+  var code    = document.getElementById('code');
+  var urlpath = document.getElementById('j-urlpath');
+  var fname   = document.getElementById('j-fname');
+  if (!code) return;
+  code.value = html;
+  syncEditor();
+  if (urlpath) urlpath.textContent = slug  || 'app';
+  if (fname)   fname.textContent   = filename || slug || 'app';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════════════ */
+function openExportModal() {
   if (document.body.classList.contains('embed-readonly')) return;
   var code = document.getElementById('code');
   if (!code || !code.value.trim()) { toast('Nothing to export', 'warn'); return; }
+
+  // Suggest filename from <title> tag
+  var m    = code.value.match(/<title[^>]*>([^<]+)<\/title>/i);
+  var name = m
+    ? m[1].trim().replace(/[^\w\s\-]/g, '').trim().replace(/\s+/g, '-').toLowerCase()
+    : 'index';
+  var input = document.getElementById('export-filename');
+  if (input) input.value = (name || 'index') + '.html';
+
+  openModal('export-modal');
+}
+
+function doExportWithName() {
+  var code  = document.getElementById('code');
+  if (!code || !code.value.trim()) { toast('Nothing to export', 'warn'); return; }
+
+  var input    = document.getElementById('export-filename');
+  var filename = ((input ? input.value : '') || 'index').trim();
+  if (!/\.html?$/i.test(filename)) filename += '.html';
+
   try {
     var blob = new Blob([code.value], { type: 'text/html;charset=utf-8' });
     var url  = URL.createObjectURL(blob);
     var a    = document.createElement('a');
     a.href     = url;
-    a.download = 'index.html';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 15000);
-    toast('Exported as index.html', 'ok');
+    closeModal('export-modal');
+    toast('Exported as ' + filename, 'ok');
   } catch (err) {
     toast('Export failed', 'error');
     console.error('[HTMLPreviewer] Export:', err);
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    TOAST
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 var _toastTimer;
 function toast(msg, type) {
   var el = document.getElementById('toast');
@@ -1476,28 +1848,40 @@ function toast(msg, type) {
   _toastTimer = setTimeout(function () { el.className = ''; }, 2600);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GITHUB PROFILE (non-critical, fails silently)
-═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   GITHUB PROFILE (non-critical)
+═══════════════════════════════════════════════════════════ */
+function imgOpt(url, w, h) {
+  if (!url) return url;
+  try {
+    var u = new URL(url);
+    // GitHub CDN supports the `size` param on avatar URLs
+    if (u.hostname.endsWith('githubusercontent.com') || u.hostname.endsWith('github.com')) {
+      u.searchParams.set('size', Math.max(w, h));
+    }
+    return u.toString();
+  } catch (_) { return url; }
+}
+
 function loadProfile() {
   fetch('https://api.github.com/user/' + GH_ID, {
     headers: { Accept: 'application/vnd.github.v3+json' }
   })
-    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (r) { if (!r.ok) throw new Error('GH API ' + r.status); return r.json(); })
     .then(function (u) {
       var author = document.getElementById('hdr-author');
       var avatar = document.getElementById('hdr-avatar');
       var login  = document.getElementById('hdr-login');
-      if (author && u.html_url)   author.href         = u.html_url;
-      if (avatar && u.avatar_url) avatar.src          = imgOpt(u.avatar_url, 36, 36);
-      if (login  && u.login)      login.textContent   = '@' + u.login;
+      if (author && u.html_url)   author.href        = u.html_url;
+      if (avatar && u.avatar_url) avatar.src         = imgOpt(u.avatar_url, 36, 36);
+      if (login  && u.login)      login.textContent  = '@' + u.login;
     })
-    .catch(function () { /* keep hardcoded defaults */ });
+    .catch(function () { /* keep static fallbacks */ });
 }
 
-/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    INIT
-═══════════════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
   syncEditor();
   loadProfile();
