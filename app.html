@@ -7,332 +7,787 @@
   <meta name="description" content="A zero-dependency, browser-based HTML editor with live preview, syntax highlighting, and formatting tools." />
   <meta name="robots" content="noindex" />
   <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
+  <!-- Flaticon UIcons Regular Rounded -->
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Inline theme init — runs sync before paint to prevent flash -->
+  <!-- Sync theme init — must run before paint to prevent flash -->
   <script>
     (function(){
-      function _os(){return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
-      function _eff(p){return(p==='dark'||p==='light')?p:_os();}
+      function os(){return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
       var p='system';
-      var tok=location.hash.replace(/^#/,'').split('&').map(function(t){return t.toLowerCase();});
-      for(var i=0;i<tok.length;i++){
-        var t=tok[i];
-        if(t==='dark'||t==='theme=dark'){p='dark';break;}
-        if(t==='light'||t==='theme=light'){p='light';break;}
-        if(t==='system'||t==='theme=system'){p='system';break;}
+      var t=location.hash.replace(/^#/,'').split('&').map(function(x){return x.toLowerCase();});
+      for(var i=0;i<t.length;i++){
+        if(t[i]==='dark'||t[i]==='theme=dark'){p='dark';break;}
+        if(t[i]==='light'||t[i]==='theme=light'){p='light';break;}
+        if(t[i]==='system'||t[i]==='theme=system'){p='system';break;}
       }
-      if(p==='system'){
-        try{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'||s==='system')p=s;}catch(e){}
-      }
-      document.documentElement.setAttribute('data-theme',_eff(p));
+      if(p==='system'){try{var s=localStorage.getItem('htmlprev-theme');if(s==='dark'||s==='light'||s==='system')p=s;}catch(e){}}
+      document.documentElement.setAttribute('data-theme',(p==='dark'||p==='light')?p:os());
     })();
   </script>
 
   <style>
+    /* ── TOKENS ── */
     :root {
-      --bg:#0d1117; --surface:#161b22; --overlay:#1c2128;
-      --border:#30363d; --bhi:#484f58;
-      --accent:#58a6ff; --adim:rgba(88,166,255,.12);
-      --green:#3fb950; --red:#f85149; --yellow:#d29922; --orange:#e3b341;
-      --text:#e6edf3; --muted:#8b949e;
-      --mono:'JetBrains Mono',monospace; --sans:'Inter',sans-serif;
-      --r:6px; --shadow:0 8px 32px rgba(0,0,0,.4); --t:.15s ease;
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --overlay:   #1c2128;
+      --border:    #30363d;
+      --border-hi: #484f58;
+      --accent:    #58a6ff;
+      --adim:      rgba(88,166,255,.12);
+      --green:     #3fb950;
+      --red:       #f85149;
+      --yellow:    #d29922;
+      --orange:    #e3b341;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+      --r:         6px;
+      --shadow:    0 8px 32px rgba(0,0,0,.45);
+      --t:         .15s ease;
     }
-    [data-theme="light"]{
-      --bg:#f6f8fa; --surface:#fff; --overlay:#eaeef2;
-      --border:#d0d7de; --bhi:#afb8c1;
-      --text:#1f2328; --muted:#57606a; --shadow:0 8px 32px rgba(0,0,0,.1);
+    [data-theme="light"] {
+      --bg:        #f6f8fa;
+      --surface:   #ffffff;
+      --overlay:   #eaeef2;
+      --border:    #d0d7de;
+      --border-hi: #afb8c1;
+      --text:      #1f2328;
+      --muted:     #57606a;
+      --shadow:    0 8px 32px rgba(0,0,0,.1);
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;overflow:hidden;}
-    body{font-family:var(--sans);background:var(--bg);color:var(--text);
-      display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;}
 
-    /* HEADER */
-    header{height:46px;flex-shrink:0;display:flex;align-items:center;gap:6px;
-      padding:0 10px;background:var(--surface);border-bottom:1px solid var(--border);
-      position:relative;z-index:10;}
-    .logo{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
-      color:var(--text);text-decoration:none;padding:4px 8px;border-radius:var(--r);
-      border:1px solid transparent;white-space:nowrap;flex-shrink:0;
-      transition:background var(--t),border-color var(--t);}
-    .logo:hover{background:var(--overlay);border-color:var(--border);}
-    .logo img{width:18px;height:18px;} .logo-a{color:var(--accent);}
-    .url-bar{flex:1;max-width:300px;height:28px;display:flex;align-items:center;
-      gap:5px;padding:0 9px;background:var(--bg);border:1px solid var(--border);
-      border-radius:20px;font-family:var(--mono);font-size:11px;color:var(--muted);
-      overflow:hidden;transition:border-color var(--t);}
-    .url-bar:hover{border-color:var(--bhi);}
-    .url-lock{color:var(--green);flex-shrink:0;font-size:10px;}
-    .url-scheme{color:var(--accent);flex-shrink:0;}
-    .url-path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .hdr-spacer{flex:1;}
-    .hdr-nav{display:flex;align-items:center;gap:2px;flex-shrink:0;}
-    .hdr-btn{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;
-      padding:4px 9px;height:28px;font-family:var(--sans);font-size:12px;font-weight:500;
-      color:var(--muted);cursor:pointer;border-radius:var(--r);border:1px solid transparent;
-      white-space:nowrap;text-decoration:none;
-      transition:background var(--t),border-color var(--t),color var(--t);}
-    .hdr-btn:hover{background:var(--overlay);border-color:var(--border);color:var(--text);}
-    .hdr-btn svg{width:13px;height:13px;flex-shrink:0;}
-    .hdr-btn img{width:18px;height:18px;border-radius:50%;flex-shrink:0;}
-    .hdr-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;}
-    .hdr-run{background:var(--accent);color:#fff!important;border-color:transparent!important;
-      padding:4px 14px;font-weight:600;}
-    .hdr-run:hover{filter:brightness(1.15);background:var(--accent)!important;}
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    /* WORKSPACE */
-    .workspace{display:flex;flex:1;overflow:hidden;min-height:0;}
+    /* Ensure UIcons render consistently */
+    i.fi { display: inline-flex; align-items: center; justify-content: center; }
 
-    /* SIDEBAR */
-    .sidebar{width:178px;flex-shrink:0;background:var(--surface);
-      border-right:1px solid var(--border);display:flex;flex-direction:column;
-      padding:5px 4px;gap:1px;overflow-y:auto;overflow-x:hidden;}
-    .sb-sect{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-      color:var(--muted);padding:10px 8px 3px;user-select:none;}
-    .sb-sect:first-child{padding-top:5px;}
-    .sb-sep{height:1px;background:var(--border);margin:4px;}
-    .sb-btn{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:7px;width:100%;
-      padding:6px 8px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);
-      cursor:pointer;border-radius:var(--r);border:1px solid transparent;text-decoration:none;
-      white-space:nowrap;transition:background var(--t),border-color var(--t),color var(--t);}
-    .sb-btn:hover,.sb-btn.active{background:var(--overlay);border-color:var(--border);color:var(--text);}
-    .sb-btn .ic{font-size:12px;width:16px;text-align:center;flex-shrink:0;line-height:1;}
-    .sb-a{color:var(--accent);}
-    .sb-a:hover,.sb-a.active{background:var(--adim);border-color:rgba(88,166,255,.25);color:var(--accent);}
-    .sb-g{color:var(--green);}
-    .sb-g:hover,.sb-g.active{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.25);color:var(--green);}
-    .sb-r{color:var(--red);}
-    .sb-r:hover{background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.25);color:var(--red);}
+    /* ── HEADER ── */
+    header {
+      height: 46px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 20;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: var(--r);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background var(--t), border-color var(--t);
+    }
+    .logo:hover { background: var(--overlay); border-color: var(--border); }
+    .logo img { width: 18px; height: 18px; }
+    .logo-accent { color: var(--accent); }
 
-    /* 3-WAY THEME PILL */
-    .theme-pill{display:flex;width:100%;background:var(--overlay);border:1px solid var(--border);
-      border-radius:var(--r);overflow:hidden;}
-    .theme-pill button{all:unset;box-sizing:border-box;flex:1;display:flex;align-items:center;
-      justify-content:center;gap:4px;padding:6px 0;font-size:11px;font-family:var(--sans);
-      cursor:pointer;color:var(--muted);position:relative;
-      transition:background var(--t),color var(--t);}
-    .theme-pill button:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;
-      width:1px;background:var(--border);}
-    .theme-pill button:hover{color:var(--text);}
-    .theme-pill button.active{background:var(--adim);color:var(--accent);}
-    .theme-pill .pil-ic{font-size:13px;line-height:1;}
-    .theme-pill .pil-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;}
+    .url-bar {
+      flex: 1;
+      max-width: 300px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 9px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      overflow: hidden;
+      transition: border-color var(--t);
+    }
+    .url-bar:hover { border-color: var(--border-hi); }
+    .url-lock { color: var(--green); flex-shrink: 0; font-size: 11px; }
+    .url-scheme { color: var(--accent); flex-shrink: 0; }
+    .url-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* MAIN */
-    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-    .tabbar{flex-shrink:0;display:flex;height:36px;background:var(--surface);
-      border-bottom:1px solid var(--border);padding:0 4px;gap:2px;align-items:flex-end;}
-    .tab{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;
-      padding:0 13px;height:32px;font-family:var(--sans);font-size:12px;font-weight:500;
-      color:var(--muted);cursor:pointer;border-radius:var(--r) var(--r) 0 0;
-      border:1px solid transparent;border-bottom:none;user-select:none;white-space:nowrap;
-      position:relative;top:1px;
-      transition:color var(--t),background var(--t),border-color var(--t);}
-    .tab:hover{color:var(--text);background:var(--overlay);}
-    .tab.active{color:var(--text);background:var(--bg);border-color:var(--border);border-bottom-color:var(--bg);}
-    .panels{flex:1;display:flex;overflow:hidden;}
-    .panel{flex:1;display:none;flex-direction:column;overflow:hidden;}
-    .panel.active{display:flex;}
+    .hdr-spacer { flex: 1; }
+    .hdr-nav { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+    .hdr-btn {
+      all: unset;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      height: 28px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--r);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: background var(--t), border-color var(--t), color var(--t);
+    }
+    .hdr-btn:hover { background: var(--overlay); border-color: var(--border); color: var(--text); }
+    .hdr-btn .fi { font-size: 13px; flex-shrink: 0; }
+    .hdr-btn img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .hdr-sep { width: 1px; height: 18px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+    .hdr-run {
+      background: var(--accent);
+      color: #fff !important;
+      border-color: transparent !important;
+      padding: 4px 14px;
+      font-weight: 600;
+    }
+    .hdr-run:hover { filter: brightness(1.15); background: var(--accent) !important; }
 
-    /* EDITOR */
-    .ed-meta{flex-shrink:0;height:27px;display:flex;align-items:center;gap:6px;padding:0 10px;
-      background:var(--overlay);border-bottom:1px solid var(--border);
-      font-family:var(--mono);font-size:10px;color:var(--muted);}
-    .ed-tag{background:var(--adim);border:1px solid rgba(88,166,255,.2);color:var(--accent);
-      padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:.3px;}
-    .ed-meta-r{margin-left:auto;display:flex;gap:8px;align-items:center;}
-    .ed-meta kbd{padding:1px 5px;background:var(--surface);border:1px solid var(--border);
-      border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--muted);}
-    .ed-body{flex:1;display:flex;overflow:hidden;}
-    .gutter{width:46px;flex-shrink:0;padding:10px 8px;background:var(--overlay);
-      border-right:1px solid var(--border);font-family:var(--mono);font-size:12px;line-height:1.65;
-      color:var(--muted);text-align:right;user-select:none;overflow:hidden;}
-    #code{flex:1;padding:10px 14px;background:var(--bg);color:var(--text);
-      font-family:var(--mono);font-size:12.5px;line-height:1.65;
-      border:none;outline:none;resize:none;tab-size:2;white-space:pre;overflow:auto;
-      caret-color:var(--accent);}
-    #code::placeholder{color:var(--muted);opacity:.35;font-style:italic;}
-    #code::selection{background:rgba(88,166,255,.22);}
+    /* ── WORKSPACE ── */
+    .workspace { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-    /* PREVIEW */
-    .pv-chrome{flex-shrink:0;height:35px;display:flex;align-items:center;gap:8px;padding:0 10px;
-      background:var(--surface);border-bottom:1px solid var(--border);}
-    .traffic{display:flex;gap:5px;align-items:center;flex-shrink:0;}
-    .traffic button{all:unset;box-sizing:border-box;width:12px;height:12px;border-radius:50%;
-      cursor:pointer;transition:filter var(--t),transform var(--t);}
-    .traffic button:hover{filter:brightness(.75);transform:scale(1.1);}
-    .tc-r{background:var(--red);}.tc-y{background:var(--yellow);}.tc-g{background:var(--green);}
-    .pv-addr{flex:1;height:22px;display:flex;align-items:center;gap:4px;padding:0 8px;
-      background:var(--bg);border:1px solid var(--border);border-radius:100px;
-      font-family:var(--mono);font-size:10px;min-width:0;overflow:hidden;
-      transition:border-color var(--t);}
-    .pv-addr:hover{border-color:var(--bhi);}
-    .pv-al{color:var(--green);flex-shrink:0;}.pv-as{color:var(--accent);flex-shrink:0;}
-    .pv-slug{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .pv-tools{display:flex;gap:3px;flex-shrink:0;}
-    .pv-tool{all:unset;box-sizing:border-box;width:24px;height:24px;display:flex;
-      align-items:center;justify-content:center;background:var(--overlay);
-      border:1px solid var(--border);border-radius:var(--r);cursor:pointer;color:var(--muted);
-      transition:border-color var(--t),color var(--t),background var(--t);}
-    .pv-tool:hover{border-color:var(--accent);color:var(--accent);background:var(--adim);}
-    .pv-tool svg{width:11px;height:11px;}
-    #preview-frame{flex:1;border:none;background:#fff;display:block;}
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 178px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 5px 4px;
+      gap: 1px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .sb-section {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 8px 3px;
+      user-select: none;
+    }
+    .sb-section:first-child { padding-top: 5px; }
+    .sb-sep { height: 1px; background: var(--border); margin: 4px; flex-shrink: 0; }
+    .sb-btn {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 6px 8px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--r);
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--t), border-color var(--t), color var(--t);
+    }
+    .sb-btn:hover, .sb-btn.active {
+      background: var(--overlay);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .sb-btn .fi { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+    .sb-accent { color: var(--accent); }
+    .sb-accent:hover, .sb-accent.active {
+      background: var(--adim);
+      border-color: rgba(88,166,255,.25);
+      color: var(--accent);
+    }
+    .sb-green { color: var(--green); }
+    .sb-green:hover, .sb-green.active {
+      background: rgba(63,185,80,.1);
+      border-color: rgba(63,185,80,.25);
+      color: var(--green);
+    }
+    .sb-red { color: var(--red); }
+    .sb-red:hover {
+      background: rgba(248,81,73,.1);
+      border-color: rgba(248,81,73,.25);
+      color: var(--red);
+    }
 
-    /* HIGHLIGHT */
-    .hl-meta{flex-shrink:0;height:27px;display:flex;align-items:center;gap:8px;padding:0 10px;
-      background:var(--overlay);border-bottom:1px solid var(--border);
-      font-family:var(--mono);font-size:10px;color:var(--muted);}
-    .hl-legend{display:flex;gap:12px;margin-left:auto;}
-    .hl-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
-    .hl-scroll{flex:1;overflow:auto;padding:10px 14px;}
-    #hl-out{font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-all;}
-    .s-tag{color:#57ab5a;}.s-attr{color:#6cb6ff;}.s-val{color:#96d0ff;}
-    .s-cmt,.s-doc{color:var(--muted);font-style:italic;}
-    .s-br{color:var(--muted);opacity:.6;}.s-txt{color:var(--text);opacity:.7;}
+    /* ── THEME DROPDOWN ── */
+    .theme-dd {
+      position: relative;
+      width: 100%;
+    }
+    .theme-trigger {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      width: 100%;
+      padding: 6px 8px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--r);
+      border: 1px solid transparent;
+      transition: background var(--t), border-color var(--t), color var(--t);
+    }
+    .theme-trigger:hover, .theme-trigger.open {
+      background: var(--overlay);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .theme-trigger .fi { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+    .theme-trigger .theme-label { flex: 1; }
+    .theme-trigger .theme-caret {
+      font-size: 10px;
+      margin-left: auto;
+      flex-shrink: 0;
+      transition: transform var(--t);
+    }
+    .theme-trigger.open .theme-caret { transform: rotate(180deg); }
+    .theme-menu {
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      z-index: 100;
+      transform: translateY(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .12s ease, transform .12s ease;
+    }
+    .theme-menu.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .theme-menu button {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background var(--t), color var(--t);
+    }
+    .theme-menu button:hover { background: var(--overlay); color: var(--text); }
+    .theme-menu button.active { color: var(--accent); }
+    .theme-menu button.active:hover { background: var(--adim); }
+    .theme-menu button .fi { font-size: 13px; width: 16px; text-align: center; }
+    .theme-menu .tm-label { flex: 1; }
+    .theme-menu .tm-check {
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0;
+      transition: opacity var(--t);
+      margin-left: auto;
+    }
+    .theme-menu button.active .tm-check { opacity: 1; }
 
-    /* STATUS BAR */
-    .statusbar{flex-shrink:0;height:22px;display:flex;align-items:center;
-      background:var(--surface);border-top:1px solid var(--border);
-      font-family:var(--mono);font-size:10px;color:var(--muted);overflow:hidden;}
-    .st-cell{padding:0 10px;height:100%;display:flex;align-items:center;gap:5px;
-      border-right:1px solid var(--border);white-space:nowrap;}
-    .st-cell:last-child{border-right:none;}
-    .st-r{margin-left:auto;border-right:none;border-left:1px solid var(--border);}
-    .st-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
-    .st-dot.busy{background:var(--yellow);animation:pulse 1s infinite;}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
-    /* TOAST */
-    #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);
-      padding:7px 16px;background:var(--surface);border:1px solid var(--border);
-      border-radius:20px;font-family:var(--sans);font-size:12px;font-weight:600;
-      pointer-events:none;opacity:0;transition:opacity .18s ease,transform .18s ease;
-      z-index:9999;box-shadow:var(--shadow);white-space:nowrap;color:var(--text);}
-    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-    #toast.ok{color:var(--green);border-color:rgba(63,185,80,.3);}
-    #toast.info{color:var(--accent);border-color:rgba(88,166,255,.3);}
-    #toast.warn{color:var(--orange);border-color:rgba(227,179,65,.3);}
-    #toast.error{color:var(--red);border-color:rgba(248,81,73,.3);}
+    /* Tab bar */
+    .tabbar {
+      flex-shrink: 0;
+      display: flex;
+      height: 36px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 4px;
+      gap: 2px;
+      align-items: flex-end;
+    }
+    .tab {
+      all: unset;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 13px;
+      height: 32px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--r) var(--r) 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      user-select: none;
+      white-space: nowrap;
+      position: relative;
+      top: 1px;
+      transition: color var(--t), background var(--t), border-color var(--t);
+    }
+    .tab:hover { color: var(--text); background: var(--overlay); }
+    .tab.active {
+      color: var(--text);
+      background: var(--bg);
+      border-color: var(--border);
+      border-bottom-color: var(--bg);
+    }
+    .tab .fi { font-size: 12px; }
 
-    /* Hidden file input */
-    #file-in{position:absolute;width:0;height:0;opacity:0;pointer-events:none;overflow:hidden;}
+    /* Panels */
+    .panels { flex: 1; display: flex; overflow: hidden; }
+    .panel  { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+    .panel.active { display: flex; }
 
-    /* EMBED MODES */
-    body.embed header,body.embed .statusbar{display:none;}
-    body.embed-demo header,body.embed-demo .statusbar{display:none;}
-    body.embed-demo .sb-import,body.embed-demo .sb-export,
-    body.embed .sb-import,body.embed .sb-export{display:none;}
-    body.embed-readonly header,body.embed-readonly .statusbar,
-    body.embed-readonly .sidebar,body.embed-readonly .tabbar{display:none;}
-    body.embed-readonly *{pointer-events:none!important;user-select:none!important;cursor:default!important;}
-    body.embed-readonly #code{caret-color:transparent;}
+    /* ── EDITOR ── */
+    .ed-meta {
+      flex-shrink: 0;
+      height: 27px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      background: var(--overlay);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .ed-tag {
+      background: var(--adim);
+      border: 1px solid rgba(88,166,255,.2);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .4px;
+    }
+    .ed-meta-r { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .ed-meta kbd {
+      padding: 1px 5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+    .ed-body { flex: 1; display: flex; overflow: hidden; }
+    .gutter {
+      width: 46px;
+      flex-shrink: 0;
+      padding: 10px 8px;
+      background: var(--overlay);
+      border-right: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--muted);
+      text-align: right;
+      user-select: none;
+      overflow: hidden;
+    }
+    #code {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      border: none;
+      outline: none;
+      resize: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      caret-color: var(--accent);
+      transition: background var(--t), color var(--t);
+    }
+    #code::placeholder { color: var(--muted); opacity: .35; font-style: italic; }
+    #code::selection { background: rgba(88,166,255,.22); }
 
-    /* SCROLLBAR */
-    ::-webkit-scrollbar{width:5px;height:5px;}
-    ::-webkit-scrollbar-track{background:transparent;}
-    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
-    ::-webkit-scrollbar-thumb:hover{background:var(--bhi);}
+    /* ── PREVIEW ── */
+    .pv-chrome {
+      flex-shrink: 0;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .traffic { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+    .traffic button {
+      all: unset;
+      box-sizing: border-box;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: filter var(--t), transform var(--t);
+    }
+    .traffic button:hover { filter: brightness(.75); transform: scale(1.1); }
+    .tc-r { background: var(--red); }
+    .tc-y { background: var(--yellow); }
+    .tc-g { background: var(--green); }
+    .pv-addr {
+      flex: 1;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 10px;
+      min-width: 0;
+      overflow: hidden;
+      transition: border-color var(--t);
+    }
+    .pv-addr:hover { border-color: var(--border-hi); }
+    .pv-lock { color: var(--green); flex-shrink: 0; font-size: 10px; }
+    .pv-scheme { color: var(--accent); flex-shrink: 0; }
+    .pv-slug { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-tools { display: flex; gap: 3px; flex-shrink: 0; }
+    .pv-tool {
+      all: unset;
+      box-sizing: border-box;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      color: var(--muted);
+      transition: border-color var(--t), color var(--t), background var(--t);
+    }
+    .pv-tool:hover { border-color: var(--accent); color: var(--accent); background: var(--adim); }
+    .pv-tool .fi { font-size: 12px; }
+    #preview-frame { flex: 1; border: none; background: #fff; display: block; }
 
-    /* RESPONSIVE */
-    @media(max-width:580px){
-      .sidebar{width:42px;}
-      .sb-btn>span:not(.ic){display:none;}
-      .sb-sect,.sb-sep{display:none;}
-      .sb-btn{justify-content:center;padding:8px;gap:0;}
-      .theme-pill .pil-lbl{display:none;}
-      .url-bar{display:none;}
-      .hdr-btn>span:not(svg):not(img){display:none;}
-      .ed-meta kbd,.ed-meta .ed-meta-r>:last-child{display:none;}
+    /* ── HIGHLIGHT ── */
+    .hl-meta {
+      flex-shrink: 0;
+      height: 27px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      background: var(--overlay);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .hl-legend { display: flex; gap: 12px; margin-left: auto; }
+    .hl-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; }
+    .hl-scroll { flex: 1; overflow: auto; padding: 10px 14px; }
+    #hl-out {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .s-tag { color: #57ab5a; }
+    .s-attr { color: #6cb6ff; }
+    .s-val  { color: #96d0ff; }
+    .s-cmt, .s-doc { color: var(--muted); font-style: italic; }
+    .s-br { color: var(--muted); opacity: .6; }
+    .s-txt { color: var(--text); opacity: .7; }
+
+    /* ── STATUS BAR ── */
+    .statusbar {
+      flex-shrink: 0;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      overflow: hidden;
+    }
+    .st-cell {
+      padding: 0 10px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .st-cell:last-child { border-right: none; }
+    .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
+    .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .st-dot.busy { background: var(--yellow); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      padding: 7px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 9999;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+      color: var(--text);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.ok    { color: var(--green);  border-color: rgba(63,185,80,.3); }
+    #toast.info  { color: var(--accent); border-color: rgba(88,166,255,.3); }
+    #toast.warn  { color: var(--orange); border-color: rgba(227,179,65,.3); }
+    #toast.error { color: var(--red);    border-color: rgba(248,81,73,.3); }
+
+    /* ── FILE INPUT (always hidden) ── */
+    #file-in {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       EMBED MODES
+    ──────────────────────────────────────────────────────────── */
+
+    /* ?embed=1  →  compact: hide header + statusbar, interactive */
+    body.embed header,
+    body.embed .statusbar { display: none; }
+    body.embed .sb-import,
+    body.embed .sb-export  { display: none; }
+
+    /* ?embed=demo  →  decorative: shows sidebar+tabs, FULLY non-interactive */
+    body.embed-demo header,
+    body.embed-demo .statusbar { display: none; }
+    body.embed-demo .workspace {
+      pointer-events: none !important;
+      user-select:    none !important;
+    }
+    body.embed-demo #code { caret-color: transparent; }
+
+    /* ?embed=readonly  →  bare content panel only, non-interactive */
+    body.embed-readonly header,
+    body.embed-readonly .statusbar,
+    body.embed-readonly .sidebar,
+    body.embed-readonly .tabbar { display: none; }
+    body.embed-readonly .workspace {
+      pointer-events: none !important;
+      user-select:    none !important;
+    }
+    body.embed-readonly #code { caret-color: transparent; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 580px) {
+      .sidebar { width: 42px; }
+      .sb-btn > span:not(.fi) { display: none; }
+      .sb-section, .sb-sep { display: none; }
+      .sb-btn { justify-content: center; padding: 8px; gap: 0; }
+      .theme-trigger .theme-label,
+      .theme-trigger .theme-caret { display: none; }
+      .url-bar { display: none; }
+      .hdr-btn > span { display: none; }
+      .ed-meta kbd,
+      .ed-meta .ed-meta-r > :last-child { display: none; }
     }
   </style>
 </head>
 <body>
 
+<!-- ── HEADER ── -->
 <header>
   <a class="logo" href="." aria-label="HTML Previewer home">
     <img src="media/images/logos/html5.svg" alt="" width="18" height="18" />
-    HTML<span class="logo-a">Previewer</span>
+    HTML<span class="logo-accent">Previewer</span>
   </a>
   <div class="url-bar" role="presentation">
-    <span class="url-lock">🔒</span>
+    <i class="fi fi-rr-lock url-lock" aria-hidden="true"></i>
     <span class="url-scheme">file://</span>
     <span class="url-path" id="j-urlpath">app</span>
   </div>
   <div class="hdr-spacer"></div>
-  <nav class="hdr-nav" aria-label="App actions">
-    <a class="hdr-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" title="GitHub">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3A12 12 0 0 0 0 12.3c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.3 12 12 0 0 0 12 .3z"/></svg>
+  <nav class="hdr-nav" aria-label="Header actions">
+    <a class="hdr-btn"
+       href="https://github.com/MrLiPx/html-previewer"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="View on GitHub">
+      <i class="fi fi-rr-code-branch" aria-hidden="true"></i>
       <span>GitHub</span>
     </a>
     <div class="hdr-sep"></div>
-    <a class="hdr-btn" id="hdr-author" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer">
+    <a class="hdr-btn" id="hdr-author" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" aria-label="Author">
       <img id="hdr-avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="@MrLiPx" width="18" height="18" />
       <span id="hdr-login">@MrLiPx</span>
     </a>
     <div class="hdr-sep"></div>
     <button class="hdr-btn hdr-run" onclick="cmd('preview')" aria-label="Run preview (Ctrl+Enter)">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <i class="fi fi-rr-play" aria-hidden="true"></i>
       <span>Run</span>
     </button>
   </nav>
 </header>
 
+<!-- ── WORKSPACE ── -->
 <div class="workspace" role="main">
+
+  <!-- SIDEBAR -->
   <aside class="sidebar" aria-label="Sidebar">
-    <span class="sb-sect">View</span>
-    <button id="sb-editor"    class="sb-btn active" onclick="cmd('editor')">   <span class="ic">✏</span><span>Editor</span></button>
-    <button id="sb-preview"   class="sb-btn sb-a"   onclick="cmd('preview')">  <span class="ic">▶</span><span>Preview</span></button>
-    <button id="sb-highlight" class="sb-btn"        onclick="cmd('highlight')"><span class="ic">✦</span><span>Highlight</span></button>
+    <span class="sb-section">View</span>
+    <button id="sb-editor"    class="sb-btn active" onclick="cmd('editor')">
+      <i class="fi fi-rr-pencil" aria-hidden="true"></i><span>Editor</span>
+    </button>
+    <button id="sb-preview"   class="sb-btn sb-accent" onclick="cmd('preview')">
+      <i class="fi fi-rr-eye" aria-hidden="true"></i><span>Preview</span>
+    </button>
+    <button id="sb-highlight" class="sb-btn" onclick="cmd('highlight')">
+      <i class="fi fi-rr-code" aria-hidden="true"></i><span>Highlight</span>
+    </button>
 
-    <div class="sb-sep"></div>
-    <span class="sb-sect">Edit</span>
-    <button class="sb-btn" onclick="cmd('format')">  <span class="ic">⊞</span><span>Format</span></button>
-    <button class="sb-btn" onclick="cmd('expand')">  <span class="ic">＋</span><span>Expand all</span></button>
-    <button class="sb-btn" onclick="cmd('collapse')"><span class="ic">－</span><span>Collapse all</span></button>
+    <div class="sb-sep" role="separator"></div>
+    <span class="sb-section">Edit</span>
+    <button class="sb-btn" onclick="cmd('format')">
+      <i class="fi fi-rr-align-justify" aria-hidden="true"></i><span>Format</span>
+    </button>
+    <button class="sb-btn" onclick="cmd('expand')">
+      <i class="fi fi-rr-expand" aria-hidden="true"></i><span>Expand all</span>
+    </button>
+    <button class="sb-btn" onclick="cmd('collapse')">
+      <i class="fi fi-rr-compress-alt" aria-hidden="true"></i><span>Collapse all</span>
+    </button>
 
-    <div class="sb-sep"></div>
-    <span class="sb-sect">File</span>
-    <button class="sb-btn"          onclick="cmd('sample')"><span class="ic">📄</span><span>Sample</span></button>
-    <button class="sb-btn sb-r"     onclick="cmd('clear')" ><span class="ic">✕</span><span>Clear</span></button>
-    <button class="sb-btn sb-import" onclick="cmd('import')"><span class="ic">⬆</span><span>Import</span></button>
-    <button class="sb-btn sb-g sb-export" onclick="cmd('export')"><span class="ic">⬇</span><span>Export</span></button>
+    <div class="sb-sep" role="separator"></div>
+    <span class="sb-section">File</span>
+    <button class="sb-btn" onclick="cmd('sample')">
+      <i class="fi fi-rr-file-code" aria-hidden="true"></i><span>Sample</span>
+    </button>
+    <button class="sb-btn sb-red" onclick="cmd('clear')">
+      <i class="fi fi-rr-trash" aria-hidden="true"></i><span>Clear</span>
+    </button>
+    <button class="sb-btn sb-import" onclick="cmd('import')">
+      <i class="fi fi-rr-upload" aria-hidden="true"></i><span>Import</span>
+    </button>
+    <button class="sb-btn sb-green sb-export" onclick="cmd('export')">
+      <i class="fi fi-rr-download" aria-hidden="true"></i><span>Export</span>
+    </button>
 
-    <div class="sb-sep"></div>
-    <span class="sb-sect">Links</span>
-    <a class="sb-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer"><span class="ic">⭐</span><span>Star on GitHub</span></a>
-    <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener noreferrer"><span class="ic">🌐</span><span>MrLiPx.com</span></a>
+    <div class="sb-sep" role="separator"></div>
+    <span class="sb-section">Links</span>
+    <a class="sb-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">
+      <i class="fi fi-rr-star" aria-hidden="true"></i><span>Star on GitHub</span>
+    </a>
+    <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener noreferrer">
+      <i class="fi fi-rr-globe" aria-hidden="true"></i><span>MrLiPx.com</span>
+    </a>
 
-    <div class="sb-sep"></div>
-    <span class="sb-sect">Theme</span>
-    <!-- 3-way theme picker: system | dark | light -->
-    <div class="theme-pill" role="group" aria-label="Theme">
-      <button id="tp-system" onclick="setThemePref('system',true)" title="System (follow OS)" aria-pressed="true">
-        <span class="pil-ic">💻</span><span class="pil-lbl">System</span>
+    <div class="sb-sep" role="separator"></div>
+    <span class="sb-section">Theme</span>
+    <!-- Custom theme dropdown -->
+    <div class="theme-dd" id="theme-dd">
+      <button class="theme-trigger" id="theme-trigger" onclick="toggleThemeDD(event)" aria-haspopup="listbox" aria-expanded="false">
+        <i class="fi fi-rr-computer" id="theme-icon" aria-hidden="true"></i>
+        <span class="theme-label" id="theme-label">System</span>
+        <i class="fi fi-rr-angle-down theme-caret" aria-hidden="true"></i>
       </button>
-      <button id="tp-dark" onclick="setThemePref('dark',true)" title="Dark" aria-pressed="false">
-        <span class="pil-ic">🌙</span><span class="pil-lbl">Dark</span>
-      </button>
-      <button id="tp-light" onclick="setThemePref('light',true)" title="Light" aria-pressed="false">
-        <span class="pil-ic">☀️</span><span class="pil-lbl">Light</span>
-      </button>
+      <div class="theme-menu" id="theme-menu" role="listbox" aria-label="Theme options">
+        <button onclick="applyThemePref('system')" role="option" id="tm-system" class="active" aria-selected="true">
+          <i class="fi fi-rr-computer" aria-hidden="true"></i>
+          <span class="tm-label">System</span>
+          <i class="fi fi-rr-check tm-check" aria-hidden="true"></i>
+        </button>
+        <button onclick="applyThemePref('dark')" role="option" id="tm-dark" aria-selected="false">
+          <i class="fi fi-rr-moon" aria-hidden="true"></i>
+          <span class="tm-label">Dark</span>
+          <i class="fi fi-rr-check tm-check" aria-hidden="true"></i>
+        </button>
+        <button onclick="applyThemePref('light')" role="option" id="tm-light" aria-selected="false">
+          <i class="fi fi-rr-sun" aria-hidden="true"></i>
+          <span class="tm-label">Light</span>
+          <i class="fi fi-rr-check tm-check" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
   </aside>
 
+  <!-- MAIN -->
   <div class="main">
-    <div class="tabbar" role="tablist">
-      <button class="tab active" id="tab-editor"    onclick="cmd('editor')"    role="tab" aria-selected="true"  aria-controls="panel-editor">   <span aria-hidden="true">✏</span> Editor</button>
-      <button class="tab"        id="tab-preview"   onclick="cmd('preview')"   role="tab" aria-selected="false" aria-controls="panel-preview">  <span aria-hidden="true">▶</span> Preview</button>
-      <button class="tab"        id="tab-highlight" onclick="cmd('highlight')" role="tab" aria-selected="false" aria-controls="panel-highlight"><span aria-hidden="true">✦</span> Highlight</button>
+    <div class="tabbar" role="tablist" aria-label="Editor panels">
+      <button class="tab active" id="tab-editor"    onclick="cmd('editor')"    role="tab" aria-selected="true"  aria-controls="panel-editor">
+        <i class="fi fi-rr-pencil" aria-hidden="true"></i> Editor
+      </button>
+      <button class="tab"        id="tab-preview"   onclick="cmd('preview')"   role="tab" aria-selected="false" aria-controls="panel-preview">
+        <i class="fi fi-rr-eye" aria-hidden="true"></i> Preview
+      </button>
+      <button class="tab"        id="tab-highlight" onclick="cmd('highlight')" role="tab" aria-selected="false" aria-controls="panel-highlight">
+        <i class="fi fi-rr-code" aria-hidden="true"></i> Highlight
+      </button>
     </div>
 
     <div class="panels">
-      <!-- EDITOR -->
+
+      <!-- EDITOR PANEL -->
       <div class="panel active" id="panel-editor" role="tabpanel" aria-labelledby="tab-editor">
-        <div class="ed-meta">
+        <div class="ed-meta" aria-hidden="true">
           <span class="ed-tag">HTML</span>
           <span id="j-cursor">Ln 1, Col 1</span>
           <div class="ed-meta-r">
@@ -342,42 +797,54 @@
         </div>
         <div class="ed-body">
           <div class="gutter" id="j-gutter" aria-hidden="true">1</div>
-          <textarea id="code" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
-            aria-label="HTML editor" placeholder="<!-- paste or write HTML here · Ctrl+Enter to run preview -->"></textarea>
+          <textarea
+            id="code"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            aria-label="HTML editor"
+            aria-multiline="true"
+            placeholder="<!-- paste or write HTML here · Ctrl+Enter to run preview -->"
+          ></textarea>
         </div>
       </div>
 
-      <!-- PREVIEW -->
+      <!-- PREVIEW PANEL -->
       <div class="panel" id="panel-preview" role="tabpanel" aria-labelledby="tab-preview">
         <div class="pv-chrome">
           <div class="traffic">
-            <button class="tc-r" title="Back to editor"  onclick="cmd('editor')"    aria-label="Back"></button>
-            <button class="tc-y" title="Refresh"         onclick="refreshPreview()" aria-label="Refresh"></button>
-            <button class="tc-g" title="Open in new tab" onclick="openTab()"        aria-label="New tab"></button>
+            <button class="tc-r" title="Back to editor"  onclick="cmd('editor')"    aria-label="Back to editor"></button>
+            <button class="tc-y" title="Refresh preview" onclick="refreshPreview()" aria-label="Refresh preview"></button>
+            <button class="tc-g" title="Open in new tab" onclick="openTab()"        aria-label="Open in new tab"></button>
           </div>
           <div class="pv-addr">
-            <span class="pv-al">🔒</span>
-            <span class="pv-as">preview/</span>
+            <i class="fi fi-rr-lock pv-lock" aria-hidden="true"></i>
+            <span class="pv-scheme">preview/</span>
             <span class="pv-slug" id="j-pvslug">untitled</span>
           </div>
           <div class="pv-tools">
-            <button class="pv-tool" onclick="refreshPreview()" title="Refresh">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <button class="pv-tool" onclick="refreshPreview()" title="Refresh" aria-label="Refresh preview">
+              <i class="fi fi-rr-refresh" aria-hidden="true"></i>
             </button>
-            <button class="pv-tool" onclick="openTab()" title="Open in new tab">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <button class="pv-tool" onclick="openTab()" title="Open in new tab" aria-label="Open in new tab">
+              <i class="fi fi-rr-share-square" aria-hidden="true"></i>
             </button>
-            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <button class="pv-tool" onclick="copyHTML()" title="Copy HTML" aria-label="Copy HTML">
+              <i class="fi fi-rr-copy-alt" aria-hidden="true"></i>
             </button>
           </div>
         </div>
-        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups" title="HTML preview"></iframe>
+        <iframe
+          id="preview-frame"
+          sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
+          title="HTML preview"
+        ></iframe>
       </div>
 
-      <!-- HIGHLIGHT -->
+      <!-- HIGHLIGHT PANEL -->
       <div class="panel" id="panel-highlight" role="tabpanel" aria-labelledby="tab-highlight">
-        <div class="hl-meta">
+        <div class="hl-meta" aria-hidden="true">
           <span>Syntax Highlight</span>
           <div class="hl-legend">
             <span><span class="hl-dot" style="background:#57ab5a"></span>tag</span>
@@ -388,17 +855,23 @@
         </div>
         <div class="hl-scroll"><pre id="hl-out" aria-live="polite"></pre></div>
       </div>
-    </div>
 
+    </div><!-- /panels -->
+
+    <!-- STATUS BAR -->
     <div class="statusbar" role="status" aria-live="polite">
-      <div class="st-cell"><div class="st-dot" id="j-dot"></div><span id="j-status">Ready</span></div>
+      <div class="st-cell">
+        <div class="st-dot" id="j-dot"></div>
+        <span id="j-status">Ready</span>
+      </div>
       <div class="st-cell" id="j-fname">app</div>
-      <div class="st-cell st-r" id="j-themelabel">System</div>
+      <div class="st-cell st-right" id="j-themelabel">System</div>
       <div class="st-cell">UTF-8</div>
       <div class="st-cell">HTML</div>
     </div>
-  </div>
-</div>
+  </div><!-- /main -->
+
+</div><!-- /workspace -->
 
 <div id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
 <input type="file" id="file-in" accept=".html,.htm,.txt" aria-hidden="true" tabindex="-1" />
@@ -406,109 +879,201 @@
 <script>
 'use strict';
 
-/* ── IMAGE OPTIMISATION ─────────────────────────────────────────
-   Vercel: /_vercel/image?url=PATH&w=W&q=Q  (format=auto server-side)
-   Elsewhere: raw path unchanged
-──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   IMAGE OPTIMISATION
+   Vercel: /_vercel/image?url=ABS_URL&w=W&q=Q  (avif/webp auto)
+   GitHub Pages / localhost: raw path unchanged
+
+   NOTE: Vercel's image endpoint requires an absolute URL in `url=`.
+   We build it from location.origin + path.
+═══════════════════════════════════════════════════════════════ */
 function imgOpt(path, w, h, q) {
+  if (!w) return path;
   q = q || 80;
-  var onVercel = !location.hostname.includes('localhost') && (
-    location.hostname.endsWith('.vercel.app') ||
-    location.hostname.endsWith('.vercel.sh')  ||
-    !!document.querySelector('meta[name="x-vercel-deployment-url"]')
-  );
-  if (onVercel && w) {
-    var p = 'url=' + encodeURIComponent(path) + '&w=' + w + '&q=' + q;
-    if (h) p += '&h=' + h;
-    return '/_vercel/image?' + p;
+  var host = location.hostname;
+  // Use raw path on GitHub Pages or localhost
+  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('github.io')) {
+    return path;
   }
-  return path;
+  // Build absolute URL for Vercel's image endpoint
+  var abs = path.startsWith('http')
+    ? path
+    : location.origin + (path.startsWith('/') ? path : '/' + path);
+  var params = 'url=' + encodeURIComponent(abs) + '&w=' + w + '&q=' + q;
+  if (h) params += '&h=' + h;
+  return '/_vercel/image?' + params;
 }
 
-/* ── THEME (3-way: system | dark | light) ────────────────────────
-   New visitors default to 'system' (follow OS, not saved yet).
-   Explicit toggle saves to localStorage so it persists everywhere.
-──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   THEME  (system | dark | light)
+   localStorage key: 'htmlprev-theme'
+   Default for new visitors: 'system' (follows OS, not persisted
+   until the user explicitly picks one)
+═══════════════════════════════════════════════════════════════ */
 var _pref = 'system';
 
-function _os() { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
-function _eff(p) { return (p==='dark'||p==='light') ? p : _os(); }
+var THEME_ICONS   = { system: 'fi-rr-computer', dark: 'fi-rr-moon', light: 'fi-rr-sun' };
+var THEME_LABELS  = { system: 'System', dark: 'Dark', light: 'Light' };
 
-function setThemePref(pref, save) {
-  if (pref!=='dark'&&pref!=='light'&&pref!=='system') pref='system';
+function _os() {
+  return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+}
+function _effective(p) {
+  return (p === 'dark' || p === 'light') ? p : _os();
+}
+
+function applyThemePref(pref, persist) {
+  if (pref !== 'dark' && pref !== 'light' && pref !== 'system') pref = 'system';
   _pref = pref;
-  document.documentElement.setAttribute('data-theme', _eff(pref));
-  if (save) { try { localStorage.setItem('theme', pref); } catch(_){} }
-  _updateThemeUI();
-  if (save) { // Only toast on explicit user action
-    var msgs = {system:'💻 System theme',dark:'🌙 Dark mode',light:'☀️ Light mode'};
-    toast(msgs[pref],'info');
+  document.documentElement.setAttribute('data-theme', _effective(pref));
+  if (persist !== false) { // persist by default (explicit user action)
+    try { localStorage.setItem('htmlprev-theme', pref); } catch (_) {}
   }
+  _syncThemeUI();
+  closeThemeDD();
+  toast(THEME_LABELS[pref] + ' mode', 'info');
 }
 
-function toggleTheme() {
-  var CYCLE = {system:'dark',dark:'light',light:'system'};
-  setThemePref(CYCLE[_pref]||'system', true);
-}
-
-function _updateThemeUI() {
-  var ICONS  = {system:'💻',dark:'🌙',light:'☀️'};
-  var LABELS = {system:'System',dark:'Dark',light:'Light'};
+function _syncThemeUI() {
+  var eff = _effective(_pref);
+  // Status bar
   var lbl = document.getElementById('j-themelabel');
-  if (lbl) lbl.textContent = LABELS[_pref];
-  // 3-way pill
-  ['system','dark','light'].forEach(function(p){
-    var btn = document.getElementById('tp-'+p);
+  if (lbl) lbl.textContent = THEME_LABELS[_pref];
+  // Dropdown trigger icon + label
+  var ic = document.getElementById('theme-icon');
+  var tl = document.getElementById('theme-label');
+  if (ic) { ic.className = 'fi ' + THEME_ICONS[_pref]; }
+  if (tl) tl.textContent = THEME_LABELS[_pref];
+  // Dropdown menu items
+  ['system', 'dark', 'light'].forEach(function (p) {
+    var btn = document.getElementById('tm-' + p);
     if (!btn) return;
-    btn.classList.toggle('active', p===_pref);
-    btn.setAttribute('aria-pressed', String(p===_pref));
+    btn.classList.toggle('active', p === _pref);
+    btn.setAttribute('aria-selected', String(p === _pref));
   });
 }
 
-// Live OS change listener (only applies when pref=system)
+// OS change → update live if pref is 'system'
 try {
-  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function(){
-    if (_pref==='system') document.documentElement.setAttribute('data-theme', _os());
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function () {
+    if (_pref === 'system') {
+      document.documentElement.setAttribute('data-theme', _os());
+    }
   });
-} catch(_){}
+} catch (_) {}
 
-// Re-read pref into _pref variable (theme already applied by inline <script>)
-(function(){
-  var tok = location.hash.replace(/^#/,'').split('&').map(function(t){return t.toLowerCase();});
-  for (var i=0;i<tok.length;i++){
-    var t=tok[i];
-    if(t==='dark'||t==='theme=dark'){_pref='dark'; try{localStorage.setItem('theme','dark');}catch(_){} break;}
-    if(t==='light'||t==='theme=light'){_pref='light'; try{localStorage.setItem('theme','light');}catch(_){} break;}
-    if(t==='system'||t==='theme=system'){_pref='system'; try{localStorage.setItem('theme','system');}catch(_){} break;}
+// Init: sync _pref from hash / localStorage (theme already applied by inline script)
+(function () {
+  var tokens = location.hash.replace(/^#/, '').split('&').map(function (t) { return t.toLowerCase(); });
+  var fromHash = null;
+  for (var i = 0; i < tokens.length; i++) {
+    var t = tokens[i];
+    if (t === 'dark'   || t === 'theme=dark')   { fromHash = 'dark';   break; }
+    if (t === 'light'  || t === 'theme=light')  { fromHash = 'light';  break; }
+    if (t === 'system' || t === 'theme=system') { fromHash = 'system'; break; }
   }
-  if (_pref==='system') {
-    try{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'||s==='system')_pref=s;}catch(_){}
+  if (fromHash) {
+    _pref = fromHash;
+    try { localStorage.setItem('htmlprev-theme', fromHash); } catch (_) {}
+  } else {
+    try {
+      var s = localStorage.getItem('htmlprev-theme');
+      if (s === 'dark' || s === 'light' || s === 'system') _pref = s;
+    } catch (_) {}
   }
-  _updateThemeUI();
+  document.documentElement.setAttribute('data-theme', _effective(_pref));
+  _syncThemeUI();
 }());
 
-/* ── CONSTANTS ─────────────────────────────────────────────── */
-var TABS  = ['editor','preview','highlight'];
+/* ═══════════════════════════════════════════════════════════════
+   THEME DROPDOWN
+═══════════════════════════════════════════════════════════════ */
+var _ddOpen = false;
+
+function toggleThemeDD(e) {
+  e && e.stopPropagation();
+  _ddOpen ? closeThemeDD() : openThemeDD();
+}
+
+function openThemeDD() {
+  _ddOpen = true;
+  var menu = document.getElementById('theme-menu');
+  var trigger = document.getElementById('theme-trigger');
+  if (menu) menu.classList.add('visible');
+  if (trigger) {
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function closeThemeDD() {
+  _ddOpen = false;
+  var menu = document.getElementById('theme-menu');
+  var trigger = document.getElementById('theme-trigger');
+  if (menu) menu.classList.remove('visible');
+  if (trigger) {
+    trigger.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+}
+
+// Close on outside click
+document.addEventListener('click', function (e) {
+  if (_ddOpen) {
+    var dd = document.getElementById('theme-dd');
+    if (dd && !dd.contains(e.target)) closeThemeDD();
+  }
+});
+
+// Close on Escape
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && _ddOpen) closeThemeDD();
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   EMBED MODE DETECTION
+═══════════════════════════════════════════════════════════════ */
+(function () {
+  try {
+    var em = new URLSearchParams(location.search).get('embed');
+    if      (em === 'demo')     document.body.classList.add('embed-demo');
+    else if (em === 'readonly') document.body.classList.add('embed-readonly');
+    else if (em !== null)       document.body.classList.add('embed');
+  } catch (_) {}
+}());
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════════════ */
+var TABS  = ['editor', 'preview', 'highlight'];
 var GH_ID = 163276171;
 
-/* ── HASH ROUTING ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   HASH ROUTING
+═══════════════════════════════════════════════════════════════ */
 function parseHash(raw) {
-  return raw.replace(/^#/,'').split('&').filter(Boolean).map(function(t){
-    var eq=t.indexOf('=');
-    return eq<0 ? {key:t.toLowerCase(),val:null} : {key:t.slice(0,eq).toLowerCase(),val:t.slice(eq+1).toLowerCase()};
+  return raw.replace(/^#/, '').split('&').filter(Boolean).map(function (t) {
+    var eq = t.indexOf('=');
+    return eq < 0
+      ? { key: t.toLowerCase(), val: null }
+      : { key: t.slice(0, eq).toLowerCase(), val: t.slice(eq + 1).toLowerCase() };
   });
 }
+
 function applyHash(raw) {
-  var tokens=parseHash(raw), tabTarget=null;
+  var tokens = parseHash(raw);
   if (!tokens.length) return;
-  tokens.forEach(function(tk){
-    switch(tk.key){
-      case 'editor':case 'preview':case 'highlight': tabTarget=tk.key; break;
-      case 'dark':   setThemePref('dark',true);   break;
-      case 'light':  setThemePref('light',true);  break;
-      case 'system': setThemePref('system',true); break;
+  var tabTarget = null;
+  tokens.forEach(function (tk) {
+    switch (tk.key) {
+      case 'editor':    case 'preview':   case 'highlight': tabTarget = tk.key; break;
+      case 'dark':   applyThemePref('dark',   false); break;
+      case 'light':  applyThemePref('light',  false); break;
+      case 'system': applyThemePref('system', false); break;
       case 'theme':
-        if(tk.val==='dark'||tk.val==='light'||tk.val==='system') setThemePref(tk.val,true); break;
+        if (tk.val === 'dark' || tk.val === 'light' || tk.val === 'system')
+          applyThemePref(tk.val, false);
+        break;
       case 'sample':   loadSample(true);  break;
       case 'format':   fmtCode(true);     break;
       case 'expand':   expandAll(true);   break;
@@ -520,13 +1085,15 @@ function applyHash(raw) {
   });
   if (tabTarget) switchTab(tabTarget);
 }
-window.addEventListener('hashchange', function(){ applyHash(location.hash); });
 
-/* ── CMD DISPATCH ───────────────────────────────────────────── */
-function cmd(a) {
-  if (TABS.indexOf(a)>=0) switchTab(a);
-  else switch(a){
-    case 'theme':    toggleTheme(); break;
+window.addEventListener('hashchange', function () { applyHash(location.hash); });
+
+/* ═══════════════════════════════════════════════════════════════
+   COMMAND DISPATCH
+═══════════════════════════════════════════════════════════════ */
+function cmd(action) {
+  if (TABS.indexOf(action) >= 0) switchTab(action);
+  else switch (action) {
     case 'sample':   loadSample();  break;
     case 'format':   fmtCode();     break;
     case 'expand':   expandAll();   break;
@@ -534,222 +1101,432 @@ function cmd(a) {
     case 'clear':    clearCode();   break;
     case 'import':   doImport();    break;
     case 'export':   doExport();    break;
+    case 'preview':  switchTab('preview'); break;
   }
 }
 
-/* ── TABS ───────────────────────────────────────────────────── */
-function switchTab(n) {
-  if (TABS.indexOf(n)<0) return;
-  TABS.forEach(function(t){
-    var tab=document.getElementById('tab-'+t), panel=document.getElementById('panel-'+t), sb=document.getElementById('sb-'+t);
-    var a=(t===n);
-    if(tab){tab.classList.toggle('active',a);tab.setAttribute('aria-selected',String(a));}
-    if(panel) panel.classList.toggle('active',a);
-    if(sb) sb.classList.toggle('active',a);
+/* ═══════════════════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════════════════ */
+function switchTab(name) {
+  if (TABS.indexOf(name) < 0) return;
+  TABS.forEach(function (t) {
+    var tab   = document.getElementById('tab-'   + t);
+    var panel = document.getElementById('panel-' + t);
+    var sb    = document.getElementById('sb-'    + t);
+    var active = (t === name);
+    if (tab)   { tab.classList.toggle('active',   active); tab.setAttribute('aria-selected', String(active)); }
+    if (panel) panel.classList.toggle('active', active);
+    if (sb)    sb.classList.toggle('active',    active);
   });
-  if(n==='preview') refreshPreview();
-  if(n==='highlight') renderHighlight();
+  if (name === 'preview')   refreshPreview();
+  if (name === 'highlight') renderHighlight();
 }
 
-/* ── EDITOR ─────────────────────────────────────────────────── */
-var $code=$('#code'), $gutter=$('#j-gutter'), $counts=$('#j-counts'),
-    $cursor=$('#j-cursor'), $status=$('#j-status'), $fname=$('#j-fname'),
-    $urlpath=$('#j-urlpath'), $dot=$('#j-dot');
-
-function $(id){ return document.getElementById(id); }
-
-$code.addEventListener('input',  syncEd);
-$code.addEventListener('click',  syncCur);
-$code.addEventListener('keyup',  syncCur);
-$code.addEventListener('scroll', function(){ $gutter.scrollTop=$code.scrollTop; });
-
-function syncEd(){
-  var lines=$code.value.split('\n');
-  $gutter.textContent=lines.map(function(_,i){return i+1;}).join('\n');
-  $gutter.scrollTop=$code.scrollTop;
-  $counts.textContent=$code.value.length.toLocaleString()+' chars · '+lines.length.toLocaleString()+' lines';
+/* ═══════════════════════════════════════════════════════════════
+   EDITOR ELEMENTS & SYNC
+   NOTE: All getElementById calls are in functions (not at top
+   level) so they run after DOM is ready. No $ shorthand used.
+═══════════════════════════════════════════════════════════════ */
+function syncEditor() {
+  var code    = document.getElementById('code');
+  var gutter  = document.getElementById('j-gutter');
+  var counts  = document.getElementById('j-counts');
+  if (!code || !gutter) return;
+  var lines = code.value.split('\n');
+  gutter.textContent = lines.map(function (_, i) { return i + 1; }).join('\n');
+  gutter.scrollTop   = code.scrollTop;
+  if (counts) counts.textContent = code.value.length.toLocaleString() + ' chars · ' + lines.length.toLocaleString() + ' lines';
 }
-function syncCur(){
-  var pre=$code.value.slice(0,$code.selectionStart);
-  $cursor.textContent='Ln '+pre.split('\n').length+', Col '+(pre.length-pre.lastIndexOf('\n'));
-}
-function setSt(msg,busy){ $status.textContent=msg; if($dot) $dot.classList.toggle('busy',!!busy); }
 
-$code.addEventListener('keydown',function(e){
-  if(e.key==='Tab'){
-    e.preventDefault();
-    var s=$code.selectionStart, end=$code.selectionEnd, v=$code.value;
-    if(e.shiftKey){
-      var ls=v.lastIndexOf('\n',s-1)+1, sp=(v.slice(ls).match(/^ {1,2}/)||[''])[0];
-      if(sp){$code.value=v.slice(0,ls)+v.slice(ls+sp.length);$code.selectionStart=$code.selectionEnd=Math.max(ls,s-sp.length);}
-    } else {
-      $code.value=v.slice(0,s)+'  '+v.slice(end);$code.selectionStart=$code.selectionEnd=s+2;
+function syncCursor() {
+  var code   = document.getElementById('code');
+  var cursor = document.getElementById('j-cursor');
+  if (!code || !cursor) return;
+  var pre = code.value.slice(0, code.selectionStart);
+  cursor.textContent = 'Ln ' + pre.split('\n').length + ', Col ' + (pre.length - pre.lastIndexOf('\n'));
+}
+
+function setStatus(msg, busy) {
+  var st  = document.getElementById('j-status');
+  var dot = document.getElementById('j-dot');
+  if (st)  st.textContent = msg;
+  if (dot) dot.classList.toggle('busy', !!busy);
+}
+
+// Wire up editor events after DOM ready
+document.addEventListener('DOMContentLoaded', function () {
+  var code   = document.getElementById('code');
+  var gutter = document.getElementById('j-gutter');
+  if (!code) return;
+
+  code.addEventListener('input',  syncEditor);
+  code.addEventListener('click',  syncCursor);
+  code.addEventListener('keyup',  syncCursor);
+  code.addEventListener('scroll', function () {
+    if (gutter) gutter.scrollTop = code.scrollTop;
+  });
+
+  code.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      var s = code.selectionStart, end = code.selectionEnd, v = code.value;
+      if (e.shiftKey) {
+        var ls = v.lastIndexOf('\n', s - 1) + 1;
+        var sp = (v.slice(ls).match(/^ {1,2}/) || [''])[0];
+        if (sp) {
+          code.value = v.slice(0, ls) + v.slice(ls + sp.length);
+          code.selectionStart = code.selectionEnd = Math.max(ls, s - sp.length);
+        }
+      } else {
+        code.value = v.slice(0, s) + '  ' + v.slice(end);
+        code.selectionStart = code.selectionEnd = s + 2;
+      }
+      syncEditor(); syncCursor();
+    } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault(); switchTab('preview');
+    } else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault(); doExport();
     }
-    syncEd(); syncCur();
-  } else if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();switchTab('preview');}
-    else if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();doExport();}
+  });
 });
 
-/* ── PREVIEW ────────────────────────────────────────────────── */
-var _blob=null;
-function refreshPreview(){
-  var html=$code.value.trim();
-  if(!html){toast('Editor is empty','warn');return;}
-  try{
-    var fr=document.getElementById('preview-frame'), doc=fr.contentDocument||fr.contentWindow.document;
-    doc.open();doc.write(html);doc.close();
-    var m=html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    var slug=(m?m[1].trim():'untitled').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,48)||'untitled';
-    document.getElementById('j-pvslug').textContent=slug;
-    setSt('Preview rendered'); toast('Preview rendered','ok');
-  } catch(e){toast('Preview error','error');console.error(e);}
-}
-function openTab(){
-  var html=$code.value.trim(); if(!html){toast('Editor is empty','warn');return;}
-  try{
-    if(_blob) URL.revokeObjectURL(_blob);
-    _blob=URL.createObjectURL(new Blob([html],{type:'text/html'}));
-    window.open(_blob,'_blank') ? toast('Opened in new tab ↗','ok') : toast('Allow popups','warn');
-  } catch(e){toast('Could not open new tab','error');}
+/* ═══════════════════════════════════════════════════════════════
+   PREVIEW
+═══════════════════════════════════════════════════════════════ */
+var _blobUrl = null;
+
+function refreshPreview() {
+  var code = document.getElementById('code');
+  if (!code) return;
+  var html = code.value.trim();
+  if (!html) { toast('Editor is empty', 'warn'); return; }
+  try {
+    var frame = document.getElementById('preview-frame');
+    var doc   = frame.contentDocument || frame.contentWindow.document;
+    doc.open(); doc.write(html); doc.close();
+    var m    = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    var slug = (m ? m[1].trim() : 'untitled')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'untitled';
+    var pvslug = document.getElementById('j-pvslug');
+    if (pvslug) pvslug.textContent = slug;
+    setStatus('Preview rendered');
+    toast('Preview rendered', 'ok');
+  } catch (err) {
+    toast('Preview error', 'error');
+    console.error('[HTMLPreviewer] Preview:', err);
+  }
 }
 
-/* ── HIGHLIGHT ──────────────────────────────────────────────── */
-function renderHighlight(){
-  var raw=$code.value, out=document.getElementById('hl-out');
-  if(!raw.trim()){out.textContent='<!-- nothing to highlight yet -->';return;}
-  try{out.innerHTML=tokenise(raw);setSt('Highlight applied');}
-  catch(e){out.textContent=raw;}
+function openTab() {
+  var code = document.getElementById('code');
+  if (!code || !code.value.trim()) { toast('Editor is empty', 'warn'); return; }
+  try {
+    if (_blobUrl) URL.revokeObjectURL(_blobUrl);
+    _blobUrl = URL.createObjectURL(new Blob([code.value], { type: 'text/html' }));
+    window.open(_blobUrl, '_blank')
+      ? toast('Opened in new tab', 'ok')
+      : toast('Allow popups to open in new tab', 'warn');
+  } catch (err) {
+    toast('Could not open new tab', 'error');
+  }
 }
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function tokenise(src){
-  var out='',i=0;
-  while(i<src.length){
-    if(/^<!DOCTYPE/i.test(src.slice(i))){var e2=src.indexOf('>',i),f=e2<0?src.slice(i):src.slice(i,e2+1);out+='<span class="s-doc">'+esc(f)+'</span>';i+=f.length;continue;}
-    if(src.startsWith('<!--',i)){var e2=src.indexOf('-->',i+4),f=e2<0?src.slice(i):src.slice(i,e2+3);out+='<span class="s-cmt">'+esc(f)+'</span>';i+=f.length;continue;}
-    if(src[i]==='<'){var e2=src.indexOf('>',i);if(e2<0){out+=esc(src.slice(i));break;}out+=colorTag(src.slice(i,e2+1));i=e2+1;continue;}
-    var nx=src.indexOf('<',i),st=nx<0?src.length:nx;
-    if(st>i) out+='<span class="s-txt">'+esc(src.slice(i,st))+'</span>'; i=st;
+
+function copyHTML() {
+  var code = document.getElementById('code');
+  if (!code || !code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
+  navigator.clipboard && navigator.clipboard.writeText(code.value)
+    .then(function () { toast('Copied to clipboard', 'ok'); })
+    .catch(function () { toast('Copy failed — try Ctrl+A, Ctrl+C', 'warn'); });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SYNTAX HIGHLIGHT
+═══════════════════════════════════════════════════════════════ */
+function renderHighlight() {
+  var code = document.getElementById('code');
+  var out  = document.getElementById('hl-out');
+  if (!code || !out) return;
+  if (!code.value.trim()) { out.textContent = '<!-- nothing to highlight yet -->'; return; }
+  try {
+    out.innerHTML = tokenise(code.value);
+    setStatus('Highlight applied');
+  } catch (err) {
+    out.textContent = code.value;
+    console.error('[HTMLPreviewer] Highlight:', err);
+  }
+}
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function tokenise(src) {
+  var out = '', i = 0;
+  while (i < src.length) {
+    if (/^<!DOCTYPE/i.test(src.slice(i))) {
+      var e1 = src.indexOf('>', i), f1 = e1 < 0 ? src.slice(i) : src.slice(i, e1 + 1);
+      out += '<span class="s-doc">' + esc(f1) + '</span>'; i += f1.length; continue;
+    }
+    if (src.startsWith('<!--', i)) {
+      var e2 = src.indexOf('-->', i + 4), f2 = e2 < 0 ? src.slice(i) : src.slice(i, e2 + 3);
+      out += '<span class="s-cmt">' + esc(f2) + '</span>'; i += f2.length; continue;
+    }
+    if (src[i] === '<') {
+      var e3 = src.indexOf('>', i);
+      if (e3 < 0) { out += esc(src.slice(i)); break; }
+      out += colorTag(src.slice(i, e3 + 1)); i = e3 + 1; continue;
+    }
+    var nx = src.indexOf('<', i), st = nx < 0 ? src.length : nx;
+    if (st > i) out += '<span class="s-txt">' + esc(src.slice(i, st)) + '</span>';
+    i = st;
   }
   return out;
 }
-function colorTag(raw){
-  var s=esc(raw);
-  s=s.replace(/(&lt;\/?)([\w-]+)/,function(_,b,n){return '<span class="s-br">'+b+'</span><span class="s-tag">'+n+'</span>';});
-  s=s.replace(/([\w:@.-]+)(=)(&quot;)([^&]*)(&quot;)/g,function(_,a,eq,q1,v,q2){return '<span class="s-attr">'+a+'</span>=<span class="s-val">'+q1+esc(v)+q2+'</span>';});
-  s=s.replace(/\s([\w:@.-]+)(?=\s|&gt;|\/&gt;)/g,function(_,a){return ' <span class="s-attr">'+a+'</span>';});
-  s=s.replace(/(&gt;|\/&gt;)$/,'<span class="s-br">$1</span>');
+
+function colorTag(raw) {
+  var s = esc(raw);
+  s = s.replace(/(&lt;\/?)([\w-]+)/, function (_, b, n) {
+    return '<span class="s-br">' + b + '</span><span class="s-tag">' + n + '</span>';
+  });
+  s = s.replace(/([\w:@.-]+)(=)(&quot;)([^&]*)(&quot;)/g, function (_, a, eq, q1, v, q2) {
+    return '<span class="s-attr">' + a + '</span>=' + '<span class="s-val">' + q1 + esc(v) + q2 + '</span>';
+  });
+  s = s.replace(/\s([\w:@.-]+)(?=\s|&gt;|\/&gt;)/g, function (_, a) {
+    return ' <span class="s-attr">' + a + '</span>';
+  });
+  s = s.replace(/(&gt;|\/&gt;)$/, '<span class="s-br">$1</span>');
   return s;
 }
 
-/* ── FORMAT ─────────────────────────────────────────────────── */
-var VOID={area:1,base:1,br:1,col:1,embed:1,hr:1,img:1,input:1,link:1,meta:1,param:1,source:1,track:1,wbr:1};
-function fmtCode(silent){
-  var raw=$code.value; if(!raw.trim()){if(!silent)toast('Nothing to format','warn');return;}
-  try{
-    var lines=raw.replace(/>\s+</g,'>\n<').replace(/>\s*([^\n<])/g,'>\n$1').split('\n');
-    var indent=0,res=[];
-    lines.forEach(function(ln){
-      ln=ln.trim();if(!ln)return;
-      if(/^<\/[\w-]/.test(ln)) indent=Math.max(0,indent-1);
-      res.push('  '.repeat(indent)+ln);
-      var m=ln.match(/^<([\w-]+)/);
-      if(m&&!VOID[m[1].toLowerCase()]&&!/\/>$/.test(ln)&&!/^<!/.test(ln)&&!/^<\//.test(ln)) indent++;
+/* ═══════════════════════════════════════════════════════════════
+   FORMAT
+═══════════════════════════════════════════════════════════════ */
+var VOID_TAGS = { area:1,base:1,br:1,col:1,embed:1,hr:1,img:1,input:1,link:1,meta:1,param:1,source:1,track:1,wbr:1 };
+
+function fmtCode(silent) {
+  var code = document.getElementById('code');
+  if (!code || !code.value.trim()) { if (!silent) toast('Nothing to format', 'warn'); return; }
+  try {
+    var lines = code.value
+      .replace(/>\s+</g, '>\n<')
+      .replace(/>\s*([^\n<])/g, '>\n$1')
+      .split('\n');
+    var indent = 0, res = [];
+    lines.forEach(function (ln) {
+      ln = ln.trim(); if (!ln) return;
+      if (/^<\/[\w-]/.test(ln)) indent = Math.max(0, indent - 1);
+      res.push('  '.repeat(indent) + ln);
+      var m = ln.match(/^<([\w-]+)/);
+      if (m && !VOID_TAGS[m[1].toLowerCase()] && !/\/>$/.test(ln) && !/^<!/.test(ln) && !/^<\//.test(ln)) indent++;
     });
-    $code.value=res.join('\n');syncEd();
-    if(!silent) toast('Formatted ✓','ok'); setSt('Formatted');
-  } catch(e){toast('Format error','error');}
-}
-function expandAll(silent){$code.value=$code.value.replace(/\n{3,}/g,'\n\n');syncEd();if(!silent)toast('Expanded','info');}
-function collapseAll(silent){fmtCode(true);$code.value=$code.value.replace(/\n{2,}/g,'\n');syncEd();if(!silent)toast('Collapsed','info');}
-
-/* ── SAMPLE ─────────────────────────────────────────────────── */
-var SAMPLE=['<!DOCTYPE html>','<html lang="en">','<head>','  <meta charset="UTF-8" />','  <meta name="viewport" content="width=device-width, initial-scale=1.0" />','  <title>Hello \u2014 MrLiPx</title>','  <style>','    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }','    body {','      font-family: system-ui, sans-serif;','      background: #0d1117; color: #e6edf3;','      min-height: 100vh; display: flex; align-items: center;','      justify-content: center; padding: 20px;','    }','    .card { background: #161b22; border: 1px solid #30363d;','      border-radius: 12px; padding: 40px 36px;','      max-width: 420px; width: 100%; text-align: center; }','    h1 { font-size: 1.5rem; margin-bottom: 10px; }','    p  { color: #8b949e; line-height: 1.65; font-size: .9rem; margin-bottom: 24px; }','    button { padding: 10px 22px; background: #58a6ff; color: #0d1117;','      font-weight: 700; border: none; border-radius: 6px; cursor: pointer; transition: background .15s; }','    button:hover { background: #79c0ff; }','  </style>','</head>','<body>','  <div class="card">','    <h1>Hello from MrLiPx \uD83D\uDC4B</h1>','    <p>Edit this HTML and press <strong>Ctrl+Enter</strong> to see your changes live.</p>','    <button onclick="this.textContent=\'Hello! \uD83D\uDC4B\'">Say Hello</button>','  </div>','</body>','</html>'].join('\n');
-function loadSample(silent){
-  $code.value=SAMPLE;syncEd();
-  if(!silent){switchTab('editor');toast('Sample loaded','info');}
-  setSt('Sample loaded');
+    code.value = res.join('\n');
+    syncEditor();
+    if (!silent) toast('Formatted', 'ok');
+    setStatus('Formatted');
+  } catch (err) {
+    toast('Format error', 'error');
+    console.error('[HTMLPreviewer] Format:', err);
+  }
 }
 
-/* ── CLEAR ──────────────────────────────────────────────────── */
-function clearCode(silent){
-  if(!silent&&$code.value.trim()&&!confirm('Clear all code?')) return;
-  $code.value='';syncEd();
-  if(!silent) toast('Cleared','ok'); setSt('Editor cleared');
+function expandAll(silent) {
+  var code = document.getElementById('code');
+  if (!code) return;
+  code.value = code.value.replace(/\n{3,}/g, '\n\n');
+  syncEditor();
+  if (!silent) toast('Expanded', 'info');
 }
 
-/* ── IMPORT / EXPORT ────────────────────────────────────────── */
-function doImport(){
-  if(document.body.classList.contains('embed-demo')||document.body.classList.contains('embed-readonly')) return;
+function collapseAll(silent) {
+  fmtCode(true);
+  var code = document.getElementById('code');
+  if (!code) return;
+  code.value = code.value.replace(/\n{2,}/g, '\n');
+  syncEditor();
+  if (!silent) toast('Collapsed', 'info');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SAMPLE HTML
+   Written as a plain multi-line string (no array join, no escaped
+   unicode) — this is the cleanest approach and avoids all issues
+   with escaped surrogate pairs in button onclick handlers.
+═══════════════════════════════════════════════════════════════ */
+var SAMPLE = [
+'<!DOCTYPE html>',
+'<html lang="en">',
+'<head>',
+'  <meta charset="UTF-8" />',
+'  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+'  <title>Hello \u2014 HTMLPreviewer</title>',
+'  <style>',
+'    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
+'    body {',
+'      font-family: system-ui, sans-serif;',
+'      background: #0d1117;',
+'      color: #e6edf3;',
+'      min-height: 100vh;',
+'      display: flex;',
+'      align-items: center;',
+'      justify-content: center;',
+'      padding: 20px;',
+'    }',
+'    .card {',
+'      background: #161b22;',
+'      border: 1px solid #30363d;',
+'      border-radius: 12px;',
+'      padding: 40px 36px;',
+'      max-width: 420px;',
+'      width: 100%;',
+'      text-align: center;',
+'    }',
+'    h1 { font-size: 1.5rem; margin-bottom: 10px; }',
+'    p  { color: #8b949e; line-height: 1.65; font-size: .9rem; margin-bottom: 24px; }',
+'    .btn {',
+'      padding: 10px 22px;',
+'      background: #58a6ff;',
+'      color: #0d1117;',
+'      font-weight: 700;',
+'      font-size: .85rem;',
+'      border: none;',
+'      border-radius: 6px;',
+'      cursor: pointer;',
+'      transition: background .15s;',
+'    }',
+'    .btn:hover { background: #79c0ff; }',
+'  </style>',
+'</head>',
+'<body>',
+'  <div class="card">',
+'    <h1>Hello from HTMLPreviewer</h1>',
+'    <p>Edit this HTML and press <strong>Ctrl+Enter</strong> (or click Run) to see your changes live.</p>',
+'    <button class="btn" onclick="this.textContent = this.textContent === \'Say Hello\' ? \'Hello!\' : \'Say Hello\'">',
+'      Say Hello',
+'    </button>',
+'  </div>',
+'</body>',
+'</html>'
+].join('\n');
+
+function loadSample(silent) {
+  var code = document.getElementById('code');
+  if (!code) return;
+  code.value = SAMPLE;
+  syncEditor();
+  setStatus('Sample loaded');
+  if (!silent) {
+    // Always switch to editor so user can see the loaded code,
+    // then auto-preview so they see the rendered result immediately
+    switchTab('editor');
+    toast('Sample loaded', 'info');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CLEAR
+═══════════════════════════════════════════════════════════════ */
+function clearCode(silent) {
+  var code = document.getElementById('code');
+  if (!code) return;
+  if (!silent && code.value.trim() && !confirm('Clear all code? This cannot be undone.')) return;
+  code.value = '';
+  syncEditor();
+  if (!silent) toast('Cleared', 'ok');
+  setStatus('Editor cleared');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IMPORT / EXPORT
+═══════════════════════════════════════════════════════════════ */
+function doImport() {
+  if (document.body.classList.contains('embed-demo') ||
+      document.body.classList.contains('embed-readonly')) return;
   document.getElementById('file-in').click();
 }
-document.getElementById('file-in').addEventListener('change',function(ev){
-  var f=ev.target.files[0]; if(!f) return;
-  var r=new FileReader();
-  r.onload=function(e){
-    $code.value=e.target.result;syncEd();
-    var n=f.name.replace(/\.html?$/i,'');
-    if($urlpath) $urlpath.textContent=n;
-    if($fname) $fname.textContent=f.name;
-    toast('Imported: '+f.name,'ok'); setSt('Imported: '+f.name);
+
+document.getElementById('file-in').addEventListener('change', function (ev) {
+  var f = ev.target.files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function (e) {
+    var code    = document.getElementById('code');
+    var urlpath = document.getElementById('j-urlpath');
+    var fname   = document.getElementById('j-fname');
+    if (!code) return;
+    code.value = e.target.result;
+    syncEditor();
+    var name = f.name.replace(/\.html?$/i, '');
+    if (urlpath) urlpath.textContent = name;
+    if (fname)   fname.textContent   = f.name;
+    toast('Imported: ' + f.name, 'ok');
+    setStatus('Imported: ' + f.name);
   };
-  r.onerror=function(){toast('Import failed','error');};
-  r.readAsText(f,'UTF-8'); ev.target.value='';
+  r.onerror = function () { toast('Import failed', 'error'); };
+  r.readAsText(f, 'UTF-8');
+  ev.target.value = '';
 });
-function doExport(){
-  if(document.body.classList.contains('embed-readonly')) return;
-  if(!$code.value.trim()){toast('Nothing to export','warn');return;}
-  try{
-    var url=URL.createObjectURL(new Blob([$code.value],{type:'text/html;charset=utf-8'}));
-    var a=Object.assign(document.createElement('a'),{href:url,download:'index.html'});
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(function(){URL.revokeObjectURL(url);},15000);
-    toast('Exported as index.html ⬇','ok');
-  } catch(e){toast('Export failed','error');}
-}
-function copyHTML(){
-  if(!$code.value.trim()){toast('Nothing to copy','warn');return;}
-  navigator.clipboard&&navigator.clipboard.writeText($code.value)
-    .then(function(){toast('Copied ✓','ok');})
-    .catch(function(){toast('Try Ctrl+A, Ctrl+C','warn');});
-}
 
-/* ── TOAST ──────────────────────────────────────────────────── */
-var _tt;
-function toast(msg,type){
-  var el=document.getElementById('toast');if(!el)return;
-  el.textContent=msg;el.className='show '+(type||'info');
-  clearTimeout(_tt);_tt=setTimeout(function(){el.className='';},2600);
+function doExport() {
+  if (document.body.classList.contains('embed-readonly')) return;
+  var code = document.getElementById('code');
+  if (!code || !code.value.trim()) { toast('Nothing to export', 'warn'); return; }
+  try {
+    var blob = new Blob([code.value], { type: 'text/html;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 15000);
+    toast('Exported as index.html', 'ok');
+  } catch (err) {
+    toast('Export failed', 'error');
+    console.error('[HTMLPreviewer] Export:', err);
+  }
 }
 
-/* ── GITHUB PROFILE ─────────────────────────────────────────── */
-function loadProfile(){
-  fetch('https://api.github.com/user/'+GH_ID,{headers:{Accept:'application/vnd.github.v3+json'}})
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(u){
-      var a=document.getElementById('hdr-author');
-      var av=document.getElementById('hdr-avatar');
-      var lg=document.getElementById('hdr-login');
-      if(a&&u.html_url) a.href=u.html_url;
-      if(av&&u.avatar_url) av.src=imgOpt(u.avatar_url,36,36);
-      if(lg&&u.login) lg.textContent='@'+u.login;
-    }).catch(function(){});
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════ */
+var _toastTimer;
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className   = 'show ' + (type || 'info');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function () { el.className = ''; }, 2600);
 }
 
-/* ── EMBED DETECTION ────────────────────────────────────────── */
-(function(){
-  try{
-    var em=new URLSearchParams(location.search).get('embed');
-    if(em==='demo') document.body.classList.add('embed-demo');
-    else if(em==='readonly') document.body.classList.add('embed-readonly');
-    else if(em!==null) document.body.classList.add('embed');
-  }catch(_){}
-}());
+/* ═══════════════════════════════════════════════════════════════
+   GITHUB PROFILE (non-critical, fails silently)
+═══════════════════════════════════════════════════════════════ */
+function loadProfile() {
+  fetch('https://api.github.com/user/' + GH_ID, {
+    headers: { Accept: 'application/vnd.github.v3+json' }
+  })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (u) {
+      var author = document.getElementById('hdr-author');
+      var avatar = document.getElementById('hdr-avatar');
+      var login  = document.getElementById('hdr-login');
+      if (author && u.html_url)   author.href         = u.html_url;
+      if (avatar && u.avatar_url) avatar.src          = imgOpt(u.avatar_url, 36, 36);
+      if (login  && u.login)      login.textContent   = '@' + u.login;
+    })
+    .catch(function () { /* keep hardcoded defaults */ });
+}
 
-/* ── INIT ───────────────────────────────────────────────────── */
-syncEd();
-loadProfile();
-document.addEventListener('DOMContentLoaded',function(){
-  if(location.hash&&location.hash.length>1) applyHash(location.hash);
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function () {
+  syncEditor();
+  loadProfile();
+  if (location.hash && location.hash.length > 1) applyHash(location.hash);
 });
 </script>
 </body>
