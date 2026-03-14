@@ -34,6 +34,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background .2s, color .2s;
 }
 
 /* ── NAV ── */
@@ -61,6 +62,27 @@ nav {
   transition: all .12s;
 }
 .nav-links a:hover { color: var(--text); background: var(--surface); border-color: var(--border); }
+.nav-theme {
+  display: flex; align-items: center;
+  height: 28px; padding: 0 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; gap: 6px; cursor: pointer;
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  font-family: var(--sans); white-space: nowrap;
+  transition: all .12s;
+}
+.nav-theme:hover { border-color: var(--accent); color: var(--text); }
+.nav-theme .ic { font-size: 14px; line-height: 1; }
+
+/* Landing page light mode */
+[data-theme="light"] {
+  --bg:      #f6f8fa;
+  --surface: #ffffff;
+  --border:  #d0d7de;
+  --text:    #1f2328;
+  --muted:   #656d76;
+}
+
 .nav-cta {
   background: var(--accent) !important;
   color: #fff !important; border-color: transparent !important;
@@ -281,6 +303,9 @@ footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: ce
     <a href="#demo">Demo</a>
     <a href="#install">Install</a>
     <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">GitHub</a>
+    <button class="nav-theme" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <span class="ic" id="theme-ic">🌙</span><span id="theme-lbl">Dark</span>
+    </button>
     <a href="app" class="nav-cta">Open App →</a>
   </div>
 </nav>
@@ -410,6 +435,69 @@ footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: ce
 </footer>
 
 <script>
+'use strict';
+
+/* ── THEME ───────────────────────────────────────────────────────────
+ * Shared localStorage key 'theme' with /app.
+ * Priority (highest → lowest):
+ *   1. ?theme=dark|light  query param in URL
+ *   2. localStorage       (persists across visits)
+ *   3. prefers-color-scheme  (OS/system preference)
+ *   4. Default: dark
+ * ─────────────────────────────────────────────────────────────────── */
+
+let _dark = true;
+
+function applyTheme(mode, save) {
+  _dark = (mode !== 'light');
+  document.documentElement.setAttribute('data-theme', _dark ? 'dark' : 'light');
+  const ic  = document.getElementById('theme-ic');
+  const lbl = document.getElementById('theme-lbl');
+  if (ic)  ic.textContent  = _dark ? '🌙' : '☀️';
+  if (lbl) lbl.textContent = _dark ? 'Dark' : 'Light';
+  if (save) {
+    try { localStorage.setItem('theme', _dark ? 'dark' : 'light'); } catch (_) {}
+    // Keep ?theme= param in URL in sync
+    const url = new URL(location.href);
+    url.searchParams.set('theme', _dark ? 'dark' : 'light');
+    history.replaceState(null, '', url);
+  }
+}
+
+function toggleTheme() { applyTheme(_dark ? 'light' : 'dark', true); }
+
+// Resolve starting theme
+(function () {
+  const params = new URLSearchParams(location.search);
+  const qTheme = params.get('theme');
+  if (qTheme === 'dark' || qTheme === 'light') {
+    // ?theme= in URL — save it so /app picks it up too
+    try { localStorage.setItem('theme', qTheme); } catch (_) {}
+    applyTheme(qTheme, false);
+    return;
+  }
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (_) {}
+  if (saved === 'dark' || saved === 'light') { applyTheme(saved, false); return; }
+  // Fall back to OS preference
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    applyTheme('light', false);
+  }
+})();
+
+// If OS preference changes while page is open and user hasn't manually set a theme, follow it
+try {
+  if (!localStorage.getItem('theme')) {
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+      let saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (_) {}
+      if (!saved) applyTheme(e.matches ? 'light' : 'dark', false);
+    });
+  }
+} catch (_) {}
+
+/* ── GITHUB PROFILE ─────────────────────────────────────────────────── */
+
 const GH_USER = 'MrLiPx';
 
 async function loadProfile() {
@@ -422,8 +510,10 @@ async function loadProfile() {
     if ($('author-name'))   $('author-name').textContent   = u.name || u.login;
     if ($('author-handle')) $('author-handle').textContent = '@' + u.login;
     if ($('tag-repos'))     $('tag-repos').textContent     = u.public_repos + ' repos';
-  } catch (_) { /* fall back to hardcoded values */ }
+  } catch (_) {}
 }
+
+/* ── SCROLL REVEAL ──────────────────────────────────────────────────── */
 
 function initReveal() {
   if (!('IntersectionObserver' in window)) return;
