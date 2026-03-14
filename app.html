@@ -3,38 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HTML Previewer — MrLiPx</title>
+  <title>HTML Previewer</title>
   <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    /* ── TOKENS ─────────────────────────────── */
     :root {
-      --bg:       #13151a;
-      --panel:    #1c1f26;
-      --hover:    #252930;
-      --border:   #2e323c;
-      --accent:   #e44d26;   /* HTML5 orange */
-      --accent2:  #f16529;
-      --red:      #ff5f57;
-      --yellow:   #febc2e;
-      --green:    #28c840;
-      --text:     #e2e8f0;
-      --muted:    #6b7280;
-      --mono:     'JetBrains Mono', monospace;
-      --sans:     'Inter', sans-serif;
+      --bg:      #0d1117;
+      --surface: #161b22;
+      --overlay: #1c2128;
+      --border:  #30363d;
+      --accent:  #58a6ff;
+      --green:   #3fb950;
+      --red:     #f85149;
+      --yellow:  #d29922;
+      --text:    #e6edf3;
+      --muted:   #8b949e;
+      --mono:    'JetBrains Mono', monospace;
+      --sans:    'Inter', sans-serif;
+      --r:       6px;
+      --ease:    all .12s ease;
     }
-    [data-light] {
-      --bg:     #f4f5f7;
-      --panel:  #ffffff;
-      --hover:  #f0f1f3;
-      --border: #e2e4e8;
-      --text:   #1a1d23;
-      --muted:  #9ca3af;
+    [data-theme="light"] {
+      --bg:      #f6f8fa;
+      --surface: #ffffff;
+      --overlay: #f0f2f5;
+      --border:  #d0d7de;
+      --text:    #1f2328;
+      --muted:   #656d76;
     }
 
+    /* ── RESET ──────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
-
     body {
       font-family: var(--sans);
       background: var(--bg);
@@ -42,932 +44,803 @@
       display: flex;
       flex-direction: column;
       transition: background .2s, color .2s;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── HEADER ── */
+    /* ── HEADER ─────────────────────────────── */
     header {
       height: 44px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 0 14px;
-      background: var(--panel);
+      gap: 8px;
+      padding: 0 12px;
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-weight: 700;
-      font-size: 14px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      text-decoration: none;
-      color: var(--text);
+      display: flex; align-items: center; gap: 7px;
+      font-weight: 700; font-size: 13px;
+      white-space: nowrap; flex-shrink: 0;
+      text-decoration: none; color: var(--text);
+      padding: 4px 7px; border-radius: var(--r);
+      border: 1px solid transparent;
+      transition: var(--ease);
     }
-    .logo img {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-    }
+    .logo:hover { background: var(--overlay); border-color: var(--border); }
+    .logo img { width: 18px; height: 18px; flex-shrink: 0; }
 
-    /* URL bar */
     .url-bar {
-      flex: 1;
-      max-width: 420px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0 10px;
-      gap: 5px;
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      transition: border-color .15s;
+      flex: 1; max-width: 380px; height: 26px;
+      display: flex; align-items: center; gap: 5px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 0 9px;
+      font-family: var(--mono); font-size: 11px; color: var(--muted);
+      overflow: hidden; transition: border-color .15s;
     }
     .url-bar:focus-within { border-color: var(--accent); }
-    .url-bar .lock   { color: var(--green); font-size: 10px; }
-    .url-bar .scheme { color: var(--accent); }
-    .url-bar .path   { color: var(--text); opacity: .7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .url-lock   { color: var(--green); flex-shrink: 0; font-size: 10px; }
+    .url-scheme { color: var(--accent); flex-shrink: 0; }
+    .url-path   { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .7; }
 
-    /* Header right */
-    .h-links {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-    .h-link {
+    .h-nav { display: flex; align-items: center; gap: 2px; margin-left: auto; flex-shrink: 0; }
+    .h-btn {
       display: flex; align-items: center; gap: 5px;
-      padding: 5px 9px;
+      padding: 4px 8px; height: 28px;
       font-size: 11px; font-weight: 600;
-      color: var(--muted);
-      text-decoration: none;
-      border-radius: 5px;
-      border: 1px solid transparent;
-      background: none;
-      cursor: pointer;
-      font-family: var(--sans);
-      transition: all .12s;
-      white-space: nowrap;
+      color: var(--muted); text-decoration: none;
+      border-radius: var(--r); border: 1px solid transparent;
+      background: none; cursor: pointer;
+      font-family: var(--sans); white-space: nowrap;
+      transition: var(--ease);
     }
-    .h-link:hover { background: var(--hover); border-color: var(--border); color: var(--text); }
-    .h-link svg { width: 12px; height: 12px; flex-shrink: 0; }
-    .h-link img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
-    .h-sep { width: 1px; height: 18px; background: var(--border); margin: 0 3px; }
-    .run-btn {
-      padding: 5px 12px;
-      background: var(--accent);
-      color: #fff;
-      border-color: transparent;
+    .h-btn:hover { background: var(--overlay); border-color: var(--border); color: var(--text); }
+    .h-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .h-btn img { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+    .h-sep { width: 1px; height: 16px; background: var(--border); margin: 0 2px; }
+    .h-run {
+      background: var(--accent) !important; color: #fff !important;
+      border-color: transparent !important; padding: 4px 11px;
     }
-    .run-btn:hover { background: var(--accent2); color: #fff; }
+    .h-run:hover { background: #79c0ff !important; color: #0d1117 !important; }
 
-    /* ── BODY ── */
-    .app { display: flex; flex: 1; overflow: hidden; }
+    /* ── WORKSPACE ──────────────────────────── */
+    .workspace { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-    /* ── SIDEBAR ── */
+    /* ── SIDEBAR ────────────────────────────── */
     .sidebar {
-      width: 190px;
-      flex-shrink: 0;
-      background: var(--panel);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      padding: 10px 8px;
-      gap: 2px;
-      overflow-y: auto;
+      width: 178px; flex-shrink: 0;
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      padding: 8px 6px; gap: 1px;
+      overflow-y: auto; overflow-x: hidden;
     }
-    .sb-group {
+    .sb-label {
       font-size: 9px; font-weight: 700;
-      letter-spacing: 1.2px; text-transform: uppercase;
-      color: var(--muted);
-      padding: 8px 6px 3px;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); padding: 10px 8px 3px;
     }
-    .sb-group:first-child { padding-top: 2px; }
-    .sb-sep { height: 1px; background: var(--border); margin: 5px 0; }
+    .sb-label:first-child { padding-top: 3px; }
+    .sb-sep { height: 1px; background: var(--border); margin: 5px 2px; }
 
-    .btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      padding: 7px 8px;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      font-family: var(--sans);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      text-align: left;
-      text-decoration: none;
-      transition: all .1s;
+    .sb-btn {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 6px 8px;
+      background: transparent; border: 1px solid transparent;
+      border-radius: var(--r);
+      font-family: var(--sans); font-size: 12px; font-weight: 500;
+      color: var(--muted); cursor: pointer;
+      text-align: left; text-decoration: none;
+      transition: var(--ease); white-space: nowrap;
     }
-    .btn:hover   { background: var(--hover); border-color: var(--border); color: var(--text); }
-    .btn:active  { opacity: .75; }
-    .btn.active  { background: var(--hover); border-color: var(--border); color: var(--text); }
-    .btn .ic     { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+    .sb-btn:hover  { background: var(--overlay); border-color: var(--border); color: var(--text); }
+    .sb-btn.on     { background: var(--overlay); border-color: var(--border); color: var(--text); }
+    .sb-btn .ic    { font-size: 12px; width: 15px; text-align: center; flex-shrink: 0; }
 
-    .btn-blue  { color: var(--accent); }
-    .btn-blue:hover  { background: rgba(228,77,38,.1);  border-color: rgba(228,77,38,.3);  color: var(--accent); }
-    .btn-blue.active { background: rgba(228,77,38,.12); border-color: rgba(228,77,38,.35); color: var(--accent); }
-    .btn-green { color: var(--green); }
-    .btn-green:hover { background: rgba(40,200,64,.1); border-color: rgba(40,200,64,.3); color: var(--green); }
-    .btn-red   { color: var(--red); }
-    .btn-red:hover   { background: rgba(255,95,87,.1);  border-color: rgba(255,95,87,.3);  color: var(--red); }
+    .sb-blue:hover, .sb-blue.on {
+      background: rgba(88,166,255,.1) !important;
+      border-color: rgba(88,166,255,.25) !important;
+      color: var(--accent) !important;
+    }
+    .sb-green:hover { background: rgba(63,185,80,.1); border-color: rgba(63,185,80,.25); color: var(--green); }
+    .sb-red:hover   { background: rgba(248,81,73,.1);  border-color: rgba(248,81,73,.25);  color: var(--red); }
 
-    /* ── MAIN ── */
+    /* ── MAIN ───────────────────────────────── */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
-    /* Tab bar */
-    .tabs {
-      display: flex;
-      height: 36px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
+    .tabbar {
+      display: flex; height: 34px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
     .tab {
-      display: flex; align-items: center; gap: 5px;
-      padding: 0 16px;
-      font-size: 11px; font-weight: 600;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all .12s;
-      user-select: none;
-      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 0 14px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      cursor: pointer; border-bottom: 2px solid transparent;
+      transition: var(--ease); user-select: none; text-decoration: none;
     }
-    .tab:hover { color: var(--text); background: var(--hover); }
+    .tab:hover { color: var(--text); background: var(--overlay); }
     .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
 
-    /* Panels */
     .panels { flex: 1; display: flex; overflow: hidden; }
     .panel  { flex: 1; display: none; flex-direction: column; overflow: hidden; }
     .panel.on { display: flex; }
 
-    /* ── EDITOR PANEL ── */
-    .ed-bar {
-      height: 28px;
-      display: flex; align-items: center; gap: 8px;
-      padding: 0 12px;
-      background: var(--hover);
-      border-bottom: 1px solid var(--border);
-      font-size: 10px; color: var(--muted);
-      font-family: var(--mono);
+    /* ── EDITOR ─────────────────────────────── */
+    .ed-meta {
+      height: 26px; display: flex; align-items: center; gap: 8px;
+      padding: 0 10px;
+      background: var(--overlay); border-bottom: 1px solid var(--border);
+      font-size: 10px; color: var(--muted); font-family: var(--mono);
       flex-shrink: 0;
     }
-    .ed-bar .right { margin-left: auto; display: flex; gap: 8px; }
-    .ed-bar kbd {
-      padding: 1px 4px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      font-size: 9px;
+    .ed-meta .push { margin-left: auto; display: flex; gap: 10px; }
+    .ed-meta kbd {
+      padding: 1px 4px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 3px;
+      font-size: 9px; font-family: var(--mono);
     }
-
-    .ed-wrap { flex: 1; display: flex; overflow: hidden; }
-
+    .ed-body { flex: 1; display: flex; overflow: hidden; }
     .gutter {
-      width: 44px;
-      padding: 12px 8px;
-      background: var(--hover);
-      border-right: 1px solid var(--border);
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.6;
-      color: var(--muted);
-      text-align: right;
-      user-select: none;
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 42px; padding: 10px 6px;
+      background: var(--overlay); border-right: 1px solid var(--border);
+      font-family: var(--mono); font-size: 11.5px; line-height: 1.6;
+      color: var(--muted); text-align: right;
+      user-select: none; overflow: hidden; flex-shrink: 0;
     }
-
     #code {
-      flex: 1;
-      padding: 12px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.6;
+      flex: 1; padding: 10px 12px;
+      background: var(--bg); color: var(--text);
+      font-family: var(--mono); font-size: 12px; line-height: 1.6;
       border: none; outline: none; resize: none;
-      tab-size: 2;
-      white-space: pre;
-      overflow: auto;
+      tab-size: 2; white-space: pre; overflow: auto;
       caret-color: var(--accent);
     }
-    #code::selection { background: rgba(228,77,38,.2); }
+    #code::placeholder { color: var(--muted); opacity: .45; font-style: italic; }
+    #code::selection   { background: rgba(88,166,255,.18); }
 
-    /* ── PREVIEW PANEL ── */
-    .preview-chrome {
-      height: 34px;
-      display: flex; align-items: center; gap: 8px;
-      padding: 0 12px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
+    /* ── PREVIEW ────────────────────────────── */
+    .pv-chrome {
+      height: 32px; display: flex; align-items: center; gap: 6px;
+      padding: 0 10px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .traffic {
-      display: flex; gap: 5px; align-items: center; flex-shrink: 0;
-    }
+    .traffic { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
     .traffic span {
-      width: 11px; height: 11px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: opacity .12s;
+      width: 10px; height: 10px; border-radius: 50%;
+      cursor: pointer; transition: opacity .12s;
     }
-    .traffic span:hover { opacity: .75; }
-    .tr  { background: var(--red);    }
-    .ty  { background: var(--yellow); }
-    .tg  { background: var(--green);  }
-
-    .preview-addr {
-      flex: 1;
-      height: 22px;
+    .traffic span:hover { opacity: .7; }
+    .tc-r { background: var(--red); }
+    .tc-y { background: var(--yellow); }
+    .tc-g { background: var(--green); }
+    .pv-addr {
+      flex: 1; height: 20px;
       display: flex; align-items: center; gap: 4px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 0 8px;
-      font-family: var(--mono);
-      font-size: 10px;
-      min-width: 0;
-      overflow: hidden;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0 7px;
+      font-family: var(--mono); font-size: 10px;
+      overflow: hidden; min-width: 0;
     }
-    .pa-lock   { color: var(--green);  flex-shrink: 0; }
-    .pa-scheme { color: var(--accent); flex-shrink: 0; }
-    .pa-host   { color: var(--text);   flex-shrink: 0; font-weight: 600; }
-    .pa-path   { color: var(--muted);  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    .pv-btns { display: flex; gap: 4px; flex-shrink: 0; }
-    .pv-btn {
-      width: 24px; height: 24px;
+    .pv-addr .lock   { color: var(--green); flex-shrink: 0; }
+    .pv-addr .scheme { color: var(--accent); flex-shrink: 0; }
+    .pv-addr .slug   { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-tools { display: flex; gap: 3px; flex-shrink: 0; }
+    .pv-tool {
+      width: 22px; height: 22px;
       display: flex; align-items: center; justify-content: center;
-      background: var(--hover);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      cursor: pointer; color: var(--muted);
-      transition: all .12s;
+      background: var(--overlay); border: 1px solid var(--border);
+      border-radius: 4px; cursor: pointer; color: var(--muted);
+      transition: var(--ease);
     }
-    .pv-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .pv-btn svg { width: 12px; height: 12px; }
+    .pv-tool:hover { border-color: var(--accent); color: var(--accent); }
+    .pv-tool svg { width: 11px; height: 11px; }
+    #preview-frame { flex: 1; border: none; background: #fff; }
 
-    #preview-iframe {
-      flex: 1;
-      border: none;
-      background: #fff;
-    }
-
-    /* ── HIGHLIGHT PANEL ── */
-    .hl-bar {
-      height: 28px;
-      display: flex; align-items: center; gap: 10px;
-      padding: 0 12px;
-      background: var(--hover);
-      border-bottom: 1px solid var(--border);
-      font-size: 10px; color: var(--muted);
-      font-family: var(--mono);
+    /* ── HIGHLIGHT ──────────────────────────── */
+    .hl-meta {
+      height: 26px; display: flex; align-items: center; gap: 8px;
+      padding: 0 10px;
+      background: var(--overlay); border-bottom: 1px solid var(--border);
+      font-size: 10px; color: var(--muted); font-family: var(--mono);
       flex-shrink: 0;
     }
-    .hl-legend { display: flex; gap: 8px; margin-left: auto; }
-    .hl-tag-c   { color: #ff6b8a; }
-    .hl-attr-c  { color: #ffc56d; }
-    .hl-val-c   { color: #7ee8a2; }
-    .hl-cmnt-c  { color: #4a5568; font-style: italic; }
-
-    .hl-scroll { flex: 1; overflow: auto; padding: 12px 14px; }
+    .hl-legend { display: flex; gap: 10px; margin-left: auto; }
+    .hl-scroll { flex: 1; overflow: auto; padding: 10px 12px; }
     #hl-out {
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.65;
-      white-space: pre-wrap;
-      word-break: break-all;
+      font-family: var(--mono); font-size: 11.5px;
+      line-height: 1.65; white-space: pre-wrap; word-break: break-all;
     }
-    .ht  { color: #ff6b8a; }
-    .ha  { color: #ffc56d; }
-    .hv  { color: #7ee8a2; }
-    .hc  { color: #4a5568; font-style: italic; }
-    .hd  { color: #718096; font-style: italic; }
-    .hbr { color: #5a8aaf; }
-    .htx { color: #a0aec0; }
+    .s-tag { color: #7ee787; }
+    .s-attr { color: #79c0ff; }
+    .s-val  { color: #a5d6ff; }
+    .s-cmt  { color: #8b949e; font-style: italic; }
+    .s-doc  { color: #8b949e; font-style: italic; }
+    .s-br   { color: #6e7681; }
+    .s-txt  { color: var(--muted); }
 
-    /* ── STATUS BAR ── */
-    .status {
-      height: 22px;
-      display: flex; align-items: center;
-      background: var(--panel);
-      border-top: 1px solid var(--border);
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      flex-shrink: 0;
-      overflow: hidden;
+    /* ── STATUS ─────────────────────────────── */
+    .statusbar {
+      height: 20px; display: flex; align-items: center;
+      background: var(--surface); border-top: 1px solid var(--border);
+      font-family: var(--mono); font-size: 10px; color: var(--muted);
+      flex-shrink: 0; overflow: hidden;
     }
     .st {
-      padding: 0 10px;
-      border-right: 1px solid var(--border);
-      height: 100%;
-      display: flex; align-items: center; gap: 5px;
+      padding: 0 9px; border-right: 1px solid var(--border);
+      height: 100%; display: flex; align-items: center; gap: 5px;
       white-space: nowrap;
     }
     .st:last-child { border-right: none; }
-    .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
-    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .st-r { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
+    .st-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
-    /* ── TOAST ── */
+    /* ── TOAST ──────────────────────────────── */
     #toast {
-      position: fixed;
-      bottom: 24px; left: 50%;
-      transform: translateX(-50%) translateY(4px);
-      padding: 8px 16px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: 12px; font-weight: 600;
-      font-family: var(--sans);
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .18s, transform .18s;
-      z-index: 9999;
-      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      padding: 7px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-size: 11px; font-weight: 600; font-family: var(--sans);
+      pointer-events: none; opacity: 0;
+      transition: opacity .15s, transform .15s;
+      z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,.4);
       white-space: nowrap;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.ok   { color: var(--green);  border-color: rgba(40,200,64,.3); }
-    #toast.info { color: var(--accent); border-color: rgba(228,77,38,.3); }
-    #toast.warn { color: var(--yellow); border-color: rgba(254,188,46,.3); }
+    #toast.ok   { color: var(--green);  border-color: rgba(63,185,80,.3); }
+    #toast.info { color: var(--accent); border-color: rgba(88,166,255,.3); }
+    #toast.warn { color: var(--yellow); border-color: rgba(210,153,34,.3); }
 
-    #file-input { display: none; }
+    #file-in { display: none; }
 
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    @media (max-width: 640px) {
-      .sidebar { width: 42px; }
-      .btn span:not(.ic) { display: none; }
-      .sb-group, .sb-sep { display: none; }
-      .btn { padding: 7px; justify-content: center; }
-      .url-bar, .h-link span { display: none; }
+    /* ── FRAMED (iframe embed) ──────────────── */
+    body.framed header    { display: none; }
+    body.framed .statusbar{ display: none; }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 600px) {
+      .sidebar { width: 38px; }
+      .sb-btn span:not(.ic) { display: none; }
+      .sb-label, .sb-sep { display: none; }
+      .sb-btn { padding: 6px; justify-content: center; }
+      .url-bar, .h-btn span { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
-  <a class="logo" href="." title="Back to landing page">
-    <img src="media/images/logos/html5.svg" alt="HTML5" />
+  <a class="logo" href=".">
+    <img src="media/images/logos/html5.svg" alt="" />
     HTML Previewer
   </a>
-
   <div class="url-bar">
-    <span class="lock">🔒</span>
-    <span class="scheme">file://</span>
-    <span class="path" id="url-path">app</span>
+    <span class="url-lock">🔒</span>
+    <span class="url-scheme">file://</span>
+    <span class="url-path" id="j-urlpath">app</span>
   </div>
-
-  <nav class="h-links">
-    <a class="h-link" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
+  <nav class="h-nav">
+    <a class="h-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3A12 12 0 0 0 0 12.3c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.7 18 5 18 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.3 12 12 0 0 0 12 .3z"/></svg>
       <span>GitHub</span>
     </a>
-    <a class="h-link" href="https://github.com/MrLiPx/html-previewer/blob/main/README.md" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>README</span>
-    </a>
-    <a class="h-link" href="https://github.com/MrLiPx/html-previewer/issues" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>Issues</span>
-    </a>
     <div class="h-sep"></div>
-    <a class="h-link" href="https://github.com/MrLiPx" target="_blank" rel="noopener">
-      <img src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="MrLiPx" />
+    <a class="h-btn" href="https://github.com/MrLiPx" target="_blank" rel="noopener">
+      <img src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="@MrLiPx" />
       <span>@MrLiPx</span>
     </a>
     <div class="h-sep"></div>
-    <button class="h-link run-btn" onclick="navTo('preview')">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <button class="h-btn h-run" onclick="cmd('preview')">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       <span>Run</span>
     </button>
   </nav>
 </header>
 
-<!-- APP -->
-<div class="app">
+<div class="workspace">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <span class="sb-group">View</span>
-    <a id="sb-preview"   class="btn btn-blue" href="#preview"   onclick="navTo('preview');return false;">
-      <span class="ic">▶</span><span>Preview</span>
-    </a>
-    <a id="sb-highlight" class="btn"           href="#highlight" onclick="navTo('highlight');return false;">
-      <span class="ic">✦</span><span>Highlight</span>
-    </a>
+    <span class="sb-label">View</span>
+    <a id="sb-preview"   class="sb-btn sb-blue" href="#preview"   onclick="return cmd('preview')">  <span class="ic">▶</span><span>Preview</span></a>
+    <a id="sb-highlight" class="sb-btn"          href="#highlight" onclick="return cmd('highlight')"><span class="ic">✦</span><span>Highlight</span></a>
+    <a id="sb-editor"    class="sb-btn"          href="#editor"   onclick="return cmd('editor')">   <span class="ic">✏</span><span>Editor</span></a>
 
     <div class="sb-sep"></div>
-    <span class="sb-group">Edit</span>
-    <a id="sb-format"   class="btn" href="#format"   onclick="fmtCode();return false;">
-      <span class="ic">⊞</span><span>Format</span>
-    </a>
-    <a id="sb-expand"   class="btn" href="#expand"   onclick="expandAll();return false;">
-      <span class="ic">＋</span><span>Expand all</span>
-    </a>
-    <a id="sb-collapse" class="btn" href="#collapse" onclick="collapseAll();return false;">
-      <span class="ic">－</span><span>Collapse all</span>
-    </a>
+    <span class="sb-label">Edit</span>
+    <a class="sb-btn" href="#format"   onclick="return cmd('format')">  <span class="ic">⊞</span><span>Format</span></a>
+    <a class="sb-btn" href="#expand"   onclick="return cmd('expand')">  <span class="ic">＋</span><span>Expand all</span></a>
+    <a class="sb-btn" href="#collapse" onclick="return cmd('collapse')"><span class="ic">－</span><span>Collapse all</span></a>
 
     <div class="sb-sep"></div>
-    <span class="sb-group">File</span>
-    <a id="sb-sample" class="btn"       href="#sample" onclick="loadSample();return false;">
-      <span class="ic">📄</span><span>Sample</span>
-    </a>
-    <a id="sb-clear"  class="btn btn-red" href="#clear" onclick="clearCode();return false;">
-      <span class="ic">✕</span><span>Clear</span>
-    </a>
-    <a id="sb-import" class="btn"       href="#import" onclick="doImport();return false;">
-      <span class="ic">⬆</span><span>Import from file</span>
-    </a>
-    <a id="sb-export" class="btn btn-green" href="#export" onclick="doExport();return false;">
-      <span class="ic">⬇</span><span>Export to file</span>
-    </a>
+    <span class="sb-label">File</span>
+    <a class="sb-btn"          href="#sample" onclick="return cmd('sample')"><span class="ic">📄</span><span>Sample</span></a>
+    <a class="sb-btn sb-red"   href="#clear"  onclick="return cmd('clear')"> <span class="ic">✕</span><span>Clear</span></a>
+    <a class="sb-btn"          href="#import" onclick="return cmd('import')"><span class="ic">⬆</span><span>Import</span></a>
+    <a class="sb-btn sb-green" href="#export" onclick="return cmd('export')"><span class="ic">⬇</span><span>Export</span></a>
 
     <div class="sb-sep"></div>
-    <span class="sb-group">Links</span>
-    <a id="sb-github"  class="btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
-      <span class="ic">⭐</span><span>Star on GitHub</span>
-    </a>
-    <a id="sb-website" class="btn" href="https://mrlipx.com" target="_blank" rel="noopener">
-      <span class="ic">🌐</span><span>MrLiPx.com</span>
-    </a>
+    <span class="sb-label">Links</span>
+    <a class="sb-btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener"><span class="ic">⭐</span><span>Star on GitHub</span></a>
+    <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener"><span class="ic">🌐</span><span>MrLiPx.com</span></a>
 
     <div class="sb-sep"></div>
-    <a id="sb-theme" class="btn" href="#theme" onclick="toggleTheme();return false;">
-      <span class="ic" id="theme-ic">🌙</span><span id="theme-txt">Dark mode</span>
+    <a id="sb-theme" class="sb-btn" href="#theme" onclick="return cmd('theme')">
+      <span class="ic" id="j-themeic">🌙</span><span id="j-themetxt">Dark mode</span>
     </a>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <a class="tab on" id="tab-editor"    href="#editor"    onclick="navTo('editor');return false;">✏ Editor</a>
-      <a class="tab"    id="tab-preview"   href="#preview"   onclick="navTo('preview');return false;">▶ Preview</a>
-      <a class="tab"    id="tab-highlight" href="#highlight" onclick="navTo('highlight');return false;">✦ Highlight</a>
+    <div class="tabbar">
+      <a class="tab on" id="tab-editor"    href="#editor"    onclick="return cmd('editor')">   ✏ Editor</a>
+      <a class="tab"    id="tab-preview"   href="#preview"   onclick="return cmd('preview')">  ▶ Preview</a>
+      <a class="tab"    id="tab-highlight" href="#highlight" onclick="return cmd('highlight')">✦ Highlight</a>
     </div>
 
     <div class="panels">
 
-      <!-- Editor -->
       <div class="panel on" id="panel-editor">
-        <div class="ed-bar">
-          <span>HTML</span>
-          <span>·</span>
-          <span id="cursor">Ln 1, Col 1</span>
-          <div class="right">
-            <span id="counts">0 chars · 0 lines</span>
-            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> run &nbsp;·&nbsp; <kbd>Tab</kbd> indent</span>
+        <div class="ed-meta">
+          <span>HTML</span>·
+          <span id="j-cursor">Ln 1, Col 1</span>
+          <div class="push">
+            <span id="j-counts">0 chars · 0 lines</span>
+            <span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> run · <kbd>Tab</kbd> indent · <kbd>Ctrl</kbd>+<kbd>S</kbd> export</span>
           </div>
         </div>
-        <div class="ed-wrap">
-          <div class="gutter" id="gutter">1</div>
+        <div class="ed-body">
+          <div class="gutter" id="j-gutter">1</div>
           <textarea id="code" spellcheck="false"
-            placeholder="<!-- Paste or write HTML here, then click Run or press Ctrl+Enter -->"></textarea>
+            placeholder="<!-- paste or write HTML here · Ctrl+Enter to preview -->"></textarea>
         </div>
       </div>
 
-      <!-- Preview -->
       <div class="panel" id="panel-preview">
-        <div class="preview-chrome">
+        <div class="pv-chrome">
           <div class="traffic">
-            <span class="tr" title="Back to editor" onclick="navTo('editor')"></span>
-            <span class="ty" title="Refresh"         onclick="doRefresh()"></span>
-            <span class="tg" title="Open in new tab" onclick="openTab()"></span>
+            <span class="tc-r" title="Back to editor" onclick="cmd('editor')"></span>
+            <span class="tc-y" title="Refresh"         onclick="refreshPreview()"></span>
+            <span class="tc-g" title="Open in new tab" onclick="openTab()"></span>
           </div>
-
-          <div class="preview-addr">
-            <span class="pa-lock">🔒</span>
-            <span class="pa-scheme">localhost/</span>
-            <span class="pa-path" id="pv-path">preview</span>
+          <div class="pv-addr">
+            <span class="lock">🔒</span>
+            <span class="scheme">preview/</span>
+            <span class="slug" id="j-pvslug">untitled</span>
           </div>
-
-          <div class="pv-btns">
-            <div class="pv-btn" onclick="doRefresh()" title="Refresh">
+          <div class="pv-tools">
+            <div class="pv-tool" onclick="refreshPreview()" title="Refresh">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             </div>
-            <div class="pv-btn" onclick="openTab()" title="Open in new tab">
+            <div class="pv-tool" onclick="openTab()" title="New tab">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </div>
-            <div class="pv-btn" onclick="copyHTML()" title="Copy HTML">
+            <div class="pv-tool" onclick="copyHTML()" title="Copy HTML">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </div>
           </div>
         </div>
-        <iframe id="preview-iframe"
+        <iframe id="preview-frame"
           sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
           title="Preview"></iframe>
       </div>
 
-      <!-- Highlight -->
       <div class="panel" id="panel-highlight">
-        <div class="hl-bar">
-          <span>Syntax Highlight</span>
+        <div class="hl-meta">
+          Syntax Highlight
           <div class="hl-legend">
-            <span class="hl-tag-c">● tag</span>
-            <span class="hl-attr-c">● attr</span>
-            <span class="hl-val-c">● value</span>
-            <span class="hl-cmnt-c">● comment</span>
+            <span style="color:#7ee787">● tag</span>
+            <span style="color:#79c0ff">● attr</span>
+            <span style="color:#a5d6ff">● value</span>
+            <span style="color:#8b949e">● comment</span>
           </div>
         </div>
-        <div class="hl-scroll">
-          <pre id="hl-out"><!-- Highlighted HTML will appear here. --></pre>
-        </div>
+        <div class="hl-scroll"><pre id="hl-out"></pre></div>
       </div>
 
-    </div><!-- /panels -->
+    </div>
 
-    <!-- Status bar -->
-    <div class="status">
-      <div class="st"><div class="dot"></div><span id="st-msg">Ready</span></div>
-      <div class="st" id="st-file">app</div>
-      <div class="st st-right" id="st-theme">Dark</div>
+    <div class="statusbar">
+      <div class="st"><div class="st-dot"></div><span id="j-status">Ready</span></div>
+      <div class="st" id="j-fname">app.html</div>
+      <div class="st st-r" id="j-themelabel">Dark</div>
       <div class="st">UTF-8</div>
       <div class="st">HTML</div>
     </div>
-
   </div>
+
 </div>
 
 <div id="toast"></div>
-<input type="file" id="file-input" accept=".html,.htm,.txt" />
+<input type="file" id="file-in" accept=".html,.htm,.txt" />
 
 <script>
 'use strict';
 
-/* ── REFS ────────────────────────────────── */
-const code    = document.getElementById('code');
-const gutter  = document.getElementById('gutter');
-const counts  = document.getElementById('counts');
-const cursor  = document.getElementById('cursor');
-const stMsg   = document.getElementById('st-msg');
-const stFile  = document.getElementById('st-file');
-const urlPath = document.getElementById('url-path');
-const pvPath  = document.getElementById('pv-path');
+/* ── HASH ROUTING ────────────────────────────────────────────────────
+ *
+ * Tokens are & separated (no leading #).
+ * Each token is either a bare keyword OR key=value.
+ *
+ * Supported tokens
+ * ─────────────────────────────────────────────────────────────────────
+ * Tabs     : editor | preview | highlight
+ * Theme    : dark | light | theme=dark | theme=light
+ * Actions  : sample | format | expand | collapse | clear | export | import
+ *
+ * Examples
+ * ─────────────────────────────────────────────────────────────────────
+ * #preview
+ * #dark                        → apply dark theme
+ * #light                       → apply light theme
+ * #theme=dark
+ * #theme=light
+ * #sample                      → load sample, stay on editor
+ * #sample&preview              → load sample, switch to preview
+ * #sample&preview&dark         → load sample, preview, dark theme
+ * #preview&theme=light
+ * ─────────────────────────────────────────────────────────────────────
+ */
 
-let dark    = true;
-let blobUrl = null;
-
-/* ── HASH ROUTING ────────────────────────── */
 const TABS = ['editor', 'preview', 'highlight'];
 
-function navTo(name) {
-  if (!TABS.includes(name)) return;
-  history.replaceState(null, '', '#' + name);
-  activateTab(name);
-}
-
-function activateTab(name) {
-  TABS.forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('on', t === name);
-    document.getElementById('panel-' + t).classList.toggle('on', t === name);
-    const sb = document.getElementById('sb-' + t);
-    if (sb) sb.classList.toggle('active', t === name);
+function parseHash(raw) {
+  return raw.replace(/^#/, '').split('&').filter(Boolean).map(t => {
+    const i = t.indexOf('=');
+    return i < 0 ? { key: t.toLowerCase(), val: null }
+                 : { key: t.slice(0, i).toLowerCase(), val: t.slice(i + 1).toLowerCase() };
   });
-  if (name === 'preview')   doRefresh();
-  if (name === 'highlight') doHighlight();
 }
 
-/* Read hash on load and on back/forward */
-function handleHash() {
-  const h = location.hash.slice(1);
-  if (TABS.includes(h)) activateTab(h);
+function applyHash(raw, skipPush) {
+  const tokens = parseHash(raw);
+  if (!tokens.length) return;
+
+  let targetTab = null;
+
+  for (const { key, val } of tokens) {
+    switch (key) {
+      case 'editor': case 'preview': case 'highlight':
+        targetTab = key; break;
+
+      case 'dark':  setTheme('dark');  break;
+      case 'light': setTheme('light'); break;
+      case 'theme':
+        if (val === 'dark' || val === 'light') setTheme(val);
+        break;
+
+      case 'sample':   loadSample(true);  break;
+      case 'format':   fmtCode(true);     break;
+      case 'expand':   expandAll(true);   break;
+      case 'collapse': collapseAll(true); break;
+      case 'clear':    clearCode(true);   break;
+      case 'export':   doExport();        break;
+      case 'import':   doImport();        break;
+    }
+  }
+
+  if (targetTab) switchTab(targetTab, skipPush);
 }
 
-window.addEventListener('hashchange', handleHash);
-window.addEventListener('DOMContentLoaded', handleHash);
+/* Dispatch for sidebar / tab click handlers. Returns false (prevents <a> default). */
+function cmd(action) {
+  if (TABS.includes(action)) {
+    switchTab(action);
+  } else {
+    switch (action) {
+      case 'theme':    toggleTheme(); break;
+      case 'sample':   loadSample();  break;
+      case 'format':   fmtCode();     break;
+      case 'expand':   expandAll();   break;
+      case 'collapse': collapseAll(); break;
+      case 'clear':    clearCode();   break;
+      case 'import':   doImport();    break;
+      case 'export':   doExport();    break;
+    }
+  }
+  return false;
+}
 
-/* ── EDITOR ──────────────────────────────── */
+window.addEventListener('hashchange', () => applyHash(location.hash));
+
+/* ── TABS ─────────────────────────────────────────────────────────── */
+
+function switchTab(name, skipPush) {
+  if (!TABS.includes(name)) return;
+
+  TABS.forEach(t => {
+    document.getElementById('tab-'   + t)?.classList.toggle('on', t === name);
+    document.getElementById('panel-' + t)?.classList.toggle('on', t === name);
+    document.getElementById('sb-'    + t)?.classList.toggle('on', t === name);
+  });
+
+  if (!skipPush) history.replaceState(null, '', '#' + name);
+
+  if (name === 'preview')   refreshPreview();
+  if (name === 'highlight') renderHighlight();
+}
+
+/* ── EDITOR ───────────────────────────────────────────────────────── */
+
+const $code    = document.getElementById('code');
+const $gutter  = document.getElementById('j-gutter');
+const $counts  = document.getElementById('j-counts');
+const $cursor  = document.getElementById('j-cursor');
+const $status  = document.getElementById('j-status');
+const $fname   = document.getElementById('j-fname');
+const $urlpath = document.getElementById('j-urlpath');
+
 function syncEditor() {
-  const lines = code.value.split('\n');
-  gutter.textContent = lines.map((_, i) => i + 1).join('\n');
-  gutter.scrollTop   = code.scrollTop;
-  counts.textContent = `${code.value.length} chars · ${lines.length} lines`;
+  const lines = $code.value.split('\n');
+  $gutter.textContent = lines.map((_, i) => i + 1).join('\n');
+  $gutter.scrollTop   = $code.scrollTop;
+  $counts.textContent = `${$code.value.length} chars · ${lines.length} lines`;
 }
 
 function syncCursor() {
-  const pre = code.value.slice(0, code.selectionStart);
+  const pre = $code.value.slice(0, $code.selectionStart);
   const ln  = pre.split('\n').length;
   const col = pre.length - pre.lastIndexOf('\n');
-  cursor.textContent = `Ln ${ln}, Col ${col}`;
+  $cursor.textContent = `Ln ${ln}, Col ${col}`;
 }
 
-code.addEventListener('input',  syncEditor);
-code.addEventListener('click',  syncCursor);
-code.addEventListener('keyup',  syncCursor);
-code.addEventListener('scroll', () => { gutter.scrollTop = code.scrollTop; });
-code.addEventListener('keydown', e => {
-  /* Tab / Shift+Tab */
+$code.addEventListener('input',  syncEditor);
+$code.addEventListener('click',  syncCursor);
+$code.addEventListener('keyup',  syncCursor);
+$code.addEventListener('scroll', () => { $gutter.scrollTop = $code.scrollTop; });
+
+$code.addEventListener('keydown', e => {
   if (e.key === 'Tab') {
     e.preventDefault();
-    const s = code.selectionStart, end = code.selectionEnd, v = code.value;
+    const s = $code.selectionStart, end = $code.selectionEnd, v = $code.value;
     if (e.shiftKey) {
       const ls = v.lastIndexOf('\n', s - 1) + 1;
       const sp = v.slice(ls).match(/^ {1,2}/)?.[0] ?? '';
-      if (sp) {
-        code.value = v.slice(0, ls) + v.slice(ls + sp.length);
-        code.selectionStart = code.selectionEnd = s - sp.length;
-      }
+      if (sp) { $code.value = v.slice(0, ls) + v.slice(ls + sp.length); $code.selectionStart = $code.selectionEnd = s - sp.length; }
     } else {
-      code.value = v.slice(0, s) + '  ' + v.slice(end);
-      code.selectionStart = code.selectionEnd = s + 2;
+      $code.value = v.slice(0, s) + '  ' + v.slice(end);
+      $code.selectionStart = $code.selectionEnd = s + 2;
     }
-    syncEditor(); syncCursor();
+    syncEditor(); syncCursor(); return;
   }
-  /* Ctrl/Cmd + Enter → run */
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-    e.preventDefault();
-    navTo('preview');
-  }
-  /* Ctrl/Cmd + S → export */
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    doExport();
-  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); switchTab('preview'); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's')     { e.preventDefault(); doExport(); }
 });
 
-/* ── PREVIEW ─────────────────────────────── */
-function doRefresh() {
-  const html = code.value.trim();
+/* ── PREVIEW ──────────────────────────────────────────────────────── */
+
+let blobUrl = null;
+
+function refreshPreview() {
+  const html = $code.value.trim();
   if (!html) { toast('Editor is empty', 'warn'); return; }
-
-  const iframe = document.getElementById('preview-iframe');
-  const doc    = iframe.contentDocument || iframe.contentWindow.document;
+  const frame = document.getElementById('preview-frame');
+  const doc   = frame.contentDocument || frame.contentWindow.document;
   doc.open(); doc.write(html); doc.close();
-
-  /* Update address bar slug from <title> */
-  const titleM = html.match(/<title[^>]*>([^<]*)<\/title>/i);
-  const slug   = (titleM ? titleM[1].trim() : 'preview')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'preview';
-  pvPath.textContent = slug;
-
-  stMsg.textContent = 'Preview rendered';
+  const m    = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  const slug = (m ? m[1].trim() : 'untitled')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'untitled';
+  document.getElementById('j-pvslug').textContent = slug;
+  $status.textContent = 'Preview rendered';
   toast('Preview rendered', 'ok');
 }
 
 function openTab() {
-  const html = code.value.trim();
+  const html = $code.value.trim();
   if (!html) { toast('Editor is empty', 'warn'); return; }
   if (blobUrl) URL.revokeObjectURL(blobUrl);
   blobUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-  const w = window.open(blobUrl, '_blank');
-  if (!w) toast('Allow popups to open new tab', 'warn');
-  else    toast('Opened in new tab ↗', 'ok');
+  if (!window.open(blobUrl, '_blank')) toast('Allow popups to open new tab', 'warn');
+  else toast('Opened in new tab ↗', 'ok');
 }
 
-/* ── HIGHLIGHT ───────────────────────────── */
-function doHighlight() {
-  const raw = code.value;
-  if (!raw.trim()) {
-    document.getElementById('hl-out').textContent = '<!-- Nothing to highlight -->';
-    return;
-  }
+/* ── HIGHLIGHT ────────────────────────────────────────────────────── */
+
+function renderHighlight() {
+  const raw = $code.value;
+  if (!raw.trim()) { document.getElementById('hl-out').textContent = '<!-- nothing to highlight -->'; return; }
   document.getElementById('hl-out').innerHTML = tokenise(raw);
-  stMsg.textContent = 'Highlight applied';
+  $status.textContent = 'Highlight applied';
 }
 
-/* Escape HTML special chars */
 function esc(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function tokenise(src) {
   let out = '', i = 0;
   while (i < src.length) {
-    /* DOCTYPE */
     if (/^<!DOCTYPE/i.test(src.slice(i))) {
-      const end = src.indexOf('>', i);
-      const f   = end < 0 ? src.slice(i) : src.slice(i, end + 1);
-      out += `<span class="hd">${esc(f)}</span>`;
-      i += f.length; continue;
+      const end = src.indexOf('>', i), f = end < 0 ? src.slice(i) : src.slice(i, end + 1);
+      out += `<span class="s-doc">${esc(f)}</span>`; i += f.length; continue;
     }
-    /* Comment */
     if (src.startsWith('<!--', i)) {
-      const end = src.indexOf('-->', i + 4);
-      const f   = end < 0 ? src.slice(i) : src.slice(i, end + 3);
-      out += `<span class="hc">${esc(f)}</span>`;
-      i += f.length; continue;
+      const end = src.indexOf('-->', i + 4), f = end < 0 ? src.slice(i) : src.slice(i, end + 3);
+      out += `<span class="s-cmt">${esc(f)}</span>`; i += f.length; continue;
     }
-    /* Tag */
     if (src[i] === '<') {
       const end = src.indexOf('>', i);
       if (end < 0) { out += esc(src.slice(i)); break; }
-      out += colorTag(src.slice(i, end + 1));
-      i = end + 1; continue;
+      out += colorTag(src.slice(i, end + 1)); i = end + 1; continue;
     }
-    /* Text */
-    const nx = src.indexOf('<', i);
-    const st = nx < 0 ? src.length : nx;
-    out += `<span class="htx">${esc(src.slice(i, st))}</span>`;
-    i = st;
+    const nx = src.indexOf('<', i), st = nx < 0 ? src.length : nx;
+    out += `<span class="s-txt">${esc(src.slice(i, st))}</span>`; i = st;
   }
   return out;
 }
 
 function colorTag(raw) {
   let s = esc(raw);
-  s = s.replace(/(&lt;\/?)([\w-]+)/, (_, b, n) =>
-    `<span class="hbr">${b}</span><span class="ht">${n}</span>`);
+  s = s.replace(/(&lt;\/?)([\w-]+)/,
+    (_, b, n) => `<span class="s-br">${b}</span><span class="s-tag">${n}</span>`);
   s = s.replace(/([\w:@-]+)(=)(&quot;)([^&]*)(&quot;)/g,
-    (_, a, eq, q1, v, q2) =>
-    `<span class="ha">${a}</span>=${`<span class="hv">${q1}${v}${q2}</span>`}`);
-  s = s.replace(/(&gt;|\/&gt;)$/, '<span class="hbr">$1</span>');
+    (_, a, eq, q1, v, q2) => `<span class="s-attr">${a}</span>=<span class="s-val">${q1}${v}${q2}</span>`);
+  s = s.replace(/(&gt;|\/&gt;)$/, '<span class="s-br">$1</span>');
   return s;
 }
 
-/* ── FORMAT ──────────────────────────────── */
-const VOID_TAGS = new Set([
-  'area','base','br','col','embed','hr','img','input',
-  'link','meta','param','source','track','wbr'
-]);
+/* ── FORMAT ───────────────────────────────────────────────────────── */
 
-function fmtCode() {
-  const raw = code.value;
-  if (!raw.trim()) { toast('Nothing to format', 'warn'); return; }
+const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
 
-  const lines  = raw.replace(/>\s*</g, '>\n<').replace(/>\s*([^\n<])/g, '>\n$1').split('\n');
-  let   indent = 0, res = [];
-
+function fmtCode(silent) {
+  const raw = $code.value;
+  if (!raw.trim()) { if (!silent) toast('Nothing to format', 'warn'); return; }
+  const lines = raw.replace(/>\s*</g,'>\n<').replace(/>\s*([^\n<])/g,'>\n$1').split('\n');
+  let indent = 0, res = [];
   for (let ln of lines) {
-    ln = ln.trim();
-    if (!ln) continue;
+    ln = ln.trim(); if (!ln) continue;
     if (/^<\/[\w-]/.test(ln)) indent = Math.max(0, indent - 1);
     res.push('  '.repeat(indent) + ln);
     const m = ln.match(/^<([\w-]+)/);
-    if (m && !VOID_TAGS.has(m[1].toLowerCase())
-          && !/\/>$/.test(ln)
-          && !/^<!/.test(ln)
-          && !/^<\//.test(ln)) indent++;
+    if (m && !VOID.has(m[1].toLowerCase()) && !/\/>$/.test(ln) && !/^<!/.test(ln) && !/^<\//.test(ln)) indent++;
   }
-
-  code.value = res.join('\n');
+  $code.value = res.join('\n');
   syncEditor();
-  toast('Formatted ✓', 'ok');
-  stMsg.textContent = 'Code formatted';
+  if (!silent) toast('Formatted ✓', 'ok');
+  $status.textContent = 'Formatted';
 }
 
-/* ── EXPAND / COLLAPSE ───────────────────── */
-function expandAll() {
-  code.value = code.value.replace(/\n{3,}/g, '\n\n');
-  syncEditor();
-  toast('Expanded', 'info');
+function expandAll(silent) {
+  $code.value = $code.value.replace(/\n{3,}/g, '\n\n');
+  syncEditor(); if (!silent) toast('Expanded', 'info');
 }
 
-function collapseAll() {
-  fmtCode();
-  code.value = code.value.replace(/\n{2,}/g, '\n');
-  syncEditor();
-  toast('Collapsed', 'info');
+function collapseAll(silent) {
+  fmtCode(true); $code.value = $code.value.replace(/\n{2,}/g, '\n');
+  syncEditor(); if (!silent) toast('Collapsed', 'info');
 }
 
-/* ── SAMPLE ──────────────────────────────── */
-function loadSample() {
-  code.value = `<!DOCTYPE html>
+/* ── SAMPLE ───────────────────────────────────────────────────────── */
+
+const SAMPLE = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sample — MrLiPx</title>
+  <title>Hello — MrLiPx</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #13151a;
-      color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0d1117; color: #e6edf3;
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 20px;
     }
     .card {
-      background: #1c1f26;
-      border: 1px solid #2e323c;
-      border-radius: 12px;
-      padding: 36px;
-      max-width: 440px;
-      width: 100%;
-      text-align: center;
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 12px; padding: 40px;
+      max-width: 420px; width: 100%; text-align: center;
     }
-    h1 { font-size: 26px; color: #e44d26; margin-bottom: 10px; }
-    p  { color: #6b7280; line-height: 1.6; margin-bottom: 22px; font-size: 14px; }
+    h1 { font-size: 1.6rem; margin-bottom: 12px; }
+    p  { color: #8b949e; line-height: 1.65; font-size: .9rem; margin-bottom: 24px; }
     button {
-      padding: 10px 24px;
-      background: #e44d26;
-      color: #fff;
-      font-weight: 600;
-      font-size: 13px;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
-      transition: background .15s;
+      padding: 10px 22px; background: #58a6ff;
+      color: #0d1117; font-weight: 700; font-size: .85rem;
+      border: none; border-radius: 6px; cursor: pointer; transition: background .15s;
     }
-    button:hover { background: #f16529; }
+    button:hover { background: #79c0ff; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Hello from MrLiPx 👋</h1>
-    <p>This sample is rendered live inside the HTML Previewer. Edit the code and press <strong>Run</strong> to see changes.</p>
-    <button onclick="alert('Hello from @MrLiPx!')">Say Hello</button>
+    <p>Edit this HTML in the editor and press <strong>Ctrl+Enter</strong> to see your changes live.</p>
+    <button onclick="this.textContent = 'Hello! 👋'">Say Hello</button>
   </div>
 </body>
 </html>`;
+
+function loadSample(silent) {
+  $code.value = SAMPLE;
   syncEditor();
-  navTo('editor');
-  toast('Sample loaded', 'info');
-  stMsg.textContent = 'Sample loaded';
+  if (!silent) { switchTab('editor'); toast('Sample loaded', 'info'); }
+  $status.textContent = 'Sample loaded';
 }
 
-/* ── CLEAR ───────────────────────────────── */
-function clearCode() {
-  if (code.value.trim() && !confirm('Clear all code?')) return;
-  code.value = '';
-  syncEditor();
-  toast('Cleared', 'ok');
-  stMsg.textContent = 'Editor cleared';
+/* ── CLEAR ────────────────────────────────────────────────────────── */
+
+function clearCode(silent) {
+  if (!silent && $code.value.trim() && !confirm('Clear all code?')) return;
+  $code.value = ''; syncEditor();
+  if (!silent) toast('Cleared', 'ok');
+  $status.textContent = 'Editor cleared';
 }
 
-/* ── IMPORT / EXPORT / COPY ──────────────── */
-function doImport() { document.getElementById('file-input').click(); }
+/* ── IMPORT / EXPORT ──────────────────────────────────────────────── */
 
-document.getElementById('file-input').addEventListener('change', ev => {
-  const f = ev.target.files[0];
-  if (!f) return;
+function doImport() { document.getElementById('file-in').click(); }
+
+document.getElementById('file-in').addEventListener('change', ev => {
+  const f = ev.target.files[0]; if (!f) return;
   const r = new FileReader();
   r.onload = e => {
-    code.value = e.target.result;
-    syncEditor();
-    urlPath.textContent = f.name;
-    stFile.textContent  = f.name;
+    $code.value = e.target.result; syncEditor();
+    $urlpath.textContent = $fname.textContent = f.name;
     toast(`Imported: ${f.name}`, 'ok');
-    stMsg.textContent = `Imported: ${f.name}`;
+    $status.textContent = `Imported: ${f.name}`;
   };
-  r.readAsText(f);
-  ev.target.value = '';
+  r.readAsText(f); ev.target.value = '';
 });
 
 function doExport() {
-  if (!code.value.trim()) { toast('Nothing to export', 'warn'); return; }
+  if (!$code.value.trim()) { toast('Nothing to export', 'warn'); return; }
   const a = Object.assign(document.createElement('a'), {
-    href:     URL.createObjectURL(new Blob([code.value], { type: 'text/html' })),
+    href: URL.createObjectURL(new Blob([$code.value], { type: 'text/html' })),
     download: 'index.html'
   });
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
   toast('Exported as index.html', 'ok');
 }
 
 function copyHTML() {
-  if (!code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
-  navigator.clipboard.writeText(code.value)
-    .then(() => toast('Copied to clipboard ✓', 'ok'))
+  if (!$code.value.trim()) { toast('Nothing to copy', 'warn'); return; }
+  navigator.clipboard.writeText($code.value)
+    .then(() => toast('Copied ✓', 'ok'))
     .catch(() => toast('Copy failed', 'warn'));
 }
 
-/* ── THEME ───────────────────────────────── */
-function toggleTheme() {
-  dark = !dark;
-  document.documentElement.toggleAttribute('data-light', !dark);
-  document.getElementById('theme-ic').textContent  = dark ? '🌙' : '☀';
-  document.getElementById('theme-txt').textContent = dark ? 'Dark mode' : 'Light mode';
-  document.getElementById('st-theme').textContent  = dark ? 'Dark' : 'Light';
-  toast(dark ? 'Dark mode' : 'Light mode', 'info');
+/* ── THEME ────────────────────────────────────────────────────────── */
+
+let dark = true;
+
+function setTheme(mode) {
+  dark = (mode === 'dark');
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('j-themeic').textContent    = dark ? '🌙' : '☀️';
+  document.getElementById('j-themetxt').textContent   = dark ? 'Dark mode' : 'Light mode';
+  document.getElementById('j-themelabel').textContent = dark ? 'Dark' : 'Light';
 }
 
-/* ── TOAST ───────────────────────────────── */
-let _toastTimer;
+function toggleTheme() { setTheme(dark ? 'light' : 'dark'); toast(dark ? 'Dark mode' : 'Light mode', 'info'); }
+
+/* ── TOAST ────────────────────────────────────────────────────────── */
+
+let _tt;
 function toast(msg, type = 'info') {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className   = `show ${type}`;
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { el.className = ''; }, 2200);
+  el.textContent = msg; el.className = `show ${type}`;
+  clearTimeout(_tt); _tt = setTimeout(() => { el.className = ''; }, 2200);
 }
 
-/* ── INIT ────────────────────────────────── */
+/* ── INIT ─────────────────────────────────────────────────────────── */
+
+// Detect iframe embed — hide chrome for clean embedding
+if (window.self !== window.top) document.body.classList.add('framed');
+
 syncEditor();
+
+// Apply URL hash on load (after DOM ready so loadSample can run first if needed)
+document.addEventListener('DOMContentLoaded', () => {
+  if (location.hash && location.hash.length > 1) applyHash(location.hash, true);
+});
 </script>
 </body>
 </html>
