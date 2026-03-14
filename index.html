@@ -3,576 +3,209 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- PRIMARY SEO -->
-  <title>HTML Previewer — Live Browser-Based HTML Editor</title>
-  <meta name="description" content="A zero-dependency, browser-based HTML editor and live previewer. Paste, format, syntax-highlight, and preview HTML instantly — no install, no server." />
-  <meta name="keywords" content="HTML editor, HTML previewer, live preview, syntax highlight, HTML formatter, browser editor, online HTML tool, zero dependencies" />
+  <title>HTML Previewer — Free Browser-Based Live HTML Editor</title>
+  <meta name="description" content="A zero-dependency, browser-based HTML editor and live previewer. Paste, format, syntax-highlight, and preview HTML instantly — no install, no server, no sign-up." />
+  <meta name="keywords" content="HTML editor, HTML previewer, live preview, syntax highlight, HTML formatter, browser editor, online HTML tool, zero dependencies, free HTML editor" />
   <meta name="author" content="Mr Li Px" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://mrlipx.github.io/html-previewer/" />
+  <link rel="canonical" href="https://html-previewer.dev.mrlipx.com/" />
 
   <!-- OPEN GRAPH -->
-  <meta property="og:type"         content="website" />
-  <meta property="og:site_name"    content="HTML Previewer" />
-  <meta property="og:title"        content="HTML Previewer — Live Browser-Based HTML Editor" />
-  <meta property="og:description"  content="Zero-dependency HTML editor and live previewer. No install. No server. No nonsense." />
-  <meta property="og:url"          content="https://mrlipx.github.io/html-previewer/" />
-  <meta property="og:image"        content="https://html-previewer.tzn.workers.dev/media/images/logos/html5.png" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="HTML Previewer" />
+  <meta property="og:title"       content="HTML Previewer — Free Browser-Based Live HTML Editor" />
+  <meta property="og:description" content="Zero-dependency HTML editor and live previewer. No install. No server. No sign-up." />
+  <meta property="og:url"         content="https://html-previewer.dev.mrlipx.com/" />
+  <meta property="og:image"       content="https://html-previewer.tzn.workers.dev/media/images/logos/html5.png" />
   <meta property="og:image:width"  content="128" />
   <meta property="og:image:height" content="128" />
-  <meta property="og:image:alt"    content="HTML5 logo — HTML Previewer by MrLiPx" />
-  <meta property="og:locale"       content="en_US" />
+  <meta property="og:image:alt"   content="HTML5 logo — HTML Previewer by MrLiPx" />
+  <meta property="og:locale"      content="en_US" />
 
   <!-- TWITTER / X -->
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@MrLiPx" />
   <meta name="twitter:creator"     content="@MrLiPx" />
-  <meta name="twitter:title"       content="HTML Previewer — Live Browser-Based HTML Editor" />
+  <meta name="twitter:title"       content="HTML Previewer — Free Browser-Based Live HTML Editor" />
   <meta name="twitter:description" content="Zero-dependency HTML editor and live previewer. No install. No server." />
   <meta name="twitter:image"       content="https://html-previewer.tzn.workers.dev/media/images/logos/html5.png" />
 
   <!-- ICONS -->
   <link rel="icon"             type="image/svg+xml" href="media/images/logos/html5.svg" />
-  <link rel="icon"             type="image/png"     href="media/images/icons/favicon.png" />
+  <link rel="icon"             type="image/png"     href="media/images/icons/favicon.png" sizes="32x32" />
   <link rel="apple-touch-icon"                      href="media/images/icons/favicon.png" />
-
-  <!-- FLATICON UICONS -->
-  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-
-  <!-- FONTS -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- STRUCTURED DATA -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "HTML Previewer",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Any",
-    "description": "A zero-dependency, browser-based HTML editor and live previewer.",
-    "url": "https://mrlipx.github.io/html-previewer/",
-    "downloadUrl": "https://github.com/MrLiPx/html-previewer",
-    "softwareVersion": "1.2.0",
-    "license": "https://github.com/MrLiPx/html-previewer/blob/main/LICENSE",
-    "image": "https://html-previewer.tzn.workers.dev/media/images/logos/html5.png",
-    "author": { "@type": "Person", "name": "Mr Li Px", "url": "https://github.com/MrLiPx" },
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"HTML Previewer",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Any",
+    "description":"A zero-dependency, browser-based HTML editor and live previewer.",
+    "url":"https://html-previewer.dev.mrlipx.com/",
+    "downloadUrl":"https://github.com/MrLiPx/html-previewer",
+    "softwareVersion":"1.2.0",
+    "license":"https://github.com/MrLiPx/html-previewer/blob/main/LICENSE",
+    "image":"https://html-previewer.tzn.workers.dev/media/images/logos/html5.png",
+    "author":{"@type":"Person","name":"Mr Li Px","url":"https://mrlipx.com"},
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
   }
   </script>
 
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <!-- Sync theme before paint — no flash -->
   <script>
-    (function () {
-      function os() { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
-      var p = 'system';
-      try { var s = localStorage.getItem('htmlprev-theme'); if (s === 'dark' || s === 'light' || s === 'system') p = s; } catch (e) {}
-      document.documentElement.setAttribute('data-theme', (p === 'dark' || p === 'light') ? p : os());
+    (function(){
+      function os(){ return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'; }
+      var p='system';
+      try{ var s=localStorage.getItem('htmlprev-theme'); if(s==='dark'||s==='light'||s==='system') p=s; }catch(e){}
+      document.documentElement.setAttribute('data-theme',(p==='dark'||p==='light')?p:os());
     }());
   </script>
 
   <style>
-    /* ── DESIGN TOKENS ─────────────────────────────────────── */
     :root {
-      --bg:      #0d1117;
-      --surface: #161b22;
-      --overlay: #1c2128;
-      --border:  #30363d;
-      --bhi:     #484f58;
-      --accent:  #58a6ff;
-      --adim:    rgba(88, 166, 255, .12);
-      --green:   #3fb950;
-      --red:     #f85149;
-      --yellow:  #d29922;
-      --pink:    #f778ba;
-      --text:    #e6edf3;
-      --muted:   #8b949e;
-      --sans:    'Inter', sans-serif;
-      --mono:    'JetBrains Mono', monospace;
-      --r:       8px;
-      --t:       .15s ease;
+      --bg:      #0d1117; --surface: #161b22; --overlay: #1c2128;
+      --border:  #30363d; --bhi: #484f58; --accent: #58a6ff;
+      --adim:    rgba(88,166,255,.12); --green: #3fb950; --red: #f85149;
+      --yellow:  #d29922; --pink: #f778ba; --text: #e6edf3; --muted: #8b949e;
+      --sans: 'Inter', sans-serif; --mono: 'JetBrains Mono', monospace;
+      --r: 8px; --t: .15s ease;
     }
     [data-theme="light"] {
-      --bg:      #f6f8fa;
-      --surface: #ffffff;
-      --overlay: #eaeef2;
-      --border:  #d0d7de;
-      --bhi:     #afb8c1;
-      --text:    #1f2328;
-      --muted:   #57606a;
+      --bg: #f6f8fa; --surface: #fff; --overlay: #eaeef2;
+      --border: #d0d7de; --bhi: #afb8c1; --text: #1f2328; --muted: #57606a;
     }
-
-    /* ── RESET ─────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      transition: background var(--t), color var(--t);
-    }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background var(--t), color var(--t); }
     i.fi { display: inline-flex; align-items: center; justify-content: center; }
 
-    /* ── NAV ────────────────────────────────────────────────── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      height: 54px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      transition: background var(--t), border-color var(--t);
-    }
-    [data-theme="dark"] nav {
-      background: rgba(22, 27, 34, .92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-weight: 700;
-      font-size: 15px;
-      text-decoration: none;
-      color: var(--text);
-      flex-shrink: 0;
-      letter-spacing: -.2px;
-    }
-    .nav-logo img  { width: 22px; height: 22px; }
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 54px; background: var(--surface); border-bottom: 1px solid var(--border); transition: background var(--t), border-color var(--t); }
+    [data-theme="dark"] nav { background: rgba(22,27,34,.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .nav-logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; text-decoration: none; color: var(--text); flex-shrink: 0; letter-spacing: -.2px; }
+    .nav-logo img { width: 22px; height: 22px; }
     .nav-logo span { color: var(--accent); }
-
     .nav-links { display: flex; align-items: center; gap: 4px; }
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      transition: color var(--t), background var(--t), border-color var(--t);
-    }
+    .nav-link { display: flex; align-items: center; gap: 5px; padding: 5px 10px; font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; border-radius: 6px; border: 1px solid transparent; transition: color var(--t), background var(--t), border-color var(--t); }
     .nav-link:hover { color: var(--text); background: var(--overlay); border-color: var(--border); }
-    .nav-link .fi  { font-size: 14px; }
+    .nav-link .fi { font-size: 14px; }
 
-    /* ── THEME DROPDOWN ─────────────────────────────────────── */
+    /* THEME DROPDOWN */
     .nav-theme-dd { position: relative; }
-    .nav-theme-trigger {
-      all: unset;
-      box-sizing: border-box;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      height: 32px;
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      background: var(--overlay);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: color var(--t), border-color var(--t), background var(--t);
-    }
-    .nav-theme-trigger:hover, .nav-theme-trigger.open {
-      border-color: var(--accent);
-      color: var(--text);
-    }
+    .nav-theme-trigger { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; height: 32px; font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--muted); background: var(--overlay); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: color var(--t), border-color var(--t); }
+    .nav-theme-trigger:hover, .nav-theme-trigger.open { border-color: var(--accent); color: var(--text); }
     .nav-theme-trigger .fi { font-size: 14px; }
-    .nav-theme-trigger .nt-caret { font-size: 10px; transition: transform var(--t); }
+    .nt-caret { font-size: 10px; transition: transform var(--t); }
     .nav-theme-trigger.open .nt-caret { transform: rotate(180deg); }
-
-    .nav-theme-menu {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      min-width: 140px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .35);
-      z-index: 200;
-      opacity: 0;
-      transform: translateY(-4px);
-      pointer-events: none;
-      transition: opacity .12s ease, transform .12s ease;
-    }
-    [data-theme="light"] .nav-theme-menu { box-shadow: 0 8px 32px rgba(0, 0, 0, .1); }
+    .nav-theme-menu { position: absolute; top: calc(100% + 6px); right: 0; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.35); z-index: 200; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .12s ease, transform .12s ease; }
     .nav-theme-menu.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
-    .nav-theme-menu button {
-      all: unset;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      width: 100%;
-      padding: 9px 12px;
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      transition: background var(--t), color var(--t);
-    }
-    .nav-theme-menu button:hover        { background: var(--overlay); color: var(--text); }
-    .nav-theme-menu button.active       { color: var(--accent); }
+    .nav-theme-menu button { all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 12px; font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: background var(--t), color var(--t); }
+    .nav-theme-menu button:hover { background: var(--overlay); color: var(--text); }
+    .nav-theme-menu button.active { color: var(--accent); }
     .nav-theme-menu button.active:hover { background: var(--adim); }
-    .nav-theme-menu .fi       { font-size: 14px; width: 16px; text-align: center; }
-    .nav-theme-menu .ntm-label { flex: 1; }
-    .nav-theme-menu .ntm-check {
-      font-size: 12px;
-      color: var(--accent);
-      opacity: 0;
-      transition: opacity var(--t);
-    }
+    .nav-theme-menu .fi { font-size: 14px; width: 16px; text-align: center; }
+    .ntm-label { flex: 1; }
+    .ntm-check { font-size: 12px; color: var(--accent); opacity: 0; transition: opacity var(--t); }
     .nav-theme-menu button.active .ntm-check { opacity: 1; }
-
-    .nav-cta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      text-decoration: none;
-      border-radius: 6px;
-      transition: filter var(--t), transform var(--t);
-    }
+    .nav-cta { display: flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 13px; font-weight: 600; color: #fff; background: var(--accent); text-decoration: none; border-radius: 6px; transition: filter var(--t), transform var(--t); }
     .nav-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
 
-    /* ── HERO ───────────────────────────────────────────────── */
-    .hero {
-      text-align: center;
-      padding: 88px 24px 60px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .pill {
-      display: inline-block;
-      padding: 4px 14px;
-      background: var(--adim);
-      border: 1px solid rgba(88, 166, 255, .2);
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      color: var(--accent);
-      margin-bottom: 28px;
-      text-transform: uppercase;
-    }
-    .hero h1 {
-      font-size: clamp(34px, 6vw, 58px);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -1.6px;
-      margin-bottom: 20px;
-    }
+    /* HERO */
+    .hero { text-align: center; padding: 88px 24px 60px; max-width: 640px; margin: 0 auto; }
+    .pill { display: inline-block; padding: 4px 14px; background: var(--adim); border: 1px solid rgba(88,166,255,.2); border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: .5px; color: var(--accent); margin-bottom: 28px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(34px,6vw,58px); font-weight: 700; line-height: 1.08; letter-spacing: -1.6px; margin-bottom: 20px; }
     .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero-sub {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 440px;
-      margin: 0 auto 36px;
-      line-height: 1.7;
-    }
+    .hero-sub { font-size: 17px; color: var(--muted); max-width: 440px; margin: 0 auto 36px; line-height: 1.7; }
     .hero-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 12px 22px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid transparent;
-      transition: filter var(--t), transform var(--t);
-    }
+    .btn-primary { display: inline-flex; align-items: center; gap: 7px; padding: 12px 22px; border-radius: var(--r); font-size: 14px; font-weight: 600; text-decoration: none; background: var(--accent); color: #fff; border: 1px solid transparent; transition: filter var(--t), transform var(--t); }
     .btn-primary:hover { filter: brightness(1.12); transform: translateY(-2px); }
-
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 12px 22px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      transition: border-color var(--t), color var(--t), transform var(--t);
-    }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 7px; padding: 12px 22px; border-radius: var(--r); font-size: 14px; font-weight: 600; text-decoration: none; background: var(--surface); color: var(--text); border: 1px solid var(--border); transition: border-color var(--t), color var(--t), transform var(--t); }
     .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
     .btn-primary .fi, .btn-ghost .fi { font-size: 15px; }
 
-    /* ── AUTHOR CARD ────────────────────────────────────────── */
-    .author-wrap { display: flex; justify-content: center; padding: 0 24px 64px; }
-    .author-card {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 10px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      text-decoration: none;
-      transition: border-color var(--t), box-shadow var(--t);
-    }
-    .author-card:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--adim); }
-    .author-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      display: block;
-      transition: border-color var(--t);
-    }
-    .author-card:hover .author-avatar { border-color: var(--accent); }
-    .author-name   { font-size: 13px; font-weight: 700; color: var(--text); display: block; }
-    .author-handle { font-size: 11px; color: var(--muted); font-family: var(--mono); display: block; }
-    .author-tag {
-      padding: 3px 10px;
-      background: var(--adim);
-      border: 1px solid rgba(88, 166, 255, .2);
-      border-radius: 100px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent);
-      font-family: var(--mono);
-      margin-left: 4px;
-    }
-
-    /* ── SECTION HEADINGS ───────────────────────────────────── */
+    /* DEMO */
+    .demo-sec { max-width: 1040px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
     .sec-ey { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-    .sec-ti { font-size: clamp(22px, 3.5vw, 32px); font-weight: 700; letter-spacing: -.5px; margin-bottom: 12px; }
+    .sec-ti { font-size: clamp(22px,3.5vw,32px); font-weight: 700; letter-spacing: -.5px; margin-bottom: 12px; }
     .sec-su { font-size: 15px; color: var(--muted); margin-bottom: 28px; line-height: 1.65; }
     .sec-su a { color: var(--accent); text-decoration: none; }
     .sec-su a:hover { text-decoration: underline; }
-
-    /* ── BROWSER MOCK ───────────────────────────────────────── */
-    .bm {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, .4);
-    }
-    [data-theme="light"] .bm { box-shadow: 0 24px 64px rgba(0, 0, 0, .1); }
-    .bm-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 12px;
-      background: var(--overlay);
-      border-bottom: 1px solid var(--border);
-    }
-    .tl         { display: flex; gap: 5px; flex-shrink: 0; }
-    .tl span    { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-    .tl-r { background: var(--red); }
-    .tl-y { background: var(--yellow); }
-    .tl-g { background: var(--green); }
-    .bm-url {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 3px 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      min-width: 0;
-      overflow: hidden;
-    }
+    .bm { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.4); }
+    [data-theme="light"] .bm { box-shadow: 0 24px 64px rgba(0,0,0,.1); }
+    .bm-bar { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--overlay); border-bottom: 1px solid var(--border); }
+    .tl { display: flex; gap: 5px; flex-shrink: 0; }
+    .tl span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .tl-r { background: var(--red); } .tl-y { background: var(--yellow); } .tl-g { background: var(--green); }
+    .bm-url { flex: 1; display: flex; align-items: center; gap: 5px; background: var(--bg); border: 1px solid var(--border); border-radius: 100px; padding: 3px 10px; font-family: var(--mono); font-size: 11px; min-width: 0; overflow: hidden; }
     .bu-l { color: var(--green); flex-shrink: 0; font-size: 11px; }
     .bu-t { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .bm-ext {
-      all: unset;
-      box-sizing: border-box;
-      width: 26px; height: 26px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 5px;
-      text-decoration: none;
-      flex-shrink: 0;
-      transition: color var(--t), background var(--t);
-    }
+    .bm-ext { all: unset; box-sizing: border-box; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; border-radius: 5px; text-decoration: none; flex-shrink: 0; transition: color var(--t), background var(--t); }
     .bm-ext:hover { color: var(--accent); background: var(--adim); }
-    .bm-ext .fi  { font-size: 13px; }
+    .bm-ext .fi { font-size: 13px; }
+    .demo-frame { width: 100%; height: 540px; border: none; display: block; background: var(--bg); }
 
-    /* ── DEMO SECTION ───────────────────────────────────────── */
-    .demo-sec    { max-width: 1040px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
-    .demo-frame  { width: 100%; height: 540px; border: none; display: block; background: var(--bg); }
-
-    /* ── FEATURES SECTION ───────────────────────────────────── */
-    .features  { max-width: 1020px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
-    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-    .fc {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px;
-      text-align: left;
-      transition: border-color var(--t), transform var(--t), box-shadow var(--t);
-    }
-    .fc:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
-    }
-    [data-theme="light"] .fc:hover { box-shadow: 0 6px 20px rgba(0, 0, 0, .07); }
-    .fc-i   { font-size: 20px; margin-bottom: 10px; display: block; color: var(--accent); }
+    /* FEATURES */
+    .features { max-width: 1020px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+    .fc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; text-align: left; transition: border-color var(--t), transform var(--t), box-shadow var(--t); }
+    .fc:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+    [data-theme="light"] .fc:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); }
+    .fc-i { font-size: 20px; margin-bottom: 10px; display: block; color: var(--accent); }
     .fc-i .fi { font-size: 22px; }
-    .fc-t   { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-    .fc-d   { font-size: 12px; color: var(--muted); line-height: 1.6; }
-    .fc-d code {
-      font-family: var(--mono);
-      font-size: 10px;
-      background: var(--adim);
-      border: 1px solid rgba(88, 166, 255, .15);
-      padding: 1px 5px;
-      border-radius: 3px;
-      color: var(--accent);
-    }
+    .fc-t { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .fc-d { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .fc-d code { font-family: var(--mono); font-size: 10px; background: var(--adim); border: 1px solid rgba(88,166,255,.15); padding: 1px 5px; border-radius: 3px; color: var(--accent); }
 
-    /* ── DONATE SECTION ─────────────────────────────────────── */
-    .donate-sec {
-      max-width: 560px;
-      margin: 0 auto 72px;
-      padding: 0 24px;
-      text-align: center;
-    }
-    .donate-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-    .donate-icon {
-      width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(247, 120, 186, .12);
-      border: 1px solid rgba(247, 120, 186, .25);
-      border-radius: 12px;
-      color: var(--pink);
-      font-size: 22px;
-    }
-    .donate-title { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
-    .donate-desc  { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 380px; }
-    .btn-donate {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 11px 24px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--pink);
-      text-decoration: none;
-      border: 1px solid transparent;
-      transition: filter var(--t), transform var(--t);
-    }
+    /* DONATE */
+    .donate-sec { max-width: 560px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
+    .donate-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 36px 28px; display: flex; flex-direction: column; align-items: center; gap: 16px; transition: border-color var(--t), box-shadow var(--t); }
+    .donate-card:hover { border-color: rgba(247,120,186,.4); box-shadow: 0 0 0 3px rgba(247,120,186,.08); }
+    .donate-icon { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(247,120,186,.12); border: 1px solid rgba(247,120,186,.25); border-radius: 14px; color: var(--pink); }
+    .donate-icon .fi { font-size: 24px; }
+    .donate-title { font-size: 20px; font-weight: 700; letter-spacing: -.4px; }
+    .donate-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 380px; }
+    .btn-donate { display: inline-flex; align-items: center; gap: 8px; padding: 12px 26px; border-radius: var(--r); font-size: 14px; font-weight: 700; color: #fff; background: var(--pink); text-decoration: none; border: 1px solid transparent; transition: filter var(--t), transform var(--t); }
     .btn-donate:hover { filter: brightness(1.1); transform: translateY(-2px); }
-    .btn-donate .fi  { font-size: 15px; }
+    .btn-donate .fi { font-size: 15px; }
+    .kofi-badge { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .kofi-badge strong { color: var(--text); }
 
-    /* ── INSTALL SECTION ────────────────────────────────────── */
+    /* INSTALL */
     .install-sec { max-width: 680px; margin: 0 auto 72px; padding: 0 24px; text-align: center; }
     .cb { background: var(--overlay); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; text-align: left; }
-    .cb-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 9px 14px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
+    .cb-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; background: var(--surface); border-bottom: 1px solid var(--border); }
     .cb-lbl { margin-left: auto; font-size: 10px; color: var(--muted); font-family: var(--mono); }
-    .cb pre {
-      padding: 16px 18px;
-      font-family: var(--mono);
-      font-size: 12.5px;
-      line-height: 1.8;
-      overflow-x: auto;
-      color: var(--text);
-    }
-    .cm { color: var(--muted); }
-    .ck { color: var(--accent); }
-    .cd { color: var(--muted); opacity: .5; }
+    .cb pre { padding: 16px 18px; font-family: var(--mono); font-size: 12.5px; line-height: 1.8; overflow-x: auto; color: var(--text); }
+    .cm { color: var(--muted); } .ck { color: var(--accent); } .cd { color: var(--muted); opacity: .5; }
 
-    /* ── FOOTER ─────────────────────────────────────────────── */
+    /* FOOTER */
     footer { border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; }
-    .fi-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .f-logo {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-    }
+    .fi-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; }
+    .f-logo { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--text); text-decoration: none; }
     .f-links { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
-    .f-links a {
-      padding: 4px 9px;
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      border-radius: 5px;
-      transition: color var(--t);
-    }
+    .f-links a { padding: 4px 9px; font-size: 12px; color: var(--muted); text-decoration: none; border-radius: 5px; transition: color var(--t); }
     .f-links a:hover { color: var(--accent); }
     .f-copy { font-size: 11px; color: var(--muted); }
     .f-copy a { color: var(--accent); text-decoration: none; }
     .f-copy a:hover { text-decoration: underline; }
 
-    /* ── SCROLLBARS ─────────────────────────────────────────── */
-    ::-webkit-scrollbar       { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--bhi); }
 
-    /* ── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 640px) {
       nav { padding: 0 16px; }
       .nav-link { display: none; }
       .hero { padding: 60px 20px 48px; }
       .demo-frame { height: 380px; }
-      .author-card { border-radius: 14px; flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -584,93 +217,46 @@
     HTML<span>Previewer</span>
   </a>
   <div class="nav-links">
-    <a class="nav-link" href="#features">
-      <i class="fi fi-rr-grid" aria-hidden="true"></i> Features
-    </a>
-    <a class="nav-link" href="#demo">
-      <i class="fi fi-rr-eye" aria-hidden="true"></i> Demo
-    </a>
-    <a class="nav-link" href="#install">
-      <i class="fi fi-rr-terminal" aria-hidden="true"></i> Install
-    </a>
+    <a class="nav-link" href="#features"><i class="fi fi-rr-grid" aria-hidden="true"></i> Features</a>
+    <a class="nav-link" href="#demo"><i class="fi fi-rr-eye" aria-hidden="true"></i> Demo</a>
+    <a class="nav-link" href="#install"><i class="fi fi-rr-terminal" aria-hidden="true"></i> Install</a>
     <a class="nav-link" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">
       <i class="fi fi-rr-code-branch" aria-hidden="true"></i> GitHub
     </a>
-
-    <!-- Theme dropdown -->
     <div class="nav-theme-dd" id="nav-theme-dd">
-      <button class="nav-theme-trigger" id="nav-theme-trigger"
-              onclick="toggleNavThemeDD(event)"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-label="Theme">
+      <button class="nav-theme-trigger" id="nav-theme-trigger" onclick="toggleNavThemeDD(event)" aria-haspopup="listbox" aria-expanded="false" aria-label="Theme">
         <i class="fi fi-rr-computer" id="nav-theme-icon" aria-hidden="true"></i>
         <span id="nav-theme-label">System</span>
         <i class="fi fi-rr-angle-down nt-caret" aria-hidden="true"></i>
       </button>
       <div class="nav-theme-menu" id="nav-theme-menu" role="listbox">
         <button onclick="setThemePref('system')" id="ntm-system" class="active" role="option" aria-selected="true">
-          <i class="fi fi-rr-computer" aria-hidden="true"></i>
-          <span class="ntm-label">System</span>
-          <i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
+          <i class="fi fi-rr-computer" aria-hidden="true"></i><span class="ntm-label">System</span><i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
         </button>
         <button onclick="setThemePref('dark')" id="ntm-dark" role="option" aria-selected="false">
-          <i class="fi fi-rr-moon" aria-hidden="true"></i>
-          <span class="ntm-label">Dark</span>
-          <i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
+          <i class="fi fi-rr-moon" aria-hidden="true"></i><span class="ntm-label">Dark</span><i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
         </button>
         <button onclick="setThemePref('light')" id="ntm-light" role="option" aria-selected="false">
-          <i class="fi fi-rr-sun" aria-hidden="true"></i>
-          <span class="ntm-label">Light</span>
-          <i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
+          <i class="fi fi-rr-sun" aria-hidden="true"></i><span class="ntm-label">Light</span><i class="fi fi-rr-check ntm-check" aria-hidden="true"></i>
         </button>
       </div>
     </div>
-
-    <a class="nav-cta" href="app">
-      <i class="fi fi-rr-play" aria-hidden="true"></i>
-      Open App
-    </a>
+    <a class="nav-cta" href="app"><i class="fi fi-rr-play" aria-hidden="true"></i> Open App</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero" aria-label="Hero">
   <div class="pill">Zero dependencies &middot; Single file &middot; Open source</div>
   <h1>The HTML Previewer<br />for <em>Developers</em></h1>
-  <p class="hero-sub">
-    Paste, format, highlight, and preview HTML — entirely in your browser.
-    No install. No server. No nonsense.
-  </p>
+  <p class="hero-sub">Paste, format, highlight, and preview HTML — entirely in your browser. No install. No server. No nonsense.</p>
   <div class="hero-btns">
-    <a href="app" class="btn-primary">
-      <i class="fi fi-rr-play" aria-hidden="true"></i>
-      Open Previewer
-    </a>
+    <a href="app" class="btn-primary"><i class="fi fi-rr-play" aria-hidden="true"></i> Open Previewer</a>
     <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" class="btn-ghost">
-      <i class="fi fi-rr-star" aria-hidden="true"></i>
-      Star on GitHub
+      <i class="fi fi-rr-star" aria-hidden="true"></i> Star on GitHub
     </a>
   </div>
 </section>
 
-<!-- AUTHOR CARD -->
-<div class="author-wrap">
-  <a class="author-card" id="author-link" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer">
-    <img class="author-avatar" id="author-avatar"
-         src="https://avatars.githubusercontent.com/u/163276171?v=4"
-         alt="Mr Li Px"
-         width="36" height="36"
-         loading="lazy" />
-    <div>
-      <span class="author-name"   id="author-name">Mr Li Px</span>
-      <span class="author-handle" id="author-handle">@MrLiPx</span>
-    </div>
-    <span class="author-tag" id="author-repos">3 repos</span>
-  </a>
-</div>
-
-<!-- DEMO -->
 <section class="demo-sec" id="demo" aria-label="Live demo">
   <div class="sec-ey">Live Demo</div>
   <h2 class="sec-ti">See it in action</h2>
@@ -680,97 +266,48 @@
   </p>
   <div class="bm">
     <div class="bm-bar" aria-hidden="true">
-      <div class="tl">
-        <span class="tl-r"></span>
-        <span class="tl-y"></span>
-        <span class="tl-g"></span>
-      </div>
+      <div class="tl"><span class="tl-r"></span><span class="tl-y"></span><span class="tl-g"></span></div>
       <div class="bm-url">
         <i class="fi fi-rr-lock bu-l"></i>
-        <span class="bu-t">mrlipx.github.io/html-previewer/app#sample&amp;preview</span>
+        <span class="bu-t">html-previewer.dev.mrlipx.com/app#sample&amp;preview</span>
       </div>
-      <a class="bm-ext" href="app#sample&preview" target="_blank" rel="noopener noreferrer" title="Open full screen">
+      <a class="bm-ext" href="app#sample&preview" target="_blank" rel="noopener noreferrer" title="Open full screen" aria-label="Open demo full screen">
         <i class="fi fi-rr-share" aria-hidden="true"></i>
       </a>
     </div>
-    <iframe
-      src="app?embed=demo#sample&preview"
-      class="demo-frame"
-      title="HTML Previewer live demo"
-      loading="lazy"
-      tabindex="-1"
-      aria-hidden="true"
-    ></iframe>
+    <iframe src="app?embed=demo#sample&preview" class="demo-frame" title="HTML Previewer live demo" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
   </div>
 </section>
 
-<!-- FEATURES -->
 <section class="features" id="features" aria-label="Features">
   <div class="sec-ey">What's inside</div>
   <h2 class="sec-ti">Everything you need</h2>
   <div class="feat-grid">
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-eye"></i></span>
-      <div class="fc-t">Live Preview</div>
-      <div class="fc-d">Render HTML in a sandboxed iframe or open full-page in a new tab.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-magic-wand"></i></span>
-      <div class="fc-t">Syntax Highlight</div>
-      <div class="fc-d">Colour-coded tags, attributes, values, and comments.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-align-justify"></i></span>
-      <div class="fc-t">Auto Format</div>
-      <div class="fc-d">Beautify and properly indent messy HTML with one click.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-expand"></i></span>
-      <div class="fc-t">Expand &amp; Collapse</div>
-      <div class="fc-d">Clean up blank lines or compact code for a quick overview.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-upload"></i></span>
-      <div class="fc-t">Import &amp; Export</div>
-      <div class="fc-d">Load local <code>.html</code> files or any URL, then download your work.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-link"></i></span>
-      <div class="fc-t">Deep Links</div>
-      <div class="fc-d">Share <code>app#sample&amp;preview</code> — every action is URL-addressable.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-computer"></i></span>
-      <div class="fc-t">System / Dark / Light</div>
-      <div class="fc-d">Three-way theme: follow OS automatically, or lock to dark or light.</div>
-    </div>
-    <div class="fc">
-      <span class="fc-i"><i class="fi fi-rr-settings"></i></span>
-      <div class="fc-t">Zero Dependencies</div>
-      <div class="fc-d">Pure HTML, CSS, and JS. No build step. No npm. No bundler. Ever.</div>
-    </div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-eye"></i></span><div class="fc-t">Live Preview</div><div class="fc-d">Render HTML in a sandboxed iframe or open full-page in a new tab.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-magic-wand"></i></span><div class="fc-t">Syntax Highlight</div><div class="fc-d">Colour-coded tags, attributes, values, and comments.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-align-justify"></i></span><div class="fc-t">Auto Format</div><div class="fc-d">Beautify and properly indent messy HTML with one click.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-expand"></i></span><div class="fc-t">Expand &amp; Collapse</div><div class="fc-d">Clean up blank lines or compact code for a quick overview.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-upload"></i></span><div class="fc-t">Import &amp; Export</div><div class="fc-d">Load local <code>.html</code> files or any URL, then download with a custom filename.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-link"></i></span><div class="fc-t">Deep Links</div><div class="fc-d">Share <code>app#sample&amp;preview</code> or <code>?import=url</code> — every action is URL-addressable.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-computer"></i></span><div class="fc-t">System / Dark / Light</div><div class="fc-d">Three-way theme: follow OS automatically, or lock to dark or light.</div></div>
+    <div class="fc"><span class="fc-i"><i class="fi fi-rr-settings"></i></span><div class="fc-t">Zero Dependencies</div><div class="fc-d">Pure HTML, CSS, and JS. No build step. No npm. No bundler. Ever.</div></div>
   </div>
 </section>
 
-<!-- DONATE -->
 <section class="donate-sec" id="donate" aria-label="Support the project">
   <div class="sec-ey">Support</div>
-  <h2 class="sec-ti">Like the project?</h2>
+  <h2 class="sec-ti">Enjoying HTML Previewer?</h2>
   <div class="donate-card">
     <div class="donate-icon"><i class="fi fi-rr-heart" aria-hidden="true"></i></div>
-    <p class="donate-title">Buy me a coffee ☕</p>
-    <p class="donate-desc">
-      HTML Previewer is free and open source. If it saves you time or you just find it
-      useful, consider supporting the work — it means a lot!
-    </p>
-    <a class="btn-donate" href="https://r.aiodb.xyz/dono" target="_blank" rel="noopener noreferrer">
-      <i class="fi fi-rr-heart" aria-hidden="true"></i>
-      Donate
+    <p class="donate-title">Leave a tip on Ko-fi</p>
+    <p class="donate-desc">HTML Previewer is completely free and open source. If it saves you time, consider supporting the project — every coffee counts!</p>
+    <a class="btn-donate" href="https://r.mrlipx.com/tip" target="_blank" rel="noopener noreferrer">
+      <i class="fi fi-rr-heart" aria-hidden="true"></i> Tip on Ko-fi
     </a>
+    <p class="kofi-badge"><i class="fi fi-rr-shield-check" aria-hidden="true"></i> Powered by <strong>Ko-fi</strong> &mdash; no account needed</p>
   </div>
 </section>
 
-<!-- INSTALL -->
 <section class="install-sec" id="install" aria-label="Quick start">
   <div class="sec-ey">Quick Start</div>
   <h2 class="sec-ti">Up in 30 seconds</h2>
@@ -794,7 +331,6 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="fi-row">
     <a class="f-logo" href=".">
@@ -806,152 +342,69 @@
       <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="https://github.com/MrLiPx/html-previewer/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a>
       <a href="https://github.com/MrLiPx/html-previewer/issues" target="_blank" rel="noopener noreferrer">Issues</a>
-      <a href="https://r.aiodb.xyz/dono" target="_blank" rel="noopener noreferrer">Donate</a>
+      <a href="https://r.mrlipx.com/tip" target="_blank" rel="noopener noreferrer">Ko-fi</a>
       <a href="https://mrlipx.com" target="_blank" rel="noopener noreferrer">MrLiPx.com</a>
     </nav>
   </div>
-  <p class="f-copy">
-    MIT License &middot; Made by
-    <a href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" id="footer-author">Mr Li Px (@MrLiPx)</a>
-  </p>
+  <p class="f-copy">MIT License &middot; Made by <a href="https://mrlipx.com" target="_blank" rel="noopener noreferrer">Mr Li Px</a></p>
 </footer>
 
 <script>
 'use strict';
-
-var GH_ID = 163276171;
-
-/* ── THEME ───────────────────────────────────────────────── */
-var _pref = 'system';
-var THEME_ICONS  = { system: 'fi-rr-computer', dark: 'fi-rr-moon', light: 'fi-rr-sun' };
-var THEME_LABELS = { system: 'System', dark: 'Dark', light: 'Light' };
-
-function _os()   { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
-function _eff(p) { return (p === 'dark' || p === 'light') ? p : _os(); }
-
+var _pref='system';
+var THEME_ICONS  = {system:'fi-rr-computer',dark:'fi-rr-moon',light:'fi-rr-sun'};
+var THEME_LABELS = {system:'System',dark:'Dark',light:'Light'};
+function _os()   { return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'; }
+function _eff(p) { return (p==='dark'||p==='light')?p:_os(); }
 function setThemePref(pref) {
-  if (pref !== 'dark' && pref !== 'light' && pref !== 'system') pref = 'system';
-  _pref = pref;
-  document.documentElement.setAttribute('data-theme', _eff(pref));
-  try { localStorage.setItem('htmlprev-theme', pref); } catch (_) {}
-  _syncThemeUI();
-  closeNavDD();
+  if(pref!=='dark'&&pref!=='light'&&pref!=='system') pref='system';
+  _pref=pref;
+  document.documentElement.setAttribute('data-theme',_eff(pref));
+  try{ localStorage.setItem('htmlprev-theme',pref); }catch(_){}
+  _syncThemeUI(); closeNavDD();
 }
-
 function _syncThemeUI() {
-  var ic  = document.getElementById('nav-theme-icon');
-  var lbl = document.getElementById('nav-theme-label');
-  if (ic)  ic.className    = 'fi ' + THEME_ICONS[_pref];
-  if (lbl) lbl.textContent = THEME_LABELS[_pref];
-  ['system', 'dark', 'light'].forEach(function (p) {
-    var btn = document.getElementById('ntm-' + p);
-    if (!btn) return;
-    btn.classList.toggle('active', p === _pref);
-    btn.setAttribute('aria-selected', String(p === _pref));
+  var ic=document.getElementById('nav-theme-icon'), lbl=document.getElementById('nav-theme-label');
+  if(ic)  ic.className   ='fi '+THEME_ICONS[_pref];
+  if(lbl) lbl.textContent=THEME_LABELS[_pref];
+  ['system','dark','light'].forEach(function(p){
+    var btn=document.getElementById('ntm-'+p); if(!btn) return;
+    btn.classList.toggle('active',p===_pref); btn.setAttribute('aria-selected',String(p===_pref));
   });
 }
-
-try {
-  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function () {
-    if (_pref === 'system') document.documentElement.setAttribute('data-theme', _os());
-  });
-} catch (_) {}
-
-// Init from localStorage
-(function () {
-  try { var s = localStorage.getItem('htmlprev-theme'); if (s === 'dark' || s === 'light' || s === 'system') _pref = s; } catch (_) {}
-  document.documentElement.setAttribute('data-theme', _eff(_pref));
-  _syncThemeUI();
+try{ window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(){ if(_pref==='system') document.documentElement.setAttribute('data-theme',_os()); }); }catch(_){}
+(function(){
+  try{ var s=localStorage.getItem('htmlprev-theme'); if(s==='dark'||s==='light'||s==='system') _pref=s; }catch(_){}
+  document.documentElement.setAttribute('data-theme',_eff(_pref)); _syncThemeUI();
 }());
 
-/* ── NAV THEME DROPDOWN ─────────────────────────────────── */
-var _navDDOpen = false;
-
-function toggleNavThemeDD(e) { if (e) e.stopPropagation(); _navDDOpen ? closeNavDD() : openNavDD(); }
-
-function openNavDD() {
-  _navDDOpen = true;
-  var menu    = document.getElementById('nav-theme-menu');
-  var trigger = document.getElementById('nav-theme-trigger');
-  if (menu)    menu.classList.add('visible');
-  if (trigger) { trigger.classList.add('open'); trigger.setAttribute('aria-expanded', 'true'); }
+var _navDDOpen=false;
+function toggleNavThemeDD(e){ if(e) e.stopPropagation(); _navDDOpen?closeNavDD():openNavDD(); }
+function openNavDD(){
+  _navDDOpen=true;
+  var m=document.getElementById('nav-theme-menu'),t=document.getElementById('nav-theme-trigger');
+  if(m) m.classList.add('visible');
+  if(t){ t.classList.add('open'); t.setAttribute('aria-expanded','true'); }
 }
-function closeNavDD() {
-  _navDDOpen = false;
-  var menu    = document.getElementById('nav-theme-menu');
-  var trigger = document.getElementById('nav-theme-trigger');
-  if (menu)    menu.classList.remove('visible');
-  if (trigger) { trigger.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+function closeNavDD(){
+  _navDDOpen=false;
+  var m=document.getElementById('nav-theme-menu'),t=document.getElementById('nav-theme-trigger');
+  if(m) m.classList.remove('visible');
+  if(t){ t.classList.remove('open'); t.setAttribute('aria-expanded','false'); }
 }
-document.addEventListener('click', function (e) {
-  if (_navDDOpen) {
-    var dd = document.getElementById('nav-theme-dd');
-    if (dd && !dd.contains(e.target)) closeNavDD();
-  }
-});
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && _navDDOpen) closeNavDD();
-});
+document.addEventListener('click',function(e){ if(_navDDOpen){ var dd=document.getElementById('nav-theme-dd'); if(dd&&!dd.contains(e.target)) closeNavDD(); } });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&_navDDOpen) closeNavDD(); });
 
-/* ── GITHUB PROFILE ─────────────────────────────────────── */
-function imgOpt(url, w, h) {
-  if (!url) return url;
-  try {
-    var u = new URL(url);
-    if (u.hostname.endsWith('githubusercontent.com') || u.hostname.endsWith('github.com')) {
-      u.searchParams.set('size', Math.max(w, h));
-    }
-    return u.toString();
-  } catch (_) { return url; }
-}
-
-function loadProfile() {
-  fetch('https://api.github.com/user/' + GH_ID, {
-    headers: { Accept: 'application/vnd.github.v3+json' }
-  })
-    .then(function (r) { if (!r.ok) throw new Error('GH API ' + r.status); return r.json(); })
-    .then(function (u) {
-      var avatar = document.getElementById('author-avatar');
-      var name   = document.getElementById('author-name');
-      var handle = document.getElementById('author-handle');
-      var repos  = document.getElementById('author-repos');
-      var link   = document.getElementById('author-link');
-      var footer = document.getElementById('footer-author');
-      if (avatar && u.avatar_url) avatar.src         = imgOpt(u.avatar_url, 72, 72);
-      if (name   && u.name)       name.textContent   = u.name;
-      if (handle && u.login)      handle.textContent = '@' + u.login;
-      if (repos  && u.public_repos !== undefined)
-        repos.textContent = u.public_repos + ' repos';
-      if (link   && u.html_url)   link.href          = u.html_url;
-      if (footer && u.html_url)   {
-        footer.href        = u.html_url;
-        footer.textContent = (u.name || u.login) + ' (@' + u.login + ')';
-      }
-      if (u.name || u.login) document.title = 'HTML Previewer \u2014 ' + (u.name || u.login);
-    })
-    .catch(function () { /* keep static fallbacks */ });
-}
-
-/* ── SCROLL REVEAL ──────────────────────────────────────── */
-function initReveal() {
-  if (!('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.style.opacity   = '1';
-      e.target.style.transform = 'translateY(0)';
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.06 });
-  document.querySelectorAll('.fc, .author-card, .donate-card').forEach(function (el, i) {
-    el.style.cssText += 'opacity:0;transform:translateY(12px);transition:opacity .35s ' + (i * 40) + 'ms ease,transform .35s ' + (i * 40) + 'ms ease;';
+/* Scroll reveal */
+document.addEventListener('DOMContentLoaded',function(){
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(!e.isIntersecting) return; e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; io.unobserve(e.target); });
+  },{threshold:0.06});
+  document.querySelectorAll('.fc,.donate-card').forEach(function(el,i){
+    el.style.cssText+='opacity:0;transform:translateY(12px);transition:opacity .35s '+(i*40)+'ms ease,transform .35s '+(i*40)+'ms ease;';
     io.observe(el);
   });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  loadProfile();
-  initReveal();
 });
 </script>
 </body>
