@@ -1,6 +1,8 @@
-# Canonical URL redirects — 308 Permanent Redirect
-# Hash (#) is client-side only and is preserved automatically by the browser.
-# Query strings (:splat) are forwarded explicitly.
+# _redirects — goes in the REPO ROOT (same folder as index.html and app.html)
+# Netlify and Cloudflare Pages pick this up automatically.
+# 308 = Permanent Redirect (preserves POST method, SEO-safe)
+# Query strings (?foo=bar) are forwarded automatically.
+# Hash fragments (#...) are client-side only — browsers re-attach them after redirect.
 
 /index.html   /    308
 /app.html     /app 308
