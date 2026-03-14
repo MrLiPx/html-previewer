@@ -358,22 +358,22 @@
 
   <aside class="sidebar">
     <span class="sb-label">View</span>
-    <a id="sb-preview"   class="sb-btn sb-blue" href="#preview"   onclick="return cmd('preview')">  <span class="ic">▶</span><span>Preview</span></a>
-    <a id="sb-highlight" class="sb-btn"          href="#highlight" onclick="return cmd('highlight')"><span class="ic">✦</span><span>Highlight</span></a>
-    <a id="sb-editor"    class="sb-btn"          href="#editor"   onclick="return cmd('editor')">   <span class="ic">✏</span><span>Editor</span></a>
+    <button id="sb-preview"   class="sb-btn sb-blue" onclick="cmd('preview')">  <span class="ic">▶</span><span>Preview</span></button>
+    <button id="sb-highlight" class="sb-btn"          onclick="cmd('highlight')"><span class="ic">✦</span><span>Highlight</span></button>
+    <button id="sb-editor"    class="sb-btn"          onclick="cmd('editor')">   <span class="ic">✏</span><span>Editor</span></button>
 
     <div class="sb-sep"></div>
     <span class="sb-label">Edit</span>
-    <a class="sb-btn" href="#format"   onclick="return cmd('format')">  <span class="ic">⊞</span><span>Format</span></a>
-    <a class="sb-btn" href="#expand"   onclick="return cmd('expand')">  <span class="ic">＋</span><span>Expand all</span></a>
-    <a class="sb-btn" href="#collapse" onclick="return cmd('collapse')"><span class="ic">－</span><span>Collapse all</span></a>
+    <button class="sb-btn" onclick="cmd('format')">  <span class="ic">⊞</span><span>Format</span></button>
+    <button class="sb-btn" onclick="cmd('expand')">  <span class="ic">＋</span><span>Expand all</span></button>
+    <button class="sb-btn" onclick="cmd('collapse')"><span class="ic">－</span><span>Collapse all</span></button>
 
     <div class="sb-sep"></div>
     <span class="sb-label">File</span>
-    <a class="sb-btn"          href="#sample" onclick="return cmd('sample')"><span class="ic">📄</span><span>Sample</span></a>
-    <a class="sb-btn sb-red"   href="#clear"  onclick="return cmd('clear')"> <span class="ic">✕</span><span>Clear</span></a>
-    <a class="sb-btn"          href="#import" onclick="return cmd('import')"><span class="ic">⬆</span><span>Import</span></a>
-    <a class="sb-btn sb-green" href="#export" onclick="return cmd('export')"><span class="ic">⬇</span><span>Export</span></a>
+    <button class="sb-btn"          onclick="cmd('sample')"><span class="ic">📄</span><span>Sample</span></button>
+    <button class="sb-btn sb-red"   onclick="cmd('clear')"> <span class="ic">✕</span><span>Clear</span></button>
+    <button class="sb-btn"          onclick="cmd('import')"><span class="ic">⬆</span><span>Import</span></button>
+    <button class="sb-btn sb-green" onclick="cmd('export')"><span class="ic">⬇</span><span>Export</span></button>
 
     <div class="sb-sep"></div>
     <span class="sb-label">Links</span>
@@ -381,16 +381,16 @@
     <a class="sb-btn" href="https://mrlipx.com" target="_blank" rel="noopener"><span class="ic">🌐</span><span>MrLiPx.com</span></a>
 
     <div class="sb-sep"></div>
-    <a id="sb-theme" class="sb-btn" href="#theme" onclick="return cmd('theme')">
+    <button id="sb-theme" class="sb-btn" onclick="cmd('theme')">
       <span class="ic" id="j-themeic">🌙</span><span id="j-themetxt">Dark mode</span>
-    </a>
+    </button>
   </aside>
 
   <div class="main">
     <div class="tabbar">
-      <a class="tab on" id="tab-editor"    href="#editor"    onclick="return cmd('editor')">   ✏ Editor</a>
-      <a class="tab"    id="tab-preview"   href="#preview"   onclick="return cmd('preview')">  ▶ Preview</a>
-      <a class="tab"    id="tab-highlight" href="#highlight" onclick="return cmd('highlight')">✦ Highlight</a>
+      <button class="tab on" id="tab-editor"    onclick="cmd('editor')">   ✏ Editor</button>
+      <button class="tab"    id="tab-preview"   onclick="cmd('preview')">  ▶ Preview</button>
+      <button class="tab"    id="tab-highlight" onclick="cmd('highlight')">✦ Highlight</button>
     </div>
 
     <div class="panels">
@@ -553,14 +553,15 @@ function cmd(action) {
       case 'export':   doExport();    break;
     }
   }
-  return false;
 }
 
+// Hash is only processed on initial page load (for off-site deep links).
+// Normal in-app interactions never touch the URL.
 window.addEventListener('hashchange', () => applyHash(location.hash));
 
 /* ── TABS ─────────────────────────────────────────────────────────── */
 
-function switchTab(name, skipPush) {
+function switchTab(name, skipHistory) {
   if (!TABS.includes(name)) return;
 
   TABS.forEach(t => {
@@ -568,8 +569,6 @@ function switchTab(name, skipPush) {
     document.getElementById('panel-' + t)?.classList.toggle('on', t === name);
     document.getElementById('sb-'    + t)?.classList.toggle('on', t === name);
   });
-
-  if (!skipPush) history.replaceState(null, '', '#' + name);
 
   if (name === 'preview')   refreshPreview();
   if (name === 'highlight') renderHighlight();
