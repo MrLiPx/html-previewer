@@ -176,10 +176,29 @@ h2 {
   max-width: 1000px; margin: 0 auto 72px;
   padding: 0 24px; text-align: center;
 }
+.demo-wrap {
+  position: relative;
+}
+/* Transparent overlay blocks all mouse interaction with the iframe */
+.demo-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: default;
+}
+/* Clicking the overlay opens the full app instead */
+.demo-overlay-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  cursor: pointer;
+}
 .demo-frame {
   width: 100%; height: 540px;
   border: none; display: block;
   background: #0d1117;
+  pointer-events: none;
 }
 
 /* ── FEATURES ── */
@@ -329,19 +348,24 @@ footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: ce
       </div>
       <div class="browser-url">
         <span class="bu-lock">🔒</span>
-        <span class="bu-text">mrlipx.github.io/html-previewer/app</span>
+        <span class="bu-text">mrlipx.github.io/html-previewer/app#sample&preview</span>
       </div>
       <a class="browser-open" href="app#sample&preview" target="_blank" rel="noopener" title="Open full screen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
     </div>
-    <iframe
-      src="app.html#sample&preview"
-      class="demo-frame"
-      title="HTML Previewer live demo"
-      loading="lazy"
-      allow="clipboard-write"
-    ></iframe>
+    <div class="demo-wrap">
+      <!-- Overlay blocks all interaction — clicking opens the real app -->
+      <a class="demo-overlay-link" href="app#sample&preview" target="_blank" rel="noopener" aria-label="Open HTML Previewer full screen"></a>
+      <iframe
+        src="app.html#sample&preview"
+        class="demo-frame"
+        title="HTML Previewer live demo"
+        loading="lazy"
+        tabindex="-1"
+        aria-hidden="true"
+      ></iframe>
+    </div>
   </div>
 </section>
 
