@@ -5,6 +5,7 @@
     { "source": "/404.html",   "destination": "/404", "permanent": true, "statusCode": 308 }
   ],
   "cleanUrls": true,
+  "trailingSlash": false,
   "images": {
     "sizes": [16, 32, 48, 64, 96, 128, 256, 384, 512],
     "domains": [
@@ -33,7 +34,7 @@
       ]
     },
     {
-      "source": "/(app|index|404)",
+      "source": "/(app|index|404|$)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
