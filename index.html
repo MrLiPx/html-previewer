@@ -18,11 +18,12 @@
 
 <nav>
   <a class="nav-logo" href=".">
-    <img src="media/images/logos/html5.svg" class="logo-img" alt="HTML5" width="28" height="28" />
+    <img src="media/images/logos/html5.svg" class="nav-logo-img" alt="" width="22" height="22" />
     HTML Previewer
   </a>
   <div class="nav-links">
     <a href="#features">Features</a>
+    <a href="#demo">Demo</a>
     <a href="#install">Install</a>
     <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">GitHub</a>
     <a href="app" class="nav-cta">Open App →</a>
@@ -32,14 +33,11 @@
 <!-- HERO -->
 <section class="hero">
   <div class="pill">Zero dependencies · Single file · Open source</div>
-
   <h1>The HTML Previewer<br />for <span>Developers</span></h1>
-
   <p class="sub">
     Paste, format, highlight, and preview HTML — entirely in your browser.
     No install. No server. No nonsense.
   </p>
-
   <div class="hero-btns">
     <a href="app" class="btn-primary">▶ Open Previewer</a>
     <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener" class="btn-ghost">⭐ Star on GitHub</a>
@@ -49,7 +47,7 @@
 <!-- AUTHOR -->
 <div class="author-wrap">
   <div class="author-card">
-    <img id="avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="Mr Li Px" width="40" height="40" />
+    <img id="avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="Mr Li Px" width="36" height="36" />
     <div class="author-info">
       <span class="author-name" id="author-name">Mr Li Px</span>
       <span class="author-handle" id="author-handle">@MrLiPx</span>
@@ -60,10 +58,14 @@
   </div>
 </div>
 
-<!-- SCREENSHOT -->
-<section class="screenshot-section">
-  <div class="eyebrow">Preview</div>
+<!-- DEMO (live iframe) -->
+<section class="demo-section" id="demo">
+  <div class="eyebrow">Live Demo</div>
   <h2>See it in action</h2>
+  <p class="section-sub">
+    The app is running live below — it's not a screenshot.
+    Try <a href="app#sample&preview" target="_blank">opening it full screen ↗</a>
+  </p>
 
   <div class="browser-mock">
     <div class="browser-bar">
@@ -74,15 +76,19 @@
       </div>
       <div class="browser-url">
         <span class="bu-lock">🔒</span>
-        <span class="bu-text">mrlipx.github.io/html-previewer</span>
+        <span class="bu-text">mrlipx.github.io/html-previewer/app</span>
       </div>
+      <a class="browser-open" href="app#sample&preview" target="_blank" rel="noopener" title="Open full screen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
     </div>
-    <img
-      src="https://imagedelivery.net/HUDbG83RTqduFMklKurMDw/89808921-f8f7-4da7-3228-395275f4d800/public"
-      alt="HTML Previewer screenshot"
-      style="width:100%;display:block;border-radius:0 0 9px 9px;"
+    <iframe
+      src="app.html#sample&preview"
+      class="demo-frame"
+      title="HTML Previewer live demo"
       loading="lazy"
-    />
+      allow="clipboard-write"
+    ></iframe>
   </div>
 </section>
 
@@ -92,11 +98,13 @@
   <h2>Everything you need</h2>
   <div class="feature-grid">
     <div class="fc"><div class="fc-icon">▶</div><div class="fc-title">Live Preview</div><div class="fc-desc">Render HTML in a sandboxed iframe or open full-page in a new tab instantly.</div></div>
-    <div class="fc"><div class="fc-icon">✦</div><div class="fc-title">Syntax Highlight</div><div class="fc-desc">Color-coded tags, attributes, values, and comments.</div></div>
+    <div class="fc"><div class="fc-icon">✦</div><div class="fc-title">Syntax Highlight</div><div class="fc-desc">Color-coded tags, attributes, values, and comments with no dependencies.</div></div>
     <div class="fc"><div class="fc-icon">⊞</div><div class="fc-title">Auto Format</div><div class="fc-desc">Beautify and properly indent messy HTML with one click.</div></div>
-    <div class="fc"><div class="fc-icon">＋－</div><div class="fc-title">Expand &amp; Collapse</div><div class="fc-desc">Expand or collapse all nodes for a quick overview.</div></div>
-    <div class="fc"><div class="fc-icon">⬆⬇</div><div class="fc-title">Import &amp; Export</div><div class="fc-desc">Load .html files or export your work with one click.</div></div>
-    <div class="fc"><div class="fc-icon">🌙</div><div class="fc-title">Dark &amp; Light Mode</div><div class="fc-desc">Toggle between a dark and a clean light theme.</div></div>
+    <div class="fc"><div class="fc-icon">＋－</div><div class="fc-title">Expand &amp; Collapse</div><div class="fc-desc">Expand or collapse all nodes for a quick high-level view.</div></div>
+    <div class="fc"><div class="fc-icon">⬆⬇</div><div class="fc-title">Import &amp; Export</div><div class="fc-desc">Load local .html files or export your work with one click.</div></div>
+    <div class="fc"><div class="fc-icon">🔗</div><div class="fc-title">Deep Links</div><div class="fc-desc">Every action has a URL — share <code>app#sample&preview</code> or <code>app#dark</code>.</div></div>
+    <div class="fc"><div class="fc-icon">🌙</div><div class="fc-title">Dark &amp; Light</div><div class="fc-desc">Toggle themes or deep-link directly to <code>app#theme=light</code>.</div></div>
+    <div class="fc"><div class="fc-icon">⬡</div><div class="fc-title">Zero Dependencies</div><div class="fc-desc">Pure HTML, CSS, and JS. No build step. No npm. No bundler.</div></div>
   </div>
 </section>
 
@@ -106,9 +114,9 @@
   <h2>Up in 30 seconds</h2>
   <div class="code-block">
     <div class="cb-bar">
-      <span class="tl-r" style="width:10px;height:10px;border-radius:50%;background:#ff5f57;display:inline-block;"></span>
-      <span class="tl-y" style="width:10px;height:10px;border-radius:50%;background:#febc2e;display:inline-block;"></span>
-      <span class="tl-g" style="width:10px;height:10px;border-radius:50%;background:#28c840;display:inline-block;"></span>
+      <span class="tl-r" style="width:10px;height:10px;border-radius:50%;background:#f85149;display:inline-block;"></span>
+      <span class="tl-y" style="width:10px;height:10px;border-radius:50%;background:#d29922;display:inline-block;"></span>
+      <span class="tl-g" style="width:10px;height:10px;border-radius:50%;background:#3fb950;display:inline-block;"></span>
       <span class="cb-label">terminal</span>
     </div>
     <pre><span class="cm"># Clone</span>
@@ -120,8 +128,9 @@
 <span class="ck">start</span> app.html     <span class="cd"># Windows</span>
 <span class="ck">xdg-open</span> app.html <span class="cd"># Linux</span>
 
-<span class="cm"># Or deploy to GitHub Pages</span>
-<span class="cs">Settings</span> → Pages → Deploy from / branch</pre>
+<span class="cm"># Deploy to Netlify / Cloudflare Pages — _redirects is included</span>
+<span class="cm"># Deploy to Vercel — vercel.json is included</span>
+<span class="cm"># Deploy to GitHub Pages — Settings → Pages → Deploy from / branch</span></pre>
   </div>
 </section>
 
@@ -129,7 +138,7 @@
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">
-      <img src="media/images/logos/html5.svg" alt="HTML5" width="20" height="20" style="vertical-align:middle;" />
+      <img src="media/images/logos/html5.svg" alt="" width="18" height="18" style="vertical-align:middle;opacity:.7;" />
       HTML Previewer
     </div>
     <nav class="footer-links">
