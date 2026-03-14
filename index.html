@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ── PRIMARY META ── -->
+  <!-- PRIMARY META -->
   <title>HTML Previewer — Live Browser-Based HTML Editor</title>
   <meta name="description" content="A zero-dependency, browser-based HTML editor and live previewer. Paste, format, syntax-highlight, and preview HTML instantly — no install, no server, no nonsense." />
   <meta name="keywords" content="HTML editor, HTML previewer, live preview, syntax highlight, HTML formatter, browser editor, online HTML tool, zero dependencies" />
@@ -12,36 +12,37 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://mrlipx.github.io/html-previewer/" />
 
-  <!-- ── OPEN GRAPH ── -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:site_name"   content="HTML Previewer" />
-  <meta property="og:title"       content="HTML Previewer — Live Browser-Based HTML Editor" />
-  <meta property="og:description" content="Zero-dependency HTML editor &amp; live previewer. Paste, format, highlight, and preview HTML entirely in your browser. No install. No server." />
-  <meta property="og:image"       content="https://mrlipx.github.io/html-previewer/media/images/banner/og-banner.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:url"         content="https://mrlipx.github.io/html-previewer/" />
-  <meta property="og:locale"      content="en_US" />
+  <!-- OPEN GRAPH -->
+  <meta property="og:type"         content="website" />
+  <meta property="og:site_name"    content="HTML Previewer" />
+  <meta property="og:title"        content="HTML Previewer — Live Browser-Based HTML Editor" />
+  <meta property="og:description"  content="Zero-dependency HTML editor &amp; live previewer. Paste, format, highlight, and preview HTML entirely in your browser. No install. No server." />
+  <meta property="og:url"          content="https://mrlipx.github.io/html-previewer/" />
+  <meta property="og:image"        content="https://mrlipx.github.io/html-previewer/media/images/logos/html5.png" />
+  <meta property="og:image:width"  content="128" />
+  <meta property="og:image:height" content="128" />
+  <meta property="og:image:alt"    content="HTML5 logo — HTML Previewer" />
+  <meta property="og:locale"       content="en_US" />
 
-  <!-- ── TWITTER / X ── -->
-  <meta name="twitter:card"        content="summary_large_image" />
+  <!-- TWITTER / X -->
+  <meta name="twitter:card"        content="summary" />
   <meta name="twitter:site"        content="@MrLiPx" />
   <meta name="twitter:creator"     content="@MrLiPx" />
   <meta name="twitter:title"       content="HTML Previewer — Live Browser-Based HTML Editor" />
   <meta name="twitter:description" content="Zero-dependency HTML editor &amp; live previewer. No install. No server. No nonsense." />
-  <meta name="twitter:image"       content="https://mrlipx.github.io/html-previewer/media/images/banner/og-banner.png" />
+  <meta name="twitter:image"       content="https://mrlipx.github.io/html-previewer/media/images/logos/html5.png" />
 
-  <!-- ── ICONS ── -->
-  <link rel="icon"             type="image/svg+xml" href="media/images/logos/html5.svg" />
-  <link rel="icon"             type="image/png"     href="media/images/icons/favicon.png" />
-  <link rel="apple-touch-icon"                      href="media/images/icons/favicon.png" />
+  <!-- ICONS -->
+  <link rel="icon"              type="image/svg+xml" href="media/images/logos/html5.svg" />
+  <link rel="icon"              type="image/png"     href="media/images/icons/favicon.png" />
+  <link rel="apple-touch-icon"                       href="media/images/icons/favicon.png" />
 
-  <!-- ── FONTS ── -->
+  <!-- FONTS -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- ── STRUCTURED DATA ── -->
+  <!-- STRUCTURED DATA -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -52,487 +53,202 @@
     "description": "A zero-dependency, browser-based HTML editor and live previewer.",
     "url": "https://mrlipx.github.io/html-previewer/",
     "downloadUrl": "https://github.com/MrLiPx/html-previewer",
-    "softwareVersion": "1.1.0",
+    "softwareVersion": "1.2.0",
     "license": "https://github.com/MrLiPx/html-previewer/blob/main/LICENSE",
+    "image": "https://mrlipx.github.io/html-previewer/media/images/logos/html5.png",
     "author": {
       "@type": "Person",
       "name": "Mr Li Px",
       "url": "https://github.com/MrLiPx"
     },
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    }
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
 
+  <!-- Inline theme init (sync — prevents flash on every visit) -->
+  <script>
+    (function(){
+      function _os(){return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
+      function _eff(p){return(p==='dark'||p==='light')?p:_os();}
+      var p='system';
+      try{var s=localStorage.getItem('theme');if(s==='dark'||s==='light'||s==='system')p=s;}catch(e){}
+      document.documentElement.setAttribute('data-theme',_eff(p));
+    })();
+  </script>
+
   <style>
-    /* ── DESIGN TOKENS ── */
     :root {
-      --bg:      #0d1117;
-      --surface: #161b22;
-      --overlay: #1c2128;
-      --border:  #30363d;
-      --bhi:     #484f58;
-      --accent:  #58a6ff;
-      --green:   #3fb950;
-      --red:     #f85149;
-      --yellow:  #d29922;
-      --text:    #e6edf3;
-      --muted:   #8b949e;
-      --sans:    'Inter', sans-serif;
-      --mono:    'JetBrains Mono', monospace;
-      --r:       8px;
-      --trans:   .15s ease;
+      --bg:#0d1117; --surface:#161b22; --overlay:#1c2128;
+      --border:#30363d; --bhi:#484f58;
+      --accent:#58a6ff; --green:#3fb950; --red:#f85149; --yellow:#d29922;
+      --text:#e6edf3; --muted:#8b949e;
+      --sans:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+      --r:8px; --t:.15s ease;
     }
-    [data-theme="light"] {
-      --bg:      #f6f8fa;
-      --surface: #ffffff;
-      --overlay: #eaeef2;
-      --border:  #d0d7de;
-      --bhi:     #afb8c1;
-      --text:    #1f2328;
-      --muted:   #57606a;
+    [data-theme="light"]{
+      --bg:#f6f8fa; --surface:#fff; --overlay:#eaeef2;
+      --border:#d0d7de; --bhi:#afb8c1; --text:#1f2328; --muted:#57606a;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--sans);background:var(--bg);color:var(--text);
+      line-height:1.6;-webkit-font-smoothing:antialiased;
+      transition:background var(--t),color var(--t);}
 
-    /* ── RESET ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      transition: background var(--trans), color var(--trans);
-    }
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;
+      justify-content:space-between;padding:0 28px;height:54px;
+      background:var(--surface);border-bottom:1px solid var(--border);
+      transition:background var(--t),border-color var(--t);}
+    [data-theme="dark"] nav{background:rgba(22,27,34,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+    .nav-logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;
+      text-decoration:none;color:var(--text);flex-shrink:0;letter-spacing:-.2px;}
+    .nav-logo img{width:22px;height:22px;} .nav-logo span{color:var(--accent);}
+    .nav-links{display:flex;align-items:center;gap:2px;}
+    .nav-link{padding:5px 11px;font-size:13px;font-weight:500;color:var(--muted);
+      text-decoration:none;border-radius:6px;border:1px solid transparent;
+      transition:color var(--t),background var(--t),border-color var(--t);}
+    .nav-link:hover{color:var(--text);background:var(--overlay);border-color:var(--border);}
 
-    /* ── NAV ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      height: 54px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      transition: background var(--trans), border-color var(--trans);
-    }
-    [data-theme="dark"] nav {
-      background: rgba(22,27,34,.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-weight: 700;
-      font-size: 15px;
-      text-decoration: none;
-      color: var(--text);
-      flex-shrink: 0;
-      letter-spacing: -.2px;
-    }
-    .nav-logo img { width: 22px; height: 22px; }
-    .nav-logo span { color: var(--accent); }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-    .nav-link {
-      padding: 5px 11px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      transition: color var(--trans), background var(--trans), border-color var(--trans);
-    }
-    .nav-link:hover { color: var(--text); background: var(--overlay); border-color: var(--border); }
+    /* 3-way theme toggle in nav */
+    .nav-theme-group{display:flex;background:var(--overlay);border:1px solid var(--border);
+      border-radius:6px;overflow:hidden;}
+    .nav-theme-group button{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;
+      justify-content:center;gap:4px;padding:5px 9px;height:32px;font-family:var(--sans);
+      font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;
+      position:relative;transition:background var(--t),color var(--t);}
+    .nav-theme-group button:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;
+      bottom:20%;width:1px;background:var(--border);}
+    .nav-theme-group button:hover{color:var(--text);}
+    .nav-theme-group button.active{background:rgba(88,166,255,.12);color:var(--accent);}
+    .nav-theme-group .nt-ic{font-size:13px;}
+    .nav-theme-group .nt-lbl{font-size:10px;}
+    @media(max-width:640px){.nav-theme-group .nt-lbl{display:none;}}
 
-    .nav-theme {
-      all: unset;
-      box-sizing: border-box;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 11px;
-      height: 32px;
-      font-family: var(--sans);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      background: var(--overlay);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: color var(--trans), border-color var(--trans);
-    }
-    .nav-theme:hover { border-color: var(--accent); color: var(--text); }
-    .nav-theme-ic { font-size: 14px; line-height: 1; }
+    .nav-cta{padding:7px 16px;font-size:13px;font-weight:600;color:#fff;
+      background:var(--accent);text-decoration:none;border-radius:6px;
+      transition:filter var(--t),transform var(--t);}
+    .nav-cta:hover{filter:brightness(1.12);transform:translateY(-1px);}
 
-    .nav-cta {
-      padding: 7px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      text-decoration: none;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      transition: filter var(--trans), transform var(--trans);
-    }
-    .nav-cta:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    /* HERO */
+    .hero{text-align:center;padding:88px 24px 60px;max-width:640px;margin:0 auto;}
+    .pill{display:inline-block;padding:4px 14px;background:rgba(88,166,255,.08);
+      border:1px solid rgba(88,166,255,.18);border-radius:100px;font-size:11px;font-weight:600;
+      letter-spacing:.5px;color:var(--accent);margin-bottom:28px;text-transform:uppercase;}
+    .hero h1{font-size:clamp(34px,6vw,58px);font-weight:700;line-height:1.08;
+      letter-spacing:-1.6px;margin-bottom:20px;color:var(--text);}
+    .hero h1 em{font-style:normal;color:var(--accent);}
+    .hero-sub{font-size:17px;color:var(--muted);max-width:440px;margin:0 auto 36px;line-height:1.7;}
+    .hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+    .btn-p{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:var(--r);
+      font-size:14px;font-weight:600;text-decoration:none;background:var(--accent);color:#fff;
+      border:1px solid transparent;transition:filter var(--t),transform var(--t);}
+    .btn-p:hover{filter:brightness(1.12);transform:translateY(-2px);}
+    .btn-g{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:var(--r);
+      font-size:14px;font-weight:600;text-decoration:none;background:var(--surface);
+      color:var(--text);border:1px solid var(--border);
+      transition:border-color var(--t),color var(--t),transform var(--t);}
+    .btn-g:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
 
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 88px 24px 60px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-    .pill {
-      display: inline-block;
-      padding: 4px 14px;
-      background: rgba(88,166,255,.08);
-      border: 1px solid rgba(88,166,255,.18);
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      color: var(--accent);
-      margin-bottom: 28px;
-      text-transform: uppercase;
-    }
-    .hero h1 {
-      font-size: clamp(34px, 6vw, 58px);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -1.6px;
-      margin-bottom: 20px;
-      color: var(--text);
-    }
-    .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero-sub {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 440px;
-      margin: 0 auto 36px;
-      line-height: 1.7;
-    }
-    .hero-btns {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 12px 22px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid transparent;
-      transition: filter var(--trans), transform var(--trans);
-    }
-    .btn-primary:hover { filter: brightness(1.12); transform: translateY(-2px); }
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 12px 22px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      transition: border-color var(--trans), color var(--trans), transform var(--trans);
-    }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    /* AUTHOR */
+    .author-wrap{display:flex;justify-content:center;padding:0 24px 64px;}
+    .author-card{display:flex;align-items:center;gap:13px;padding:10px 20px;
+      background:var(--surface);border:1px solid var(--border);border-radius:100px;
+      text-decoration:none;transition:border-color var(--t),box-shadow var(--t);}
+    .author-card:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(88,166,255,.1);}
+    .author-avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);
+      display:block;transition:border-color var(--t);}
+    .author-card:hover .author-avatar{border-color:var(--accent);}
+    .author-name{font-size:13px;font-weight:700;color:var(--text);display:block;}
+    .author-handle{font-size:11px;color:var(--muted);font-family:var(--mono);display:block;}
+    .author-tag{padding:3px 10px;background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.18);
+      border-radius:100px;font-size:10px;font-weight:600;color:var(--accent);
+      font-family:var(--mono);margin-left:4px;}
 
-    /* ── AUTHOR CARD ── */
-    .author-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 0 24px 64px;
-    }
-    .author-card {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 10px 20px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      text-decoration: none;
-      transition: border-color var(--trans), box-shadow var(--trans);
-    }
-    .author-card:hover { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,.1); }
-    .author-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      display: block;
-      transition: border-color var(--trans);
-    }
-    .author-card:hover .author-avatar { border-color: var(--accent); }
-    .author-name   { font-size: 13px; font-weight: 700; color: var(--text); display: block; }
-    .author-handle { font-size: 11px; color: var(--muted); font-family: var(--mono); display: block; }
-    .author-tag {
-      padding: 3px 10px;
-      background: rgba(88,166,255,.08);
-      border: 1px solid rgba(88,166,255,.18);
-      border-radius: 100px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent);
-      font-family: var(--mono);
-      margin-left: 4px;
-    }
+    /* SECTION */
+    .sec-ey{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+      color:var(--accent);margin-bottom:8px;}
+    .sec-ti{font-size:clamp(22px,3.5vw,32px);font-weight:700;letter-spacing:-.5px;
+      margin-bottom:12px;color:var(--text);}
+    .sec-su{font-size:15px;color:var(--muted);margin-bottom:28px;line-height:1.65;}
+    .sec-su a{color:var(--accent);text-decoration:none;}
+    .sec-su a:hover{text-decoration:underline;}
 
-    /* ── SECTION HEADER ── */
-    .sec-eyebrow {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-    .sec-title {
-      font-size: clamp(22px, 3.5vw, 32px);
-      font-weight: 700;
-      letter-spacing: -.5px;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-    .sec-sub {
-      font-size: 15px;
-      color: var(--muted);
-      margin-bottom: 28px;
-      line-height: 1.65;
-    }
-    .sec-sub a { color: var(--accent); text-decoration: none; }
-    .sec-sub a:hover { text-decoration: underline; }
+    /* BROWSER MOCK */
+    .bm{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+      overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45);}
+    [data-theme="light"] .bm{box-shadow:0 24px 64px rgba(0,0,0,.1);}
+    .bm-bar{display:flex;align-items:center;gap:8px;padding:9px 12px;
+      background:var(--overlay);border-bottom:1px solid var(--border);}
+    .tl{display:flex;gap:5px;flex-shrink:0;}
+    .tl span{width:11px;height:11px;border-radius:50%;display:inline-block;}
+    .tl-r{background:var(--red);}.tl-y{background:var(--yellow);}.tl-g{background:var(--green);}
+    .bm-url{flex:1;display:flex;align-items:center;gap:5px;background:var(--bg);
+      border:1px solid var(--border);border-radius:100px;padding:3px 10px;
+      font-family:var(--mono);font-size:11px;min-width:0;overflow:hidden;}
+    .bu-l{color:var(--green);flex-shrink:0;}.bu-t{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .bm-ext{all:unset;box-sizing:border-box;width:24px;height:24px;display:flex;
+      align-items:center;justify-content:center;color:var(--muted);cursor:pointer;
+      border-radius:5px;text-decoration:none;flex-shrink:0;
+      transition:color var(--t),background var(--t);}
+    .bm-ext:hover{color:var(--accent);background:rgba(88,166,255,.1);}
+    .bm-ext svg{width:13px;height:13px;}
 
-    /* ── BROWSER MOCK ── */
-    .browser-mock {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0,0,0,.45);
-    }
-    [data-theme="light"] .browser-mock {
-      box-shadow: 0 24px 64px rgba(0,0,0,.12);
-    }
-    .browser-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 12px;
-      background: var(--overlay);
-      border-bottom: 1px solid var(--border);
-    }
-    .tl-dots { display: flex; gap: 5px; flex-shrink: 0; }
-    .tl-r { width: 11px; height: 11px; border-radius: 50%; background: var(--red); }
-    .tl-y { width: 11px; height: 11px; border-radius: 50%; background: var(--yellow); }
-    .tl-g { width: 11px; height: 11px; border-radius: 50%; background: var(--green); }
-    .browser-url {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 3px 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      min-width: 0;
-      overflow: hidden;
-    }
-    .bu-lock { color: var(--green); flex-shrink: 0; }
-    .bu-text { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .browser-ext {
-      all: unset;
-      box-sizing: border-box;
-      width: 24px; height: 24px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 5px;
-      text-decoration: none;
-      flex-shrink: 0;
-      transition: color var(--trans), background var(--trans);
-    }
-    .browser-ext:hover { color: var(--accent); background: rgba(88,166,255,.1); }
-    .browser-ext svg { width: 13px; height: 13px; }
+    /* DEMO */
+    .demo-sec{max-width:1040px;margin:0 auto 72px;padding:0 24px;text-align:center;}
+    .demo-frame{width:100%;height:540px;border:none;display:block;background:var(--bg);}
 
-    /* ── DEMO ── */
-    .demo-section {
-      max-width: 1040px;
-      margin: 0 auto 72px;
-      padding: 0 24px;
-      text-align: center;
-    }
-    .demo-frame {
-      width: 100%;
-      height: 540px;
-      border: none;
-      display: block;
-      background: var(--bg);
-    }
+    /* FEATURES */
+    .features{max-width:1020px;margin:0 auto 72px;padding:0 24px;text-align:center;}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+    .fc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+      padding:20px;text-align:left;transition:border-color var(--t),transform var(--t),box-shadow var(--t);}
+    .fc:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.18);}
+    [data-theme="light"] .fc:hover{box-shadow:0 6px 20px rgba(0,0,0,.07);}
+    .fc-i{font-size:20px;margin-bottom:10px;display:block;}
+    .fc-t{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}
+    .fc-d{font-size:12px;color:var(--muted);line-height:1.6;}
+    .fc-d code{font-family:var(--mono);font-size:10px;background:rgba(88,166,255,.08);
+      border:1px solid rgba(88,166,255,.15);padding:1px 5px;border-radius:3px;color:var(--accent);}
 
-    /* ── FEATURES ── */
-    .features {
-      max-width: 1020px;
-      margin: 0 auto 72px;
-      padding: 0 24px;
-      text-align: center;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-    }
-    .fc {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 20px;
-      text-align: left;
-      transition: border-color var(--trans), transform var(--trans), box-shadow var(--trans);
-    }
-    .fc:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,.2);
-    }
-    [data-theme="light"] .fc:hover { box-shadow: 0 6px 20px rgba(0,0,0,.07); }
-    .fc-icon  { font-size: 20px; margin-bottom: 10px; display: block; }
-    .fc-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-    .fc-desc  { font-size: 12px; color: var(--muted); line-height: 1.6; }
-    .fc-desc code {
-      font-family: var(--mono);
-      font-size: 10px;
-      background: rgba(88,166,255,.08);
-      border: 1px solid rgba(88,166,255,.15);
-      padding: 1px 5px;
-      border-radius: 3px;
-      color: var(--accent);
-    }
+    /* INSTALL */
+    .install-sec{max-width:680px;margin:0 auto 72px;padding:0 24px;text-align:center;}
+    .cb{background:var(--overlay);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;text-align:left;}
+    .cb-bar{display:flex;align-items:center;gap:6px;padding:9px 14px;
+      background:var(--surface);border-bottom:1px solid var(--border);}
+    .cb-lbl{margin-left:auto;font-size:10px;color:var(--muted);font-family:var(--mono);}
+    .cb pre{padding:16px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.8;overflow-x:auto;color:var(--text);}
+    .cm{color:var(--muted);}.ck{color:var(--accent);}.cd{color:var(--muted);opacity:.5;}
 
-    /* ── INSTALL ── */
-    .install-section {
-      max-width: 680px;
-      margin: 0 auto 72px;
-      padding: 0 24px;
-      text-align: center;
-    }
-    .code-block {
-      background: var(--overlay);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      overflow: hidden;
-      text-align: left;
-    }
-    .cb-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 9px 14px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-    .cb-label { margin-left: auto; font-size: 10px; color: var(--muted); font-family: var(--mono); }
-    .code-block pre {
-      padding: 16px 18px;
-      font-family: var(--mono);
-      font-size: 12.5px;
-      line-height: 1.8;
-      overflow-x: auto;
-      color: var(--text);
-    }
-    .cm { color: var(--muted); }
-    .ck { color: var(--accent); }
-    .cs { color: var(--yellow); }
-    .cd { color: var(--muted); opacity: .5; }
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;}
+    .fi{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:16px;margin-bottom:12px;}
+    .f-logo{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--text);text-decoration:none;}
+    .f-links{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;}
+    .f-links a{padding:4px 9px;font-size:12px;color:var(--muted);text-decoration:none;border-radius:5px;transition:color var(--t);}
+    .f-links a:hover{color:var(--accent);}
+    .f-copy{font-size:11px;color:var(--muted);}
+    .f-copy a{color:var(--accent);text-decoration:none;}
+    .f-copy a:hover{text-decoration:underline;}
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 24px;
-      text-align: center;
-    }
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-    }
-    .footer-links { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
-    .footer-links a {
-      padding: 4px 9px;
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      border-radius: 5px;
-      transition: color var(--trans);
-    }
-    .footer-links a:hover { color: var(--accent); }
-    .footer-copy { font-size: 11px; color: var(--muted); }
-    .footer-copy a { color: var(--accent); text-decoration: none; }
-    .footer-copy a:hover { text-decoration: underline; }
+    ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--bhi);}
 
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--bhi); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      nav { padding: 0 16px; }
-      .nav-link:not(.nav-cta) { display: none; }
-      .hero { padding: 60px 20px 48px; }
-      .demo-frame { height: 380px; }
-      .author-card { border-radius: 14px; flex-wrap: wrap; }
+    @media(max-width:640px){
+      nav{padding:0 16px;}
+      .nav-link:not(.nav-cta){display:none;}
+      .hero{padding:60px 20px 48px;}
+      .demo-frame{height:380px;}
+      .author-card{border-radius:14px;flex-wrap:wrap;}
     }
   </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav>
   <a class="nav-logo" href="." aria-label="HTML Previewer home">
-    <img src="media/images/logos/html5.svg" alt="" width="22" height="22" />
+    <img src="media/images/logos/html5.svg" alt="" width="22" height="22" id="nav-logo-img" />
     HTML<span>Previewer</span>
   </a>
   <div class="nav-links">
@@ -540,108 +256,91 @@
     <a class="nav-link" href="#demo">Demo</a>
     <a class="nav-link" href="#install">Install</a>
     <a class="nav-link" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">GitHub</a>
-    <button class="nav-theme" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
-      <span class="nav-theme-ic" id="theme-ic">🌙</span>
-      <span id="theme-lbl">Dark</span>
-    </button>
+
+    <!-- 3-way theme picker -->
+    <div class="nav-theme-group" role="group" aria-label="Theme">
+      <button id="nt-system" onclick="setThemePref('system',true)" title="System theme" aria-pressed="true">
+        <span class="nt-ic">💻</span><span class="nt-lbl">System</span>
+      </button>
+      <button id="nt-dark" onclick="setThemePref('dark',true)" title="Dark" aria-pressed="false">
+        <span class="nt-ic">🌙</span><span class="nt-lbl">Dark</span>
+      </button>
+      <button id="nt-light" onclick="setThemePref('light',true)" title="Light" aria-pressed="false">
+        <span class="nt-ic">☀️</span><span class="nt-lbl">Light</span>
+      </button>
+    </div>
+
     <a class="nav-cta" href="app">Open App →</a>
   </div>
 </nav>
 
-<!-- ── HERO ── -->
 <section class="hero" aria-label="Hero">
-  <div class="pill" aria-label="Key highlights">Zero dependencies · Single file · Open source</div>
+  <div class="pill">Zero dependencies · Single file · Open source</div>
   <h1>The HTML Previewer<br />for <em>Developers</em></h1>
-  <p class="hero-sub">
-    Paste, format, highlight, and preview HTML — entirely in your browser.
-    No install. No server. No nonsense.
-  </p>
+  <p class="hero-sub">Paste, format, highlight, and preview HTML — entirely in your browser. No install. No server. No nonsense.</p>
   <div class="hero-btns">
-    <a href="app" class="btn-primary">▶ Open Previewer</a>
-    <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" class="btn-ghost">⭐ Star on GitHub</a>
+    <a href="app" class="btn-p">▶ Open Previewer</a>
+    <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer" class="btn-g">⭐ Star on GitHub</a>
   </div>
 </section>
 
-<!-- ── AUTHOR ── -->
 <div class="author-wrap">
   <a class="author-card" id="author-link" href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" aria-label="Author: Mr Li Px">
-    <img class="author-avatar" id="author-avatar"
-      src="https://avatars.githubusercontent.com/u/163276171?v=4"
-      alt="Mr Li Px"
-      width="36" height="36"
-      loading="lazy"
-    />
+    <img class="author-avatar" id="author-avatar" src="https://avatars.githubusercontent.com/u/163276171?v=4" alt="Mr Li Px" width="36" height="36" loading="lazy" />
     <div>
-      <span class="author-name"   id="author-name">Mr Li Px</span>
+      <span class="author-name" id="author-name">Mr Li Px</span>
       <span class="author-handle" id="author-handle">@MrLiPx</span>
     </div>
     <span class="author-tag" id="author-repos">3 repos</span>
   </a>
 </div>
 
-<!-- ── DEMO ── -->
-<section class="demo-section" id="demo" aria-label="Live demo">
-  <div class="sec-eyebrow">Live Demo</div>
-  <h2 class="sec-title">See it in action</h2>
-  <p class="sec-sub">
-    The app is running live below — it's not a screenshot.
-    <a href="app#sample&amp;preview" target="_blank" rel="noopener noreferrer">Open it full screen ↗</a>
-  </p>
-  <div class="browser-mock">
-    <div class="browser-bar" aria-hidden="true">
-      <div class="tl-dots">
-        <span class="tl-r"></span>
-        <span class="tl-y"></span>
-        <span class="tl-g"></span>
+<section class="demo-sec" id="demo" aria-label="Live demo">
+  <div class="sec-ey">Live Demo</div>
+  <h2 class="sec-ti">See it in action</h2>
+  <p class="sec-su">The app is running live below — it's not a screenshot. <a href="app#sample&amp;preview" target="_blank" rel="noopener noreferrer">Open it full screen ↗</a></p>
+  <div class="bm">
+    <div class="bm-bar" aria-hidden="true">
+      <div class="tl"><span class="tl-r"></span><span class="tl-y"></span><span class="tl-g"></span></div>
+      <div class="bm-url">
+        <span class="bu-l">🔒</span>
+        <span class="bu-t">mrlipx.github.io/html-previewer/app#sample&amp;preview</span>
       </div>
-      <div class="browser-url">
-        <span class="bu-lock">🔒</span>
-        <span class="bu-text">mrlipx.github.io/html-previewer/app#sample&amp;preview</span>
-      </div>
-      <a class="browser-ext" href="app#sample&preview" target="_blank" rel="noopener noreferrer" title="Open full screen" aria-label="Open full screen">
+      <a class="bm-ext" href="app#sample&preview" target="_blank" rel="noopener noreferrer" title="Open full screen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
     </div>
-    <!-- embed=readonly → decorative, non-interactive showcase -->
-    <iframe
-      src="app?embed=readonly#sample&preview"
-      class="demo-frame"
-      title="HTML Previewer live demo"
-      loading="lazy"
-      tabindex="-1"
-      aria-hidden="true"
-    ></iframe>
+    <iframe src="app?embed=readonly#sample&preview" class="demo-frame" title="HTML Previewer live demo"
+      loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
   </div>
 </section>
 
-<!-- ── FEATURES ── -->
 <section class="features" id="features" aria-label="Features">
-  <div class="sec-eyebrow">What's inside</div>
-  <h2 class="sec-title">Everything you need</h2>
-  <div class="feature-grid">
-    <div class="fc"><span class="fc-icon">▶</span><div class="fc-title">Live Preview</div><div class="fc-desc">Render HTML in a sandboxed iframe or open full-page in a new tab instantly.</div></div>
-    <div class="fc"><span class="fc-icon">✦</span><div class="fc-title">Syntax Highlight</div><div class="fc-desc">Colour-coded tags, attributes, values, and comments for easy scanning.</div></div>
-    <div class="fc"><span class="fc-icon">⊞</span><div class="fc-title">Auto Format</div><div class="fc-desc">Beautify and properly indent messy HTML with one click.</div></div>
-    <div class="fc"><span class="fc-icon">＋－</span><div class="fc-title">Expand &amp; Collapse</div><div class="fc-desc">Clean up blank lines or compact code for a quick overview.</div></div>
-    <div class="fc"><span class="fc-icon">⬆⬇</span><div class="fc-title">Import &amp; Export</div><div class="fc-desc">Load local <code>.html</code> files or download your work with one click.</div></div>
-    <div class="fc"><span class="fc-icon">🔗</span><div class="fc-title">Deep Links</div><div class="fc-desc">Share <code>app#sample&amp;preview</code> — every action is addressable via URL hash.</div></div>
-    <div class="fc"><span class="fc-icon">🌙</span><div class="fc-title">Dark &amp; Light</div><div class="fc-desc">Follows your OS theme automatically. Override with the toggle — preference is saved.</div></div>
-    <div class="fc"><span class="fc-icon">⬡</span><div class="fc-title">Zero Dependencies</div><div class="fc-desc">Pure HTML, CSS, and JS. No build step. No npm. No bundler. Ever.</div></div>
+  <div class="sec-ey">What's inside</div>
+  <h2 class="sec-ti">Everything you need</h2>
+  <div class="feat-grid">
+    <div class="fc"><span class="fc-i">▶</span><div class="fc-t">Live Preview</div><div class="fc-d">Render HTML in a sandboxed iframe or open full-page in a new tab.</div></div>
+    <div class="fc"><span class="fc-i">✦</span><div class="fc-t">Syntax Highlight</div><div class="fc-d">Colour-coded tags, attributes, values, and comments.</div></div>
+    <div class="fc"><span class="fc-i">⊞</span><div class="fc-t">Auto Format</div><div class="fc-d">Beautify and properly indent messy HTML with one click.</div></div>
+    <div class="fc"><span class="fc-i">＋－</span><div class="fc-t">Expand &amp; Collapse</div><div class="fc-d">Clean up blank lines or compact code for a quick overview.</div></div>
+    <div class="fc"><span class="fc-i">⬆⬇</span><div class="fc-t">Import &amp; Export</div><div class="fc-d">Load local <code>.html</code> files or download your work with one click.</div></div>
+    <div class="fc"><span class="fc-i">🔗</span><div class="fc-t">Deep Links</div><div class="fc-d">Share <code>app#sample&amp;preview</code> — every action is URL-addressable.</div></div>
+    <div class="fc"><span class="fc-i">💻</span><div class="fc-t">System / Dark / Light</div><div class="fc-d">Three-way theme: follow OS automatically, or lock to dark or light.</div></div>
+    <div class="fc"><span class="fc-i">⬡</span><div class="fc-t">Zero Dependencies</div><div class="fc-d">Pure HTML, CSS, and JS. No build step. No npm. No bundler. Ever.</div></div>
   </div>
 </section>
 
-<!-- ── INSTALL ── -->
-<section class="install-section" id="install" aria-label="Quick start">
-  <div class="sec-eyebrow">Quick Start</div>
-  <h2 class="sec-title">Up in 30 seconds</h2>
-  <div class="code-block">
+<section class="install-sec" id="install" aria-label="Quick start">
+  <div class="sec-ey">Quick Start</div>
+  <h2 class="sec-ti">Up in 30 seconds</h2>
+  <div class="cb">
     <div class="cb-bar" aria-hidden="true">
       <span class="tl-r" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span>
       <span class="tl-y" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span>
       <span class="tl-g" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span>
-      <span class="cb-label">terminal</span>
+      <span class="cb-lbl">terminal</span>
     </div>
-    <pre aria-label="Terminal commands"><span class="cm"># Clone the repository</span>
+    <pre><span class="cm"># Clone the repository</span>
 <span class="ck">git</span> clone https://github.com/MrLiPx/html-previewer.git
 <span class="ck">cd</span> html-previewer
 
@@ -650,19 +349,17 @@
 <span class="ck">start</span>    app.html  <span class="cd"># Windows</span>
 <span class="ck">xdg-open</span> app.html  <span class="cd"># Linux</span>
 
-<span class="cm"># Deploy to Netlify, Cloudflare Pages, or Vercel</span>
-<span class="cm"># Redirect rules are included — just push and go.</span></pre>
+<span class="cm"># Deploy — redirect rules for Netlify, Cloudflare Pages &amp; Vercel included</span></pre>
   </div>
 </section>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-inner">
-    <a class="footer-logo" href="." aria-label="HTML Previewer home">
+  <div class="fi">
+    <a class="f-logo" href=".">
       <img src="media/images/logos/html5.svg" alt="" width="18" height="18" style="opacity:.7;" />
       HTML Previewer
     </a>
-    <nav class="footer-links" aria-label="Footer links">
+    <nav class="f-links" aria-label="Footer links">
       <a href="app">App</a>
       <a href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="https://github.com/MrLiPx/html-previewer/blob/main/README.md" target="_blank" rel="noopener noreferrer">README</a>
@@ -670,99 +367,120 @@
       <a href="https://mrlipx.com" target="_blank" rel="noopener noreferrer">MrLiPx.com</a>
     </nav>
   </div>
-  <p class="footer-copy">
-    MIT License · Made by <a href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" id="footer-author">Mr Li Px (@MrLiPx)</a>
-  </p>
+  <p class="f-copy">MIT License · Made by <a href="https://github.com/MrLiPx" target="_blank" rel="noopener noreferrer" id="footer-author">Mr Li Px (@MrLiPx)</a></p>
 </footer>
 
 <script>
 'use strict';
 
-const GH_ID = 163276171;
+var GH_ID = 163276171;
 
-/* ── THEME ── */
-let _dark = true;
-
-function applyTheme(mode, save) {
-  _dark = (mode !== 'light');
-  document.documentElement.setAttribute('data-theme', _dark ? 'dark' : 'light');
-  const ic  = document.getElementById('theme-ic');
-  const lbl = document.getElementById('theme-lbl');
-  if (ic)  ic.textContent  = _dark ? '🌙' : '☀️';
-  if (lbl) lbl.textContent = _dark ? 'Dark' : 'Light';
-  if (save) {
-    try { localStorage.setItem('theme', _dark ? 'dark' : 'light'); } catch (_) {}
+/* ── IMAGE OPTIMISATION ──────────────────────────────────────
+   Vercel: /_vercel/image?url=PATH&w=W&q=Q  (format=auto server-side)
+   GitHub Pages / local: raw path unchanged
+──────────────────────────────────────────────────────────────*/
+function imgOpt(path, w, h, q) {
+  q = q || 80;
+  var onVercel = !location.hostname.includes('localhost') && (
+    location.hostname.endsWith('.vercel.app') ||
+    location.hostname.endsWith('.vercel.sh')  ||
+    !!document.querySelector('meta[name="x-vercel-deployment-url"]')
+  );
+  if (onVercel && w) {
+    var p = 'url=' + encodeURIComponent(path) + '&w=' + w + '&q=' + q;
+    if (h) p += '&h=' + h;
+    return '/_vercel/image?' + p;
   }
+  return path;
 }
 
-function toggleTheme() { applyTheme(_dark ? 'light' : 'dark', true); }
+/* ── THEME (3-way: system | dark | light) ────────────────────
+   system = follow OS preference in real-time (default for new visitors)
+   localStorage stores explicit preference across ALL pages
+──────────────────────────────────────────────────────────────*/
+var _pref = 'system';
 
-// Priority: ?theme= → localStorage → OS → dark default
-(function initTheme() {
+function _os() { return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; }
+function _eff(p) { return (p==='dark'||p==='light') ? p : _os(); }
+
+function setThemePref(pref, save) {
+  if (pref!=='dark'&&pref!=='light'&&pref!=='system') pref='system';
+  _pref = pref;
+  document.documentElement.setAttribute('data-theme', _eff(pref));
+  if (save) { try { localStorage.setItem('theme', pref); } catch(_){} }
+  _updateThemeUI();
+}
+
+function _updateThemeUI() {
+  // Nav 3-way buttons
+  ['system','dark','light'].forEach(function(p){
+    var btn = document.getElementById('nt-'+p);
+    if (!btn) return;
+    btn.classList.toggle('active', p===_pref);
+    btn.setAttribute('aria-pressed', String(p===_pref));
+  });
+}
+
+// Live OS changes (only effective when pref=system)
+try {
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function(){
+    if (_pref==='system') document.documentElement.setAttribute('data-theme', _os());
+  });
+} catch(_){}
+
+// Init: theme already applied by inline <script> — just load _pref and update UI
+(function(){
   try {
-    const q = new URLSearchParams(location.search).get('theme');
-    if (q === 'dark' || q === 'light') {
-      try { localStorage.setItem('theme', q); } catch (_) {}
-      applyTheme(q, false); return;
-    }
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark' || saved === 'light') { applyTheme(saved, false); return; }
-  } catch (_) {}
-  if (window.matchMedia?.('(prefers-color-scheme: light)').matches) {
-    applyTheme('light', false);
-  }
+    var s=localStorage.getItem('theme');
+    if (s==='dark'||s==='light'||s==='system') _pref=s;
+  } catch(_){}
+  _updateThemeUI();
 }());
 
-// Follow OS changes unless user has explicitly set a preference
-try {
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
-    try { if (localStorage.getItem('theme')) return; } catch (_) {}
-    applyTheme(e.matches ? 'light' : 'dark', false);
-  });
-} catch (_) {}
+/* ── GITHUB PROFILE ─────────────────────────────────────────*/
+function loadProfile() {
+  fetch('https://api.github.com/user/'+GH_ID, {headers:{Accept:'application/vnd.github.v3+json'}})
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(u){
+      var avatar = document.getElementById('author-avatar');
+      var name   = document.getElementById('author-name');
+      var handle = document.getElementById('author-handle');
+      var repos  = document.getElementById('author-repos');
+      var link   = document.getElementById('author-link');
+      var footer = document.getElementById('footer-author');
+      if (avatar) avatar.src         = imgOpt(u.avatar_url, 72, 72);
+      if (name)   name.textContent   = u.name || u.login;
+      if (handle) handle.textContent = '@' + u.login;
+      if (repos)  repos.textContent  = (u.public_repos||'?') + ' repos';
+      if (link)   link.href          = u.html_url;
+      if (footer) { footer.textContent='('+u.name||u.login+') @'+u.login; footer.href=u.html_url; }
+      document.title = 'HTML Previewer \u2014 ' + (u.name || u.login);
 
-/* ── GITHUB PROFILE ── */
-async function loadProfile() {
-  try {
-    const res = await fetch(`https://api.github.com/user/${GH_ID}`, {
-      headers: { Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) return;
-    const u = await res.json();
-    const avatar  = document.getElementById('author-avatar');
-    const name    = document.getElementById('author-name');
-    const handle  = document.getElementById('author-handle');
-    const repos   = document.getElementById('author-repos');
-    const link    = document.getElementById('author-link');
-    const footer  = document.getElementById('footer-author');
-    if (avatar) avatar.src         = u.avatar_url;
-    if (name)   name.textContent   = u.name || u.login;
-    if (handle) handle.textContent = '@' + u.login;
-    if (repos)  repos.textContent  = (u.public_repos ?? '?') + ' repos';
-    if (link)   link.href          = u.html_url;
-    if (footer) { footer.textContent = `${u.name || u.login} (@${u.login})`; footer.href = u.html_url; }
-    document.title = `HTML Previewer — ${u.name || u.login}`;
-  } catch (_) { /* fallback to hardcoded defaults */ }
+      // Optimise nav logo on Vercel
+      var ni = document.getElementById('nav-logo-img');
+      if (ni) ni.src = imgOpt('media/images/logos/html5.svg', 44, 44);
+    })
+    .catch(function(){});
 }
 
-/* ── SCROLL REVEAL ── */
+/* ── SCROLL REVEAL ──────────────────────────────────────────*/
 function initReveal() {
   if (!('IntersectionObserver' in window)) return;
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      e.target.style.opacity   = '1';
-      e.target.style.transform = 'translateY(0)';
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
       io.unobserve(e.target);
     });
-  }, { threshold: 0.06 });
-  document.querySelectorAll('.fc, .author-card').forEach((el, i) => {
-    el.style.cssText += `opacity:0;transform:translateY(12px);transition:opacity .35s ${i * 40}ms ease,transform .35s ${i * 40}ms ease;`;
+  }, {threshold:0.06});
+  document.querySelectorAll('.fc,.author-card').forEach(function(el,i){
+    el.style.cssText+='opacity:0;transform:translateY(12px);transition:opacity .35s '+(i*40)+'ms ease,transform .35s '+(i*40)+'ms ease;';
     io.observe(el);
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function(){
   loadProfile();
   initReveal();
 });
