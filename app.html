@@ -853,17 +853,25 @@ function toast(msg, type = 'info') {
   }
 })();
 
-// Restore saved theme first, then let hash tokens override if present
+// Theme priority (highest → lowest):
+//   1. Hash token  (#theme=dark / #theme=light / #dark / #light)
+//   2. localStorage  (set when user manually toggles)
+//   3. OS / system preference  (prefers-color-scheme)
+//   4. Default: dark
 (function () {
-  let saved = null;
-  try { saved = localStorage.getItem('theme'); } catch (_) {}
-  // Hash may contain a theme token — parse it without triggering side effects
   const hashTokens = location.hash.replace(/^#/, '').split('&').map(t => t.toLowerCase());
   const hasHashTheme = hashTokens.some(t => t === 'dark' || t === 'light' || t.startsWith('theme='));
-  // Apply saved theme only when the hash doesn't specify one
-  if (!hasHashTheme && (saved === 'light' || saved === 'dark')) {
-    setTheme(saved);
+  if (hasHashTheme) return; // hash will be applied by applyHash() — skip
+
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch (_) {}
+  if (saved === 'dark' || saved === 'light') { setTheme(saved); return; }
+
+  // Fall back to OS preference
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    setTheme('light');
   }
+  // else stays dark (default)
 })();
 
 syncEditor();
