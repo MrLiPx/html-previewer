@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTML Previewer — MrLiPx</title>
+  <link rel="icon" type="image/svg+xml" href="media/images/logos/html5.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -12,7 +13,8 @@
       --panel:    #1c1f26;
       --hover:    #252930;
       --border:   #2e323c;
-      --accent:   #4f9eff;
+      --accent:   #e44d26;   /* HTML5 orange */
+      --accent2:  #f16529;
       --red:      #ff5f57;
       --yellow:   #febc2e;
       --green:    #28c840;
@@ -62,14 +64,13 @@
       font-size: 14px;
       white-space: nowrap;
       flex-shrink: 0;
+      text-decoration: none;
+      color: var(--text);
     }
-    .logo-box {
-      width: 26px; height: 26px;
-      background: var(--accent);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--mono); font-size: 9px; font-weight: 700;
-      color: #fff; flex-shrink: 0;
+    .logo img {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
     }
 
     /* URL bar */
@@ -90,11 +91,11 @@
       transition: border-color .15s;
     }
     .url-bar:focus-within { border-color: var(--accent); }
-    .url-bar .lock { color: var(--green); font-size: 10px; }
+    .url-bar .lock   { color: var(--green); font-size: 10px; }
     .url-bar .scheme { color: var(--accent); }
-    .url-bar .path { color: var(--text); opacity: .7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .url-bar .path   { color: var(--text); opacity: .7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* Header right links */
+    /* Header right */
     .h-links {
       display: flex;
       align-items: center;
@@ -123,9 +124,10 @@
     .run-btn {
       padding: 5px 12px;
       background: var(--accent);
-      color: #fff; border-color: transparent;
+      color: #fff;
+      border-color: transparent;
     }
-    .run-btn:hover { background: #3b8ef0; color: #fff; }
+    .run-btn:hover { background: var(--accent2); color: #fff; }
 
     /* ── BODY ── */
     .app { display: flex; flex: 1; overflow: hidden; }
@@ -169,12 +171,14 @@
       text-decoration: none;
       transition: all .1s;
     }
-    .btn:hover { background: var(--hover); border-color: var(--border); color: var(--text); }
-    .btn:active { opacity: .75; }
-    .btn .ic { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+    .btn:hover   { background: var(--hover); border-color: var(--border); color: var(--text); }
+    .btn:active  { opacity: .75; }
+    .btn.active  { background: var(--hover); border-color: var(--border); color: var(--text); }
+    .btn .ic     { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
 
     .btn-blue  { color: var(--accent); }
-    .btn-blue:hover { background: rgba(79,158,255,.1); border-color: rgba(79,158,255,.3); color: var(--accent); }
+    .btn-blue:hover  { background: rgba(228,77,38,.1);  border-color: rgba(228,77,38,.3);  color: var(--accent); }
+    .btn-blue.active { background: rgba(228,77,38,.12); border-color: rgba(228,77,38,.35); color: var(--accent); }
     .btn-green { color: var(--green); }
     .btn-green:hover { background: rgba(40,200,64,.1); border-color: rgba(40,200,64,.3); color: var(--green); }
     .btn-red   { color: var(--red); }
@@ -200,6 +204,7 @@
       border-bottom: 2px solid transparent;
       transition: all .12s;
       user-select: none;
+      text-decoration: none;
     }
     .tab:hover { color: var(--text); background: var(--hover); }
     .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
@@ -260,7 +265,7 @@
       overflow: auto;
       caret-color: var(--accent);
     }
-    #code::selection { background: rgba(79,158,255,.2); }
+    #code::selection { background: rgba(228,77,38,.2); }
 
     /* ── PREVIEW PANEL ── */
     .preview-chrome {
@@ -367,7 +372,13 @@
       flex-shrink: 0;
       overflow: hidden;
     }
-    .st { padding: 0 10px; border-right: 1px solid var(--border); height: 100%; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .st {
+      padding: 0 10px;
+      border-right: 1px solid var(--border);
+      height: 100%;
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
+    }
     .st:last-child { border-right: none; }
     .st-right { margin-left: auto; border-right: none; border-left: 1px solid var(--border); }
     .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
@@ -391,8 +402,8 @@
       white-space: nowrap;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.ok   { color: var(--green); border-color: rgba(40,200,64,.3); }
-    #toast.info { color: var(--accent); border-color: rgba(79,158,255,.3); }
+    #toast.ok   { color: var(--green);  border-color: rgba(40,200,64,.3); }
+    #toast.info { color: var(--accent); border-color: rgba(228,77,38,.3); }
     #toast.warn { color: var(--yellow); border-color: rgba(254,188,46,.3); }
 
     #file-input { display: none; }
@@ -415,10 +426,10 @@
 
 <!-- HEADER -->
 <header>
-  <div class="logo">
-    <div class="logo-box">⟨/⟩</div>
+  <a class="logo" href="." title="Back to landing page">
+    <img src="media/images/logos/html5.svg" alt="HTML5" />
     HTML Previewer
-  </div>
+  </a>
 
   <div class="url-bar">
     <span class="lock">🔒</span>
@@ -445,7 +456,7 @@
       <span>@MrLiPx</span>
     </a>
     <div class="h-sep"></div>
-    <button class="h-link run-btn" onclick="runPreview()">
+    <button class="h-link run-btn" onclick="navTo('preview')">
       <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       <span>Run</span>
     </button>
@@ -458,53 +469,53 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <span class="sb-group">View</span>
-    <button class="btn btn-blue" onclick="runPreview()">
+    <a id="sb-preview"   class="btn btn-blue" href="#preview"   onclick="navTo('preview');return false;">
       <span class="ic">▶</span><span>Preview</span>
-    </button>
-    <button class="btn" onclick="runHighlight()">
+    </a>
+    <a id="sb-highlight" class="btn"           href="#highlight" onclick="navTo('highlight');return false;">
       <span class="ic">✦</span><span>Highlight</span>
-    </button>
+    </a>
 
     <div class="sb-sep"></div>
     <span class="sb-group">Edit</span>
-    <button class="btn" onclick="fmtCode()">
+    <a id="sb-format"   class="btn" href="#format"   onclick="fmtCode();return false;">
       <span class="ic">⊞</span><span>Format</span>
-    </button>
-    <button class="btn" onclick="expandAll()">
+    </a>
+    <a id="sb-expand"   class="btn" href="#expand"   onclick="expandAll();return false;">
       <span class="ic">＋</span><span>Expand all</span>
-    </button>
-    <button class="btn" onclick="collapseAll()">
+    </a>
+    <a id="sb-collapse" class="btn" href="#collapse" onclick="collapseAll();return false;">
       <span class="ic">－</span><span>Collapse all</span>
-    </button>
+    </a>
 
     <div class="sb-sep"></div>
     <span class="sb-group">File</span>
-    <button class="btn" onclick="loadSample()">
+    <a id="sb-sample" class="btn"       href="#sample" onclick="loadSample();return false;">
       <span class="ic">📄</span><span>Sample</span>
-    </button>
-    <button class="btn btn-red" onclick="clearCode()">
+    </a>
+    <a id="sb-clear"  class="btn btn-red" href="#clear" onclick="clearCode();return false;">
       <span class="ic">✕</span><span>Clear</span>
-    </button>
-    <button class="btn" onclick="doImport()">
+    </a>
+    <a id="sb-import" class="btn"       href="#import" onclick="doImport();return false;">
       <span class="ic">⬆</span><span>Import from file</span>
-    </button>
-    <button class="btn btn-green" onclick="doExport()">
+    </a>
+    <a id="sb-export" class="btn btn-green" href="#export" onclick="doExport();return false;">
       <span class="ic">⬇</span><span>Export to file</span>
-    </button>
+    </a>
 
     <div class="sb-sep"></div>
     <span class="sb-group">Links</span>
-    <a class="btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
+    <a id="sb-github"  class="btn" href="https://github.com/MrLiPx/html-previewer" target="_blank" rel="noopener">
       <span class="ic">⭐</span><span>Star on GitHub</span>
     </a>
-    <a class="btn" href="https://mrlipx.com" target="_blank" rel="noopener">
+    <a id="sb-website" class="btn" href="https://mrlipx.com" target="_blank" rel="noopener">
       <span class="ic">🌐</span><span>MrLiPx.com</span>
     </a>
 
     <div class="sb-sep"></div>
-    <button class="btn" id="theme-btn" onclick="toggleTheme()">
+    <a id="sb-theme" class="btn" href="#theme" onclick="toggleTheme();return false;">
       <span class="ic" id="theme-ic">🌙</span><span id="theme-txt">Dark mode</span>
-    </button>
+    </a>
   </aside>
 
   <!-- MAIN -->
@@ -512,9 +523,9 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <div class="tab on" id="tab-editor"    onclick="goTab('editor')">✏ Editor</div>
-      <div class="tab"    id="tab-preview"   onclick="goTab('preview')">▶ Preview</div>
-      <div class="tab"    id="tab-highlight" onclick="goTab('highlight')">✦ Highlight</div>
+      <a class="tab on" id="tab-editor"    href="#editor"    onclick="navTo('editor');return false;">✏ Editor</a>
+      <a class="tab"    id="tab-preview"   href="#preview"   onclick="navTo('preview');return false;">▶ Preview</a>
+      <a class="tab"    id="tab-highlight" href="#highlight" onclick="navTo('highlight');return false;">✦ Highlight</a>
     </div>
 
     <div class="panels">
@@ -541,7 +552,7 @@
       <div class="panel" id="panel-preview">
         <div class="preview-chrome">
           <div class="traffic">
-            <span class="tr" title="Back to editor" onclick="goTab('editor')"></span>
+            <span class="tr" title="Back to editor" onclick="navTo('editor')"></span>
             <span class="ty" title="Refresh"         onclick="doRefresh()"></span>
             <span class="tg" title="Open in new tab" onclick="openTab()"></span>
           </div>
@@ -590,8 +601,7 @@
     <!-- Status bar -->
     <div class="status">
       <div class="st"><div class="dot"></div><span id="st-msg">Ready</span></div>
-      <div class="st" id="st-file">app
-      </div>
+      <div class="st" id="st-file">app</div>
       <div class="st st-right" id="st-theme">Dark</div>
       <div class="st">UTF-8</div>
       <div class="st">HTML</div>
@@ -606,7 +616,7 @@
 <script>
 'use strict';
 
-/* refs */
+/* ── REFS ────────────────────────────────── */
 const code    = document.getElementById('code');
 const gutter  = document.getElementById('gutter');
 const counts  = document.getElementById('counts');
@@ -616,18 +626,37 @@ const stFile  = document.getElementById('st-file');
 const urlPath = document.getElementById('url-path');
 const pvPath  = document.getElementById('pv-path');
 
-let dark = true;
+let dark    = true;
 let blobUrl = null;
 
-/* ── TABS ────────────────────────────────── */
-function goTab(name) {
-  ['editor','preview','highlight'].forEach(t => {
+/* ── HASH ROUTING ────────────────────────── */
+const TABS = ['editor', 'preview', 'highlight'];
+
+function navTo(name) {
+  if (!TABS.includes(name)) return;
+  history.replaceState(null, '', '#' + name);
+  activateTab(name);
+}
+
+function activateTab(name) {
+  TABS.forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('on', t === name);
     document.getElementById('panel-' + t).classList.toggle('on', t === name);
+    const sb = document.getElementById('sb-' + t);
+    if (sb) sb.classList.toggle('active', t === name);
   });
   if (name === 'preview')   doRefresh();
   if (name === 'highlight') doHighlight();
 }
+
+/* Read hash on load and on back/forward */
+function handleHash() {
+  const h = location.hash.slice(1);
+  if (TABS.includes(h)) activateTab(h);
+}
+
+window.addEventListener('hashchange', handleHash);
+window.addEventListener('DOMContentLoaded', handleHash);
 
 /* ── EDITOR ──────────────────────────────── */
 function syncEditor() {
@@ -656,22 +685,29 @@ code.addEventListener('keydown', e => {
     if (e.shiftKey) {
       const ls = v.lastIndexOf('\n', s - 1) + 1;
       const sp = v.slice(ls).match(/^ {1,2}/)?.[0] ?? '';
-      if (sp) { code.value = v.slice(0, ls) + v.slice(ls + sp.length); code.selectionStart = code.selectionEnd = s - sp.length; }
+      if (sp) {
+        code.value = v.slice(0, ls) + v.slice(ls + sp.length);
+        code.selectionStart = code.selectionEnd = s - sp.length;
+      }
     } else {
       code.value = v.slice(0, s) + '  ' + v.slice(end);
       code.selectionStart = code.selectionEnd = s + 2;
     }
     syncEditor(); syncCursor();
   }
-  /* Ctrl/Cmd + Enter */
+  /* Ctrl/Cmd + Enter → run */
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-    e.preventDefault(); runPreview();
+    e.preventDefault();
+    navTo('preview');
+  }
+  /* Ctrl/Cmd + S → export */
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    doExport();
   }
 });
 
 /* ── PREVIEW ─────────────────────────────── */
-function runPreview() { goTab('preview'); }
-
 function doRefresh() {
   const html = code.value.trim();
   if (!html) { toast('Editor is empty', 'warn'); return; }
@@ -680,10 +716,10 @@ function doRefresh() {
   const doc    = iframe.contentDocument || iframe.contentWindow.document;
   doc.open(); doc.write(html); doc.close();
 
-  /* Update address bar */
+  /* Update address bar slug from <title> */
   const titleM = html.match(/<title[^>]*>([^<]*)<\/title>/i);
   const slug   = (titleM ? titleM[1].trim() : 'preview')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g,'').slice(0, 30) || 'preview';
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'preview';
   pvPath.textContent = slug;
 
   stMsg.textContent = 'Preview rendered';
@@ -696,78 +732,95 @@ function openTab() {
   if (blobUrl) URL.revokeObjectURL(blobUrl);
   blobUrl = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
   const w = window.open(blobUrl, '_blank');
-  if (!w) { toast('Allow popups to open new tab', 'warn'); }
-  else    { toast('Opened in new tab ↗', 'ok'); }
+  if (!w) toast('Allow popups to open new tab', 'warn');
+  else    toast('Opened in new tab ↗', 'ok');
 }
 
 /* ── HIGHLIGHT ───────────────────────────── */
-function runHighlight() { goTab('highlight'); }
-
 function doHighlight() {
   const raw = code.value;
-  if (!raw.trim()) { document.getElementById('hl-out').textContent = '<!-- Nothing to highlight -->'; return; }
+  if (!raw.trim()) {
+    document.getElementById('hl-out').textContent = '<!-- Nothing to highlight -->';
+    return;
+  }
   document.getElementById('hl-out').innerHTML = tokenise(raw);
   stMsg.textContent = 'Highlight applied';
 }
 
-function e(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* Escape HTML special chars */
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 function tokenise(src) {
   let out = '', i = 0;
   while (i < src.length) {
+    /* DOCTYPE */
     if (/^<!DOCTYPE/i.test(src.slice(i))) {
       const end = src.indexOf('>', i);
       const f   = end < 0 ? src.slice(i) : src.slice(i, end + 1);
-      out += `<span class="hd">${e(f)}</span>`;
+      out += `<span class="hd">${esc(f)}</span>`;
       i += f.length; continue;
     }
+    /* Comment */
     if (src.startsWith('<!--', i)) {
       const end = src.indexOf('-->', i + 4);
       const f   = end < 0 ? src.slice(i) : src.slice(i, end + 3);
-      out += `<span class="hc">${e(f)}</span>`;
+      out += `<span class="hc">${esc(f)}</span>`;
       i += f.length; continue;
     }
+    /* Tag */
     if (src[i] === '<') {
       const end = src.indexOf('>', i);
-      if (end < 0) { out += e(src.slice(i)); break; }
+      if (end < 0) { out += esc(src.slice(i)); break; }
       out += colorTag(src.slice(i, end + 1));
       i = end + 1; continue;
     }
+    /* Text */
     const nx = src.indexOf('<', i);
     const st = nx < 0 ? src.length : nx;
-    out += `<span class="htx">${e(src.slice(i, st))}</span>`;
+    out += `<span class="htx">${esc(src.slice(i, st))}</span>`;
     i = st;
   }
   return out;
 }
 
 function colorTag(raw) {
-  let s = e(raw);
+  let s = esc(raw);
   s = s.replace(/(&lt;\/?)([\w-]+)/, (_, b, n) =>
     `<span class="hbr">${b}</span><span class="ht">${n}</span>`);
   s = s.replace(/([\w:@-]+)(=)(&quot;)([^&]*)(&quot;)/g,
     (_, a, eq, q1, v, q2) =>
-    `<span class="ha">${a}</span>=<span class="hv">${q1}${v}${q2}</span>`);
+    `<span class="ha">${a}</span>=${`<span class="hv">${q1}${v}${q2}</span>`}`);
   s = s.replace(/(&gt;|\/&gt;)$/, '<span class="hbr">$1</span>');
   return s;
 }
 
 /* ── FORMAT ──────────────────────────────── */
+const VOID_TAGS = new Set([
+  'area','base','br','col','embed','hr','img','input',
+  'link','meta','param','source','track','wbr'
+]);
+
 function fmtCode() {
-  const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
-  const raw  = code.value;
+  const raw = code.value;
   if (!raw.trim()) { toast('Nothing to format', 'warn'); return; }
 
-  const lines  = raw.replace(/>\s*</g,'>\n<').replace(/>\s*([^\n<])/g,'>\n$1').split('\n');
+  const lines  = raw.replace(/>\s*</g, '>\n<').replace(/>\s*([^\n<])/g, '>\n$1').split('\n');
   let   indent = 0, res = [];
+
   for (let ln of lines) {
-    ln = ln.trim(); if (!ln) continue;
+    ln = ln.trim();
+    if (!ln) continue;
     if (/^<\/[\w-]/.test(ln)) indent = Math.max(0, indent - 1);
     res.push('  '.repeat(indent) + ln);
     const m = ln.match(/^<([\w-]+)/);
-    if (m && !VOID.has(m[1].toLowerCase()) && !/\/>$/.test(ln) && !/^<!/.test(ln) && !/^<\//.test(ln))
-      indent++;
+    if (m && !VOID_TAGS.has(m[1].toLowerCase())
+          && !/\/>$/.test(ln)
+          && !/^<!/.test(ln)
+          && !/^<\//.test(ln)) indent++;
   }
+
   code.value = res.join('\n');
   syncEditor();
   toast('Formatted ✓', 'ok');
@@ -775,8 +828,18 @@ function fmtCode() {
 }
 
 /* ── EXPAND / COLLAPSE ───────────────────── */
-function expandAll()  { code.value = code.value.replace(/\n{3,}/g,'\n\n'); syncEditor(); toast('Expanded','info'); }
-function collapseAll(){ fmtCode(); code.value = code.value.replace(/\n{2,}/g,'\n'); syncEditor(); toast('Collapsed','info'); }
+function expandAll() {
+  code.value = code.value.replace(/\n{3,}/g, '\n\n');
+  syncEditor();
+  toast('Expanded', 'info');
+}
+
+function collapseAll() {
+  fmtCode();
+  code.value = code.value.replace(/\n{2,}/g, '\n');
+  syncEditor();
+  toast('Collapsed', 'info');
+}
 
 /* ── SAMPLE ──────────────────────────────── */
 function loadSample() {
@@ -807,19 +870,20 @@ function loadSample() {
       width: 100%;
       text-align: center;
     }
-    h1 { font-size: 26px; color: #4f9eff; margin-bottom: 10px; }
+    h1 { font-size: 26px; color: #e44d26; margin-bottom: 10px; }
     p  { color: #6b7280; line-height: 1.6; margin-bottom: 22px; font-size: 14px; }
     button {
       padding: 10px 24px;
-      background: #4f9eff;
+      background: #e44d26;
       color: #fff;
       font-weight: 600;
       font-size: 13px;
       border: none;
       border-radius: 7px;
       cursor: pointer;
+      transition: background .15s;
     }
-    button:hover { background: #3b8ef0; }
+    button:hover { background: #f16529; }
   </style>
 </head>
 <body>
@@ -831,7 +895,7 @@ function loadSample() {
 </body>
 </html>`;
   syncEditor();
-  goTab('editor');
+  navTo('editor');
   toast('Sample loaded', 'info');
   stMsg.textContent = 'Sample loaded';
 }
@@ -849,7 +913,8 @@ function clearCode() {
 function doImport() { document.getElementById('file-input').click(); }
 
 document.getElementById('file-input').addEventListener('change', ev => {
-  const f = ev.target.files[0]; if (!f) return;
+  const f = ev.target.files[0];
+  if (!f) return;
   const r = new FileReader();
   r.onload = e => {
     code.value = e.target.result;
@@ -892,16 +957,16 @@ function toggleTheme() {
 }
 
 /* ── TOAST ───────────────────────────────── */
-let _tt;
+let _toastTimer;
 function toast(msg, type = 'info') {
   const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className   = 'show ' + type;
-  clearTimeout(_tt);
-  _tt = setTimeout(() => { el.className = ''; }, 2200);
+  el.className   = `show ${type}`;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = ''; }, 2200);
 }
 
-/* init */
+/* ── INIT ────────────────────────────────── */
 syncEditor();
 </script>
 </body>
