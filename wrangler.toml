@@ -1,0 +1,8 @@
+{
+  "name": "mrlipx-dev",
+  "compatibility_date": "2026-03-15",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "single-page-application"
+  }
+}
