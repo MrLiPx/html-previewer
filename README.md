@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://avatars.githubusercontent.com/u/163276171?v=4&size=64" width="64" height="64" style="border-radius:50%" alt="Logo" />
+<img src="https://avatars.githubusercontent.com/u/163276171?v=4&size=64" width="64" height="64" style="border-radius:50%" alt="Mr Li Px Icon" />
 
 **Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
