@@ -13,7 +13,7 @@
 
 **A zero-dependency, browser-based HTML editor and live previewer.**
 
-[🚀 Live Demo]([https://html-previewer.dev.mrlipx.com](https://mrlipx.github.io/html-previewer/)) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
+[🚀 Live Demo](https://mrlipx.github.io/html-previewer/) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
 
 </div>
 
