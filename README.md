@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://avatars.githubusercontent.com/u/163276171?v=4" width="64" height="64" style="border-radius:50%" alt="Mr Li Px" />
+<img src="https://mrlipx.github.io/html-previewer/media/images/logos/html5.svg" width="64" height="64" style="border-radius:50%" alt="HTML5 Icon" />
 
 **Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
@@ -13,7 +13,7 @@
 
 **A zero-dependency, browser-based HTML editor and live previewer.**
 
-[🚀 Live Demo](https://html-previewer.dev.mrlipx.com) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
+[🚀 Live Demo]([https://html-previewer.dev.mrlipx.com](https://mrlipx.github.io/html-previewer/)) · [📦 Releases](https://github.com/MrLiPx/html-previewer/releases) · [🐛 Issues](https://github.com/MrLiPx/html-previewer/issues) · [🌐 MrLiPx.com](https://mrlipx.com)
 
 </div>
 
