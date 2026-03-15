@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://mrlipx.github.io/html-previewer/media/images/logos/html5.svg" width="64" height="64" style="border-radius:50%" alt="HTML5 Icon" />
+<img src="https://avatars.githubusercontent.com/u/163276171?v=4&size=64" width="64" height="64" style="border-radius:50%" alt="Logo" />
 
 **Mr Li Px** · [@MrLiPx](https://github.com/MrLiPx)
 
